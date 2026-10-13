@@ -1,4 +1,8 @@
-# Flutter UI Gallery 🎨
+<p align="center">
+  <img src="assets/flutter_ui_gallery.png" alt="Flutter UI Gallery Icon" width="200" style="border-radius: 28px; box-shadow: 0 12px 36px rgba(0,0,0,0.35);">
+</p>
+
+<h1 align="center">Flutter UI Gallery 🎨</h1>
 
 <p align="center">
   <a href="https://flutter.dev">

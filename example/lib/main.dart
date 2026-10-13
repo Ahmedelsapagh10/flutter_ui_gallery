@@ -281,8 +281,8 @@ class _GalleryHomeState extends State<_GalleryHome> {
                     const SizedBox(width: 8),
                   ],
                   Container(
-                    width: 32,
-                    height: 32,
+                    width: 34,
+                    height: 34,
                     decoration: BoxDecoration(
                       color: prefs.accent.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(10),
@@ -290,11 +290,19 @@ class _GalleryHomeState extends State<_GalleryHome> {
                         color: prefs.accent.withValues(alpha: 0.3),
                       ),
                     ),
-                    child: Center(
-                      child: Icon(
-                        Icons.blur_circular_rounded,
-                        color: prefs.accent,
-                        size: 20,
+                    clipBehavior: Clip.antiAlias,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(9),
+                      child: Image.asset(
+                        'assets/flutter_ui_gallery.png',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Center(
+                          child: Icon(
+                            Icons.blur_circular_rounded,
+                            color: prefs.accent,
+                            size: 20,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -590,12 +598,21 @@ class _Hero extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: colors.primary,
-                      shape: BoxShape.circle,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(3),
+                    child: Image.asset(
+                      'assets/flutter_ui_gallery.png',
+                      width: 14,
+                      height: 14,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: colors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -1116,6 +1133,17 @@ class _SettingsPanel extends StatelessWidget {
           children: [
             Row(
               children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    'assets/flutter_ui_gallery.png',
+                    width: 28,
+                    height: 28,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                  ),
+                ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'Make it yours',
