@@ -12,6 +12,7 @@ void main() => runApp(const FlutterUiGalleryApp());
 
 class FlutterUiGalleryApp extends StatefulWidget {
   const FlutterUiGalleryApp({super.key});
+
   @override
   State<FlutterUiGalleryApp> createState() => _FlutterUiGalleryAppState();
 }
@@ -23,34 +24,116 @@ class _FlutterUiGalleryAppState extends State<FlutterUiGalleryApp> {
   bool _dark = false;
   bool _rtl = false;
   bool _reduced = false;
-  Color _accent = const Color(0xff315ee8);
+  Color _accent = const Color(0xff4f46e5);
   double _previewWidth = 390;
 
   ThemeData _theme(Brightness brightness) {
+    final dark = brightness == Brightness.dark;
+    final fontFamily = _rtl ? 'Alexandria' : 'Plus Jakarta Sans';
+    final headlineFont = _rtl ? 'Alexandria' : 'Outfit';
+
     final scheme = ColorScheme.fromSeed(
       seedColor: _accent,
       brightness: brightness,
+      surface: dark ? const Color(0xff12151f) : const Color(0xffffffff),
     );
-    final dark = brightness == Brightness.dark;
+
+    final baseText = (dark ? ThemeData.dark() : ThemeData.light()).textTheme;
+    final customText = baseText
+        .apply(fontFamily: fontFamily)
+        .copyWith(
+          displayLarge: TextStyle(
+            fontFamily: headlineFont,
+            letterSpacing: -1.5,
+          ),
+          displayMedium: TextStyle(
+            fontFamily: headlineFont,
+            letterSpacing: -1.2,
+          ),
+          displaySmall: TextStyle(
+            fontFamily: headlineFont,
+            letterSpacing: -1.0,
+          ),
+          headlineLarge: TextStyle(
+            fontFamily: headlineFont,
+            letterSpacing: -0.8,
+          ),
+          headlineMedium: TextStyle(
+            fontFamily: headlineFont,
+            letterSpacing: -0.6,
+          ),
+          headlineSmall: TextStyle(
+            fontFamily: headlineFont,
+            letterSpacing: -0.4,
+          ),
+          titleLarge: TextStyle(fontFamily: headlineFont, letterSpacing: -0.2),
+          titleMedium: TextStyle(fontFamily: headlineFont),
+          titleSmall: TextStyle(fontFamily: headlineFont),
+        );
+
     return ThemeData(
       useMaterial3: true,
+      fontFamily: fontFamily,
+      textTheme: customText,
       colorScheme: scheme.copyWith(
-        surface: dark ? const Color(0xff15181d) : const Color(0xfffaf9f6),
+        surface: dark ? const Color(0xff12151f) : const Color(0xffffffff),
+        surfaceContainerLow: dark
+            ? const Color(0xff161a27)
+            : const Color(0xfff8fafc),
+        surfaceContainer: dark
+            ? const Color(0xff1b2030)
+            : const Color(0xfff1f4f9),
+        surfaceContainerHigh: dark
+            ? const Color(0xff22283c)
+            : const Color(0xffe8edf5),
+        outlineVariant: dark
+            ? const Color(0xff22293d)
+            : const Color(0xffe2e8f0),
       ),
       scaffoldBackgroundColor: dark
-          ? const Color(0xff0d1014)
-          : const Color(0xfff2f1ed),
+          ? const Color(0xff090b10)
+          : const Color(0xfff8fafc),
       extensions: [
         UiGalleryTheme(accentColor: _accent, motionIntensity: _reduced ? 0 : 1),
       ],
-      inputDecorationTheme: const InputDecorationTheme(
-        border: OutlineInputBorder(),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: dark ? const Color(0xff161a27) : const Color(0xffffffff),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: dark ? const Color(0xff22293d) : const Color(0xffe2e8f0),
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: dark ? const Color(0xff22293d) : const Color(0xffe2e8f0),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: _accent, width: 1.5),
+        ),
         isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size(48, 48),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        side: BorderSide(
+          color: dark ? const Color(0xff22293d) : const Color(0xffe2e8f0),
         ),
       ),
     );
@@ -58,7 +141,7 @@ class _FlutterUiGalleryAppState extends State<FlutterUiGalleryApp> {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-    title: 'Flutter UI Gallery — Extraordinary UI. Effortless Flutter.',
+    title: 'Flutter UI Gallery — Soft Futuristic Showcase',
     debugShowCheckedModeBanner: false,
     theme: _theme(Brightness.light),
     darkTheme: _theme(Brightness.dark),
@@ -72,11 +155,21 @@ class _FlutterUiGalleryAppState extends State<FlutterUiGalleryApp> {
       reduced: _reduced,
       accent: _accent,
       previewWidth: _previewWidth,
-      onDark: (v) => setState(() => _dark = v),
-      onRtl: (v) => setState(() => _rtl = v),
-      onReduced: (v) => setState(() => _reduced = v),
-      onAccent: (v) => setState(() => _accent = v),
-      onWidth: (v) => setState(() => _previewWidth = v),
+      onDark: (v) {
+        setState(() => _dark = v);
+      },
+      onRtl: (v) {
+        setState(() => _rtl = v);
+      },
+      onReduced: (v) {
+        setState(() => _reduced = v);
+      },
+      onAccent: (v) {
+        setState(() => _accent = v);
+      },
+      onWidth: (v) {
+        setState(() => _previewWidth = v);
+      },
       child: child!,
     ),
     home: const _GalleryHome(),
@@ -97,14 +190,17 @@ class _Preferences extends InheritedWidget {
     required this.onAccent,
     required this.onWidth,
   });
+
   final bool dark, rtl, reduced;
   final Color accent;
   final double previewWidth;
   final ValueChanged<bool> onDark, onRtl, onReduced;
   final ValueChanged<Color> onAccent;
   final ValueChanged<double> onWidth;
+
   static _Preferences of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<_Preferences>()!;
+
   @override
   bool updateShouldNotify(_Preferences oldWidget) =>
       dark != oldWidget.dark ||
@@ -116,6 +212,7 @@ class _Preferences extends InheritedWidget {
 
 class _GalleryHome extends StatefulWidget {
   const _GalleryHome();
+
   @override
   State<_GalleryHome> createState() => _GalleryHomeState();
 }
@@ -125,63 +222,109 @@ class _GalleryHomeState extends State<_GalleryHome> {
   int? _selected;
   final _collectionKey = GlobalKey();
   final _scroll = ScrollController();
+
   @override
   void dispose() {
     _scroll.dispose();
     super.dispose();
   }
 
+  void _scrollToCollection() {
+    final target = _collectionKey.currentContext;
+    if (target != null) {
+      Scrollable.ensureVisible(
+        target,
+        duration: const Duration(milliseconds: 450),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final prefs = _Preferences.of(context);
     final colors = Theme.of(context).colorScheme;
+
     return PopScope(
       canPop: _selected == null,
       onPopInvokedWithResult: (didPop, result) {
-        if (!didPop && _selected != null) setState(() => _selected = null);
+        if (!didPop && _selected != null) {
+          setState(() => _selected = null);
+        }
       },
       child: Scaffold(
         endDrawer: const _SettingsPanel(),
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(76),
+          preferredSize: const Size.fromHeight(72),
           child: SafeArea(
             bottom: false,
             child: Container(
               decoration: BoxDecoration(
+                color: colors.surface.withValues(alpha: 0.9),
                 border: Border(
-                  bottom: BorderSide(color: colors.outlineVariant),
+                  bottom: BorderSide(
+                    color: colors.outlineVariant.withValues(alpha: 0.6),
+                  ),
                 ),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
-                  if (_selected != null)
+                  if (_selected != null) ...[
                     IconButton(
                       tooltip: 'Back to collection',
-                      onPressed: () => setState(() => _selected = null),
+                      onPressed: () {
+                        setState(() => _selected = null);
+                      },
                       icon: const Icon(Icons.arrow_back_rounded),
                     ),
-                  Icon(
-                    Icons.blur_circular_rounded,
-                    color: prefs.accent,
-                    size: 30,
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'ui gallery',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -1.0,
+                    const SizedBox(width: 8),
+                  ],
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: prefs.accent.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: prefs.accent.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.blur_circular_rounded,
+                        color: prefs.accent,
+                        size: 20,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
+                  const Text(
+                    'ui gallery',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.8,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
                   if (MediaQuery.sizeOf(context).width > 480)
-                    Text(
-                      '/ flutter',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: colors.onSurfaceVariant,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colors.surfaceContainer,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        '/ flutter',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: colors.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   const Spacer(),
@@ -192,13 +335,14 @@ class _GalleryHomeState extends State<_GalleryHome> {
                       prefs.dark
                           ? Icons.light_mode_outlined
                           : Icons.dark_mode_outlined,
+                      size: 20,
                     ),
                   ),
                   Builder(
                     builder: (context) => IconButton(
                       tooltip: 'Customize gallery',
                       onPressed: () => Scaffold.of(context).openEndDrawer(),
-                      icon: const Icon(Icons.tune_rounded),
+                      icon: const Icon(Icons.tune_rounded, size: 20),
                     ),
                   ),
                 ],
@@ -207,30 +351,30 @@ class _GalleryHomeState extends State<_GalleryHome> {
           ),
         ),
         body: _selected != null
-            ? _Showcase(key: ValueKey(_selected), index: _selected!)
+            ? _Showcase(
+                key: ValueKey(_selected),
+                index: _selected!,
+                onSelectIndex: (newIndex) {
+                  setState(() => _selected = newIndex);
+                },
+                onBack: () {
+                  setState(() => _selected = null);
+                },
+              )
             : CustomScrollView(
                 controller: _scroll,
                 slivers: [
                   SliverToBoxAdapter(
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 1280),
+                        constraints: const BoxConstraints(maxWidth: 1240),
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(28, 48, 28, 32),
+                          padding: const EdgeInsets.fromLTRB(24, 40, 24, 28),
                           child: _Hero(
-                            onExplore: () {
-                              final target = _collectionKey.currentContext;
-                              if (target != null) {
-                                Scrollable.ensureVisible(
-                                  target,
-                                  duration: prefs.reduced
-                                      ? Duration.zero
-                                      : const Duration(milliseconds: 400),
-                                  curve: Curves.easeOutCubic,
-                                );
-                              }
+                            onExplore: _scrollToCollection,
+                            onPreview: () {
+                              setState(() => _selected = 0);
                             },
-                            onPreview: () => setState(() => _selected = 0),
                           ),
                         ),
                       ),
@@ -239,44 +383,80 @@ class _GalleryHomeState extends State<_GalleryHome> {
                   SliverToBoxAdapter(
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 1280),
+                        constraints: const BoxConstraints(maxWidth: 1240),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+                          child: _CategoryGrid(
+                            selected: _category,
+                            onSelected: (cat) {
+                              setState(() => _category = cat);
+                              _scrollToCollection();
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 1240),
                         child: Padding(
                           key: _collectionKey,
-                          padding: const EdgeInsets.fromLTRB(28, 24, 28, 24),
+                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      'The collection',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: -1,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'The collection',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineMedium
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: -0.8,
+                                              ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          'Different by design. Connected by a common visual language.',
+                                          style: TextStyle(
+                                            color: colors.onSurfaceVariant,
+                                            fontSize: 15,
                                           ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Text(
-                                    '01 — 12',
-                                    style: TextStyle(
-                                      fontFamily: 'monospace',
-                                      color: colors.onSurfaceVariant,
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: colors.surfaceContainer,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      '01 — 12',
+                                      style: TextStyle(
+                                        fontFamily: 'monospace',
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: colors.onSurfaceVariant,
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 12),
-                              Text(
-                                'Different by design. Connected by a common language.',
-                                style: TextStyle(
-                                  color: colors.onSurfaceVariant,
-                                ),
-                              ),
-                              const SizedBox(height: 24),
+                              const SizedBox(height: 20),
                               Wrap(
                                 spacing: 8,
                                 runSpacing: 8,
@@ -284,8 +464,9 @@ class _GalleryHomeState extends State<_GalleryHome> {
                                   ChoiceChip(
                                     label: const Text('All surfaces · 12'),
                                     selected: _category == null,
-                                    onSelected: (_) =>
-                                        setState(() => _category = null),
+                                    onSelected: (_) {
+                                      setState(() => _category = null);
+                                    },
                                   ),
                                   for (final category in DesignCategory.values)
                                     ChoiceChip(
@@ -296,8 +477,9 @@ class _GalleryHomeState extends State<_GalleryHome> {
                                         DesignCategory.header => 'Header · 1',
                                       }),
                                       selected: _category == category,
-                                      onSelected: (_) =>
-                                          setState(() => _category = category),
+                                      onSelected: (_) {
+                                        setState(() => _category = category);
+                                      },
                                     ),
                                 ],
                               ),
@@ -310,9 +492,9 @@ class _GalleryHomeState extends State<_GalleryHome> {
                   SliverToBoxAdapter(
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 1280),
+                        constraints: const BoxConstraints(maxWidth: 1240),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 28),
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: LayoutBuilder(
                             builder: (context, constraints) {
                               final count = constraints.maxWidth >= 1050
@@ -338,8 +520,9 @@ class _GalleryHomeState extends State<_GalleryHome> {
                                           count,
                                       child: _DesignCard(
                                         index: index,
-                                        onTap: () =>
-                                            setState(() => _selected = index),
+                                        onTap: () {
+                                          setState(() => _selected = index);
+                                        },
                                       ),
                                     ),
                                 ],
@@ -353,16 +536,20 @@ class _GalleryHomeState extends State<_GalleryHome> {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 28,
-                        vertical: 48,
+                        horizontal: 24,
+                        vertical: 56,
                       ),
                       child: Center(
                         child: Text(
                           'FLUTTER NATIVE  /  THEME AWARE  /  MADE TO FIT YOUR APP',
                           textAlign: TextAlign.center,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.labelSmall?.copyWith(letterSpacing: 1.8),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                letterSpacing: 2.0,
+                                color: colors.onSurfaceVariant.withValues(
+                                  alpha: 0.7,
+                                ),
+                              ),
                         ),
                       ),
                     ),
@@ -376,55 +563,76 @@ class _GalleryHomeState extends State<_GalleryHome> {
 
 class _Hero extends StatelessWidget {
   const _Hero({required this.onExplore, required this.onPreview});
+
   final VoidCallback onExplore, onPreview;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth > 900;
+
         final intro = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: colors.primary,
-                    shape: BoxShape.circle,
-                  ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: colors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: colors.primary.withValues(alpha: 0.25),
                 ),
-                const SizedBox(width: 10),
-                Text(
-                  'THE NEXT CHAPTER OF FLUTTER UI',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    letterSpacing: 1.8,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: colors.primary,
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      'SOFT FUTURISTIC GALLERY  ·  2050 VISION',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        letterSpacing: 1.2,
+                        fontWeight: FontWeight.w600,
+                        color: colors.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 24),
             Text(
               'Interfaces\nwith intent.',
               style: TextStyle(
                 fontSize: wide
-                    ? 76
-                    : constraints.maxWidth < 400
-                    ? 48
-                    : 64,
-                fontWeight: FontWeight.w500,
-                letterSpacing: -3.2,
-                height: 1.02,
+                    ? 74
+                    : constraints.maxWidth < 420
+                    ? 46
+                    : 60,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -2.8,
+                height: 1.04,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 450),
+              constraints: const BoxConstraints(maxWidth: 480),
               child: Text(
-                'Twelve expressive surfaces. Thoughtful motion.\nA little more possibility for the apps you build.',
+                'Twelve expressive surfaces. Thoughtful motion.\nA refined, futuristic design system ready for your Flutter apps.',
                 style: theme.textTheme.bodyLarge?.copyWith(
                   height: 1.6,
                   color: colors.onSurfaceVariant,
@@ -432,16 +640,28 @@ class _Hero extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 28),
-            FilledButton.icon(
-              onPressed: onExplore,
-              icon: const Icon(Icons.arrow_downward_rounded, size: 18),
-              label: const Text('Explore the collection'),
-            ),
-            const SizedBox(height: 32),
             Wrap(
-              spacing: 28,
+              spacing: 16,
               runSpacing: 12,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
+                FilledButton.icon(
+                  onPressed: onExplore,
+                  icon: const Icon(Icons.arrow_downward_rounded, size: 18),
+                  label: const Text('Explore the collection'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: onPreview,
+                  icon: const Icon(Icons.play_circle_outline_rounded, size: 18),
+                  label: const Text('Open in-focus preset'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 36),
+            Wrap(
+              spacing: 32,
+              runSpacing: 12,
+              children: const [
                 _Metric('12', 'distinct surfaces'),
                 _Metric('0', 'extra dependencies'),
                 _Metric('1–3', 'lines to integrate'),
@@ -449,9 +669,15 @@ class _Hero extends StatelessWidget {
             ),
           ],
         );
+
         final featured = Material(
           color: colors.surface,
-          borderRadius: BorderRadius.circular(24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: BorderSide(
+              color: colors.outlineVariant.withValues(alpha: 0.6),
+            ),
+          ),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: onPreview,
@@ -462,16 +688,29 @@ class _Hero extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        'IN FOCUS',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          letterSpacing: 2,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'IN FOCUS',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            letterSpacing: 1.5,
+                            fontWeight: FontWeight.w700,
+                            color: colors.primary,
+                          ),
                         ),
                       ),
                       const Spacer(),
                       Text(
                         'A1 / ORBIT DOCK',
                         style: theme.textTheme.labelSmall?.copyWith(
+                          letterSpacing: 1.2,
                           color: colors.onSurfaceVariant,
                         ),
                       ),
@@ -479,19 +718,44 @@ class _Hero extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
-                    height: 250,
+                    height: 240,
                     child: CustomPaint(painter: _SurfaceSketch(0, colors)),
                   ),
                   const SizedBox(height: 20),
                   Row(
                     children: [
                       Expanded(
-                        child: Text(
-                          'Space for your next move.',
-                          style: theme.textTheme.titleMedium,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Space for your next move.',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Floating contextual dock with asymmetric curvature.',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: colors.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Icon(Icons.arrow_outward_rounded, color: colors.primary),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: colors.primary.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.arrow_outward_rounded,
+                          size: 18,
+                          color: colors.primary,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -499,6 +763,7 @@ class _Hero extends StatelessWidget {
             ),
           ),
         );
+
         return wide
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -517,9 +782,194 @@ class _Hero extends StatelessWidget {
   }
 }
 
+class _CategoryGrid extends StatelessWidget {
+  const _CategoryGrid({required this.selected, required this.onSelected});
+
+  final DesignCategory? selected;
+  final ValueChanged<DesignCategory?> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    final categories = [
+      (
+        DesignCategory.sheets,
+        'Bottom Sheets',
+        '4 Presets',
+        'Orbit Dock, Fold Motion, Prism Stage, Flow Canvas',
+        Icons.space_dashboard_outlined,
+      ),
+      (
+        DesignCategory.dialogs,
+        'Modal Dialogs',
+        '4 Presets',
+        'Halo Focus, Split Decision, Timeline, Spotlight',
+        Icons.radio_button_checked_rounded,
+      ),
+      (
+        DesignCategory.toasts,
+        'Toasts & Alerts',
+        '3 Presets',
+        'Signal Pill, Edge Ribbon, Action Capsule',
+        Icons.notifications_active_outlined,
+      ),
+      (
+        DesignCategory.header,
+        'Adaptive Horizon',
+        '1 Preset',
+        'Scroll-responsive contextual header surface',
+        Icons.view_day_outlined,
+      ),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final count = constraints.maxWidth >= 980
+            ? 4
+            : constraints.maxWidth >= 540
+            ? 2
+            : 1;
+
+        return Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: [
+            for (final cat in categories)
+              SizedBox(
+                width: (constraints.maxWidth - (count - 1) * 16) / count,
+                child: _CategoryCard(
+                  title: cat.$2,
+                  countLabel: cat.$3,
+                  description: cat.$4,
+                  icon: cat.$5,
+                  isSelected: selected == cat.$1,
+                  onTap: () {
+                    onSelected(selected == cat.$1 ? null : cat.$1);
+                  },
+                  colors: colors,
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _CategoryCard extends StatelessWidget {
+  const _CategoryCard({
+    required this.title,
+    required this.countLabel,
+    required this.description,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+    required this.colors,
+  });
+
+  final String title;
+  final String countLabel;
+  final String description;
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final ColorScheme colors;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: isSelected ? colors.primary.withValues(alpha: 0.08) : colors.surface,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(18),
+      side: BorderSide(
+        color: isSelected
+            ? colors.primary
+            : colors.outlineVariant.withValues(alpha: 0.5),
+        width: isSelected ? 1.5 : 1.0,
+      ),
+    ),
+    clipBehavior: Clip.antiAlias,
+    child: InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? colors.primary.withValues(alpha: 0.15)
+                        : colors.surfaceContainer,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 18,
+                    color: isSelected ? colors.primary : colors.onSurface,
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? colors.primary.withValues(alpha: 0.12)
+                        : colors.surfaceContainer,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    countLabel,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected
+                          ? colors.primary
+                          : colors.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? colors.primary : colors.onSurface,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.4,
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 class _Metric extends StatelessWidget {
   const _Metric(this.number, this.label);
+
   final String number, label;
+
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -529,7 +979,7 @@ class _Metric extends StatelessWidget {
         style: const TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.w600,
-          letterSpacing: -1,
+          letterSpacing: -0.8,
         ),
       ),
       const SizedBox(height: 4),
@@ -540,12 +990,15 @@ class _Metric extends StatelessWidget {
 
 class _DesignCard extends StatelessWidget {
   const _DesignCard({required this.index, required this.onTap});
+
   final int index;
   final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final design = designs[index];
+
     return Semantics(
       button: true,
       label: 'Explore ${design.name}',
@@ -553,7 +1006,7 @@ class _DesignCard extends StatelessWidget {
         color: colors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: colors.outlineVariant.withValues(alpha: .5)),
+          side: BorderSide(color: colors.outlineVariant.withValues(alpha: 0.5)),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -565,39 +1018,80 @@ class _DesignCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colors.surfaceContainer,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        '#${(index + 1).toString().padLeft(2, '0')}',
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: colors.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Text(
-                      '${(index + 1).toString().padLeft(2, '0')} / ${design.category.name.toUpperCase()}',
+                      design.category.name.toUpperCase(),
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         letterSpacing: 1.4,
                         color: colors.onSurfaceVariant,
                       ),
                     ),
                     const Spacer(),
-                    Icon(
-                      Icons.arrow_outward_rounded,
-                      size: 18,
-                      color: colors.onSurfaceVariant,
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: colors.surfaceContainer,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.arrow_outward_rounded,
+                        size: 16,
+                        color: colors.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                SizedBox(
+                const SizedBox(height: 14),
+                Container(
                   height: 170,
                   width: double.infinity,
-                  child: CustomPaint(painter: _SurfaceSketch(index, colors)),
+                  decoration: BoxDecoration(
+                    color: colors.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: CustomPaint(painter: _SurfaceSketch(index, colors)),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   design.name,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w600,
-                    letterSpacing: -.5,
+                    letterSpacing: -0.4,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Text(
                   design.tagline,
-                  style: TextStyle(color: colors.onSurfaceVariant, height: 1.4),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: colors.onSurfaceVariant,
+                    height: 1.4,
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
@@ -610,9 +1104,11 @@ class _DesignCard extends StatelessWidget {
 
 class _SettingsPanel extends StatelessWidget {
   const _SettingsPanel();
+
   @override
   Widget build(BuildContext context) {
     final p = _Preferences.of(context);
+
     return Drawer(
       child: SafeArea(
         child: ListView(
@@ -633,8 +1129,11 @@ class _SettingsPanel extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            const Text('One collection. Your visual language.'),
+            const SizedBox(height: 12),
+            const Text(
+              'One collection. Your visual language.',
+              style: TextStyle(fontSize: 14),
+            ),
             const SizedBox(height: 24),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
@@ -663,22 +1162,22 @@ class _SettingsPanel extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: 10,
+              runSpacing: 10,
               children: [
                 for (final color in const [
-                  Color(0xff315ee8),
-                  Color(0xff16816f),
-                  Color(0xffa25327),
-                  Color(0xff935cbb),
-                  Color(0xffdf6673),
+                  Color(0xff4f46e5), // Electric Indigo
+                  Color(0xff0d9488), // Emerald Mint
+                  Color(0xffd97706), // Solar Amber
+                  Color(0xff7c3aed), // Amethyst Violet
+                  Color(0xffe11d48), // Rose Crimson
                 ])
                   Semantics(
                     label: 'Accent ${color.toARGB32().toRadixString(16)}',
                     selected: p.accent == color,
                     child: IconButton(
                       tooltip:
-                          'Set accent ${color.toARGB32().toRadixString(16)}',
+                          'Set accent #${color.toARGB32().toRadixString(16).substring(2)}',
                       onPressed: () => p.onAccent(color),
                       style: IconButton.styleFrom(backgroundColor: color),
                       icon: Icon(
@@ -738,7 +1237,7 @@ class _SettingsPanel extends StatelessWidget {
             const SizedBox(height: 28),
             const Text(
               'System accessibility settings always take priority. Previews use the same public components as your app.',
-              style: TextStyle(height: 1.5),
+              style: TextStyle(height: 1.5, fontSize: 13),
             ),
           ],
         ),
@@ -748,8 +1247,17 @@ class _SettingsPanel extends StatelessWidget {
 }
 
 class _Showcase extends StatefulWidget {
-  const _Showcase({super.key, required this.index});
+  const _Showcase({
+    super.key,
+    required this.index,
+    required this.onSelectIndex,
+    required this.onBack,
+  });
+
   final int index;
+  final ValueChanged<int> onSelectIndex;
+  final VoidCallback onBack;
+
   @override
   State<_Showcase> createState() => _ShowcaseState();
 }
@@ -768,6 +1276,7 @@ class _ShowcaseState extends State<_Showcase> {
       _ => designs[widget.index].name,
     },
   );
+
   late final TextEditingController _message = TextEditingController(
     text: widget.index == 5
         ? 'Your unsaved changes will be removed. You can also keep editing.'
@@ -775,6 +1284,7 @@ class _ShowcaseState extends State<_Showcase> {
         ? 'Your changes have been saved.'
         : 'A thoughtful next step, with room for what matters.',
   );
+
   @override
   void dispose() {
     _title.dispose();
@@ -790,18 +1300,18 @@ class _ShowcaseState extends State<_Showcase> {
       return 'await UiGallerySheet.show<String>(\n  context: context,\n  preset: UiGallerySheetPreset.${UiGallerySheetPreset.values[i].name},\n  header: const Text($title),\n  child: const Text($message),\n);';
     }
     if (i == 6) {
-      return 'final progress = ValueNotifier(UiGalleryTimelineState(\n  steps: ["Review", "Verify", "Complete"], currentStep: 0,\n));\nawait UiGalleryDialog.timeline(context: context,\n  title: $title, progress: progress);\nprogress.dispose();';
+      return 'final progress = ValueNotifier(UiGalleryTimelineState(\n  steps: ["Review", "Verify", "Complete"], currentStep: 0,\n));\nawait UiGalleryDialog.timeline(\n  context: context,\n  title: $title,\n  progress: progress,\n);\nprogress.dispose();';
     }
     if (i == 7) {
-      return 'await UiGalleryDialog.show<bool>(\n  context: context, title: $title,\n  message: $message,\n  preset: UiGalleryDialogPreset.spotlight,\n  result: UiGalleryResult.success,\n  actions: const [UiGalleryDialogAction(\n    label: "Continue", value: true, primary: true)],\n);';
+      return 'await UiGalleryDialog.show<bool>(\n  context: context,\n  title: $title,\n  message: $message,\n  preset: UiGalleryDialogPreset.spotlight,\n  result: UiGalleryResult.success,\n  actions: const [\n    UiGalleryDialogAction(label: "Continue", value: true, primary: true),\n  ],\n);';
     }
     if (i < 8) {
-      return 'final confirmed = await UiGalleryDialog.confirm(\n  context: context, title: $title,\n  message: $message,\n  preset: UiGalleryDialogPreset.${UiGalleryDialogPreset.values[i - 4].name},\n);';
+      return 'final confirmed = await UiGalleryDialog.confirm(\n  context: context,\n  title: $title,\n  message: $message,\n  preset: UiGalleryDialogPreset.${UiGalleryDialogPreset.values[i - 4].name},\n);';
     }
     if (i < 11) {
-      return 'UiGalleryToast.show(context,\n  message: $message,\n  preset: UiGalleryToastPreset.${UiGalleryToastPreset.values[i - 8].name},\n${i == 10 ? '  actionLabel: "Undo", onAction: () { /* restore your item */ },\n  showProgress: true,\n' : ''});';
+      return 'UiGalleryToast.show(\n  context,\n  message: $message,\n  preset: UiGalleryToastPreset.${UiGalleryToastPreset.values[i - 8].name},\n${i == 10 ? '  actionLabel: "Undo", onAction: () { /* restore your item */ },\n  showProgress: true,\n' : ''});';
     }
-    return 'Scaffold(\n  appBar: UiGalleryAppBar(\n    title: Text($title), scrollAware: true,\n  ),\n  body: ListView(children: yourItems),\n);';
+    return 'Scaffold(\n  appBar: UiGalleryAppBar(\n    title: Text($title),\n    scrollAware: true,\n  ),\n  body: ListView(children: yourItems),\n);';
   }
 
   @override
@@ -809,17 +1319,31 @@ class _ShowcaseState extends State<_Showcase> {
     final p = _Preferences.of(context);
     final design = designs[widget.index];
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
     final details = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          '${design.category.name.toUpperCase()} / ${(widget.index + 1).toString().padLeft(2, '0')}',
-          style: theme.textTheme.labelSmall?.copyWith(
-            letterSpacing: 2,
-            color: p.accent,
-          ),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: p.accent.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                '${design.category.name.toUpperCase()} · ${(widget.index + 1).toString().padLeft(2, '0')} OF 12',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  letterSpacing: 1.5,
+                  fontWeight: FontWeight.w700,
+                  color: p.accent,
+                ),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Text(
           design.name,
           style: theme.textTheme.headlineLarge?.copyWith(
@@ -827,26 +1351,29 @@ class _ShowcaseState extends State<_Showcase> {
             letterSpacing: -1,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         Text(
           design.useCase,
           style: theme.textTheme.bodyLarge?.copyWith(
-            height: 1.7,
-            color: theme.colorScheme.onSurfaceVariant,
+            height: 1.6,
+            color: colors.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: 28),
         Text(
-          'PLAY WITH THE CONTENT',
-          style: theme.textTheme.labelSmall?.copyWith(letterSpacing: 1.6),
+          'PLAYGROUND CONTROLS',
+          style: theme.textTheme.labelSmall?.copyWith(
+            letterSpacing: 1.6,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
         TextField(
           controller: _title,
           decoration: const InputDecoration(labelText: 'Title'),
           onChanged: (_) => setState(() {}),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
         TextField(
           controller: _message,
           minLines: 2,
@@ -854,19 +1381,27 @@ class _ShowcaseState extends State<_Showcase> {
           decoration: const InputDecoration(labelText: 'Message'),
           onChanged: (_) => setState(() {}),
         ),
-        if (p.rtl)
-          TextButton(
-            onPressed: () => setState(() {
-              _title.text = 'مساحة لاختياراتك';
-              _message.text = 'تم حفظ تغييراتك. كل شيء جاهز للخطوة التالية.';
-            }),
-            child: const Text('استخدم محتوى عربي'),
+        if (p.rtl) ...[
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () => setState(() {
+                _title.text = 'مساحة لاختياراتك';
+                _message.text = 'تم حفظ تغييراتك. كل شيء جاهز للخطوة التالية.';
+              }),
+              icon: const Icon(Icons.language_rounded, size: 16),
+              label: const Text('استخدم محتوى عربي'),
+            ),
           ),
-        const SizedBox(height: 32),
+        ],
+        const SizedBox(height: 28),
         Container(
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            border: Border.all(color: theme.colorScheme.outlineVariant),
+            color: colors.surface,
+            border: Border.all(
+              color: colors.outlineVariant.withValues(alpha: 0.7),
+            ),
             borderRadius: BorderRadius.circular(16),
           ),
           padding: const EdgeInsets.all(20),
@@ -877,9 +1412,10 @@ class _ShowcaseState extends State<_Showcase> {
                 children: [
                   Expanded(
                     child: Text(
-                      'USE IT IN YOUR APP',
+                      'INTEGRATION CODE',
                       style: theme.textTheme.labelSmall?.copyWith(
                         letterSpacing: 1.4,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -901,35 +1437,44 @@ class _ShowcaseState extends State<_Showcase> {
               const SizedBox(height: 12),
               Directionality(
                 textDirection: TextDirection.ltr,
-                child: SelectableText(
-                  _code,
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 12,
-                    height: 1.7,
-                    color: theme.colorScheme.onSurface,
+                child: Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: colors.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: SelectableText(
+                    _code,
+                    style: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 12,
+                      height: 1.7,
+                      color: colors.onSurface,
+                    ),
                   ),
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         Text(
-          'Import package:flutter_ui_gallery/flutter_ui_gallery.dart.\nNo theme wrapper, controllers or services required for basic usage.',
+          'Import package:flutter_ui_gallery/flutter_ui_gallery.dart — 1–3 lines to integrate.',
           style: theme.textTheme.bodySmall?.copyWith(
             height: 1.6,
-            color: theme.colorScheme.onSurfaceVariant,
+            color: colors.onSurfaceVariant,
           ),
         ),
       ],
     );
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth > 1050;
         final frameWidth = wide
             ? (constraints.maxWidth * .55).clamp(0.0, p.previewWidth)
             : p.previewWidth;
+
         final preview = Column(
           children: [
             Padding(
@@ -942,12 +1487,14 @@ class _ShowcaseState extends State<_Showcase> {
                         ? Icons.tablet_outlined
                         : Icons.smartphone_outlined,
                     size: 16,
+                    color: colors.onSurfaceVariant,
                   ),
                   const SizedBox(width: 8),
                   Text(
                     'LIVE PREVIEW / ${p.previewWidth.toInt()} DP',
                     style: theme.textTheme.labelSmall?.copyWith(
                       letterSpacing: 1.4,
+                      color: colors.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -960,12 +1507,19 @@ class _ShowcaseState extends State<_Showcase> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(28),
                   border: Border.all(
-                    color: theme.colorScheme.outlineVariant,
-                    width: 6,
+                    color: colors.outlineVariant.withValues(alpha: 0.8),
+                    width: 5,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: p.accent.withValues(alpha: 0.06),
+                      blurRadius: 24,
+                      spreadRadius: 4,
+                    ),
+                  ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(23),
                   child: LayoutBuilder(
                     builder: (context, constraints) => MediaQuery(
                       data: MediaQuery.of(context).copyWith(
@@ -993,24 +1547,40 @@ class _ShowcaseState extends State<_Showcase> {
             ),
           ],
         );
+
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(28),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1240),
-              child: wide
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(flex: 4, child: details),
-                        const SizedBox(width: 56),
-                        Expanded(flex: 6, child: preview),
-                      ],
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [details, const SizedBox(height: 32), preview],
-                    ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _PresetNavigationStrip(
+                    currentIndex: widget.index,
+                    onSelectIndex: widget.onSelectIndex,
+                    onBack: widget.onBack,
+                  ),
+                  const SizedBox(height: 24),
+                  wide
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(flex: 4, child: details),
+                            const SizedBox(width: 48),
+                            Expanded(flex: 6, child: preview),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            details,
+                            const SizedBox(height: 36),
+                            preview,
+                          ],
+                        ),
+                ],
+              ),
             ),
           ),
         );
@@ -1019,12 +1589,99 @@ class _ShowcaseState extends State<_Showcase> {
   }
 }
 
-/// Small editorial diagrams introduce each composition; the showcase above
-/// always renders the real interactive component.
+class _PresetNavigationStrip extends StatelessWidget {
+  const _PresetNavigationStrip({
+    required this.currentIndex,
+    required this.onSelectIndex,
+    required this.onBack,
+  });
+
+  final int currentIndex;
+  final ValueChanged<int> onSelectIndex;
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.6)),
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            tooltip: 'Back to collection',
+            onPressed: onBack,
+            icon: const Icon(Icons.arrow_back_rounded, size: 18),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Presets',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: colors.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (var i = 0; i < designs.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: ChoiceChip(
+                        label: Text(
+                          '${(i + 1).toString().padLeft(2, '0')} ${designs[i].name}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: i == currentIndex
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                          ),
+                        ),
+                        selected: i == currentIndex,
+                        onSelected: (_) => onSelectIndex(i),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            tooltip: 'Previous preset',
+            icon: const Icon(Icons.chevron_left_rounded, size: 20),
+            onPressed: currentIndex > 0
+                ? () => onSelectIndex(currentIndex - 1)
+                : null,
+          ),
+          IconButton(
+            tooltip: 'Next preset',
+            icon: const Icon(Icons.chevron_right_rounded, size: 20),
+            onPressed: currentIndex < designs.length - 1
+                ? () => onSelectIndex(currentIndex + 1)
+                : null,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Editorial canvas diagrams introduce each composition with minimal Soft Futuristic geometry.
 class _SurfaceSketch extends CustomPainter {
   const _SurfaceSketch(this.index, this.colors);
+
   final int index;
   final ColorScheme colors;
+
   @override
   void paint(Canvas canvas, Size size) {
     final scale = (size.width / 320).clamp(.7, 1.4);
@@ -1034,22 +1691,27 @@ class _SurfaceSketch extends CustomPainter {
       (size.height - 170 * scale) / 2,
     );
     canvas.scale(scale);
+
     final ink = colors.onSurface;
     final accent = colors.primary;
     final line = colors.outlineVariant;
     final fill = colors.surfaceContainerLow;
+
     void box(
       Rect rect, {
       double radius = 12,
       Color? color,
       bool stroke = false,
-    }) => canvas.drawRRect(
-      RRect.fromRectAndRadius(rect, Radius.circular(radius)),
-      Paint()
-        ..color = color ?? fill
-        ..style = stroke ? PaintingStyle.stroke : PaintingStyle.fill
-        ..strokeWidth = 1,
-    );
+    }) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, Radius.circular(radius)),
+        Paint()
+          ..color = color ?? fill
+          ..style = stroke ? PaintingStyle.stroke : PaintingStyle.fill
+          ..strokeWidth = 1,
+      );
+    }
+
     void text(
       String value,
       Offset offset, {
@@ -1071,8 +1733,10 @@ class _SurfaceSketch extends CustomPainter {
       painter.paint(canvas, offset);
     }
 
-    void rule(double x, double y, double width, {Color? color}) =>
-        box(Rect.fromLTWH(x, y, width, 3), radius: 2, color: color ?? line);
+    void rule(double x, double y, double width, {Color? color}) {
+      box(Rect.fromLTWH(x, y, width, 3), radius: 2, color: color ?? line);
+    }
+
     if (index < 4) {
       final surface = Rect.fromLTWH(
         index == 0 ? 38 : 28,
@@ -1101,7 +1765,7 @@ class _SurfaceSketch extends CustomPainter {
         for (var i = 0; i < 3; i++) {
           box(
             Rect.fromLTWH(56 + i * 73, 80, 64, 56),
-            color: colors.primaryContainer,
+            color: colors.primaryContainer.withValues(alpha: 0.5),
             radius: i == 0 ? 18 : 12,
           );
           canvas.drawCircle(
@@ -1129,7 +1793,7 @@ class _SurfaceSketch extends CustomPainter {
       } else if (index == 2) {
         box(
           const Rect.fromLTWH(40, 32, 106, 110),
-          color: colors.primaryContainer,
+          color: colors.primaryContainer.withValues(alpha: 0.5),
           radius: 2,
         );
         final path = Path()
@@ -1157,7 +1821,7 @@ class _SurfaceSketch extends CustomPainter {
         text('Choose your delivery', const Offset(48, 52), fontSize: 13);
         box(
           const Rect.fromLTWH(48, 82, 222, 30),
-          color: colors.primaryContainer,
+          color: colors.primaryContainer.withValues(alpha: 0.5),
           radius: 8,
         );
         text('Standard', const Offset(60, 93), fontSize: 9);
@@ -1198,7 +1862,7 @@ class _SurfaceSketch extends CustomPainter {
         box(
           const Rect.fromLTWH(177, 28, 80, 120),
           radius: 8,
-          color: colors.primaryContainer,
+          color: colors.primaryContainer.withValues(alpha: 0.5),
         );
         text('Discard', const Offset(69, 54), fontSize: 16);
         text('this draft?', const Offset(69, 74), fontSize: 16);
