@@ -1,26 +1,34 @@
 ## 0.0.1
 
-### Initial Release — Nova Surfaces (2050 Design Vision)
-- **Bottom Sheets (`NovaSheet`)**:
+### Initial Release — Flutter UI Gallery (2050 Design Vision)
+- **Official Rebranding**: Rebranded to **Flutter UI Gallery** (`flutter_ui_gallery`) with first-class `UiGallery*` public API surfaces (`UiGallerySheet`, `UiGalleryDialog`, `UiGalleryToast`, `UiGalleryAppBar`, `UiGalleryTheme`, `UiGalleryTokens`).
+- **Backward Compatibility**: Fully backward-compatible `Nova*` typedef aliases and exports preserved for seamless migration.
+- **Bottom Sheets (`UiGallerySheet`)**:
   - `orbit`: Floating asymmetric spatial dock with modular action zones.
-  - `fold`: Progressive unfolding peek sheet that expands smoothly without losing state.
-  - `prism`: Structured presentation stage with distinct content showcase and action trays.
-  - `flow`: Multi-step interactive workflow canvas with spatial progress tracking (`NovaFlow`).
-- **Dialogs (`NovaDialog`)**:
-  - `halo`: Focused central composition with halo emphasis ring on the primary action (`NovaDialog.confirm`).
+  - `fold`: Progressive unfolding peek sheet that expands smoothly without losing form/text state.
+  - `prism`: Structured presentation stage with distinct content showcase and sticky action tray.
+  - `flow`: Multi-step interactive workflow canvas with spatial progress tracking (`UiGalleryFlow`).
+- **Dialogs (`UiGalleryDialog`)**:
+  - `halo`: Focused central composition with subtle halo emphasis ring on primary action (`UiGalleryDialog.confirm`).
   - `split`: Divided composition separating context and decisions, responsive stacking on mobile viewports.
-  - `timeline`: Visual sequential progress dialog driven by external `ValueListenable<NovaTimelineState>`.
-  - `spotlight`: Orbital result dialog for `success`, `warning`, and `failure` states (`NovaResult`).
-- **Toasts (`NovaToast`)**:
+  - `timeline`: Visual sequential progress dialog driven by external `ValueListenable<UiGalleryTimelineState>`.
+  - `spotlight`: Orbital result dialog for `success`, `warning`, and `failure` states (`UiGalleryResult`).
+- **Toasts (`UiGalleryToast`)**:
   - `signal`: Compact capsule status pill with adaptive width.
   - `ribbon`: Edge-anchored directional notification banner.
   - `action`: Interactive segmented surface pairing notification with Undo/Retry actions and live timeout progress.
-  - Full queue management, concurrency controls, deduplication policies, programmatic handles, and route-scoped cleanup.
-- **Adaptive Headers (`NovaAppBar` / `NovaSliverAppBar`)**:
+  - Full FIFO queue management, deduplication policies (`ignore`, `replace`, `allow`), programmatic handles, and route-scoped cleanup.
+- **Adaptive Headers (`UiGalleryAppBar` / `UiGallerySliverAppBar`)**:
   - `Adaptive Horizon`: Futuristic header with automatic scroll-awareness without manual `ScrollController` configuration.
-- **Design System (`NovaTheme` / `NovaTokens`)**:
+- **Design System (`UiGalleryTheme` / `UiGalleryTokens`)**:
   - ThemeExtension integration, zero-dependency ambient `ThemeData` support, high contrast, reduced motion, and RTL support.
-- **Interactive Component Gallery**:
-  - Complete showcase app in `example/` with live device frames, theme customization, and copyable recipes.
-- **Quality**:
-  - 39 automated unit and integration tests passing.
+- **Soft Futuristic Product Showcase**:
+  - Refined example gallery application in `example/` featuring:
+    - Soft Futuristic Gallery aesthetic with restrained palette and two-font typography (`Outfit` + `Plus Jakarta Sans`, plus `Alexandria` for Arabic).
+    - Top preset navigation strip for instant one-click switching across all 12 presets.
+    - Category filtering cards (`Sheets`, `Dialogs`, `Toasts`, `Header`).
+    - Interactive playground controls and live 1–3 line code generator.
+    - Live device simulators (Phone 390dp, Tablet 768dp, Wide 1200dp).
+- **Quality & Reliability**:
+  - 43 automated tests passing (41 package unit & integration tests + 2 example showcase widget tests).
+  - Clean static analysis with 0 linter issues across entire workspace.
