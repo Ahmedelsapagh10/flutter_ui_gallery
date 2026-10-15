@@ -1,0 +1,58 @@
+name: Playground
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: playground-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.41.9
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test --concurrency=2
+      - name: Build the public playground
+        working-directory: example
+        run: |
+          flutter pub get
+          flutter test --concurrency=2
+          flutter build web --release --base-href /flutter_ui_gallery/
+          touch build/web/.nojekyll
+      - uses: actions/upload-artifact@v4
+        with:
+          name: playground-web
+          path: example/build/web
+          include-hidden-files: true
+          retention-days: 7
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: playground-web
+          path: playground-web
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: playground-web
+          clean: true

@@ -1,7 +1,22 @@
 name: flutter_ui_gallery
-description: "Twelve expressive, accessible Flutter sheets, dialogs, toasts and adaptive headers."
-version: 0.0.1
+description: "66 accessible Flutter surface presets with coordinated themes, partial style overrides and caller-owned state."
+version: 0.1.0
 homepage: https://github.com/Ahmedelsapagh10/flutter_ui_gallery
+repository: https://github.com/Ahmedelsapagh10/flutter_ui_gallery
+issue_tracker: https://github.com/Ahmedelsapagh10/flutter_ui_gallery/issues
+topics:
+  - widgets
+  - material-design
+  - bottom-sheet
+  - navigation
+  - accessibility
+screenshots:
+  - description: "Minimal family: restrained component styling in the interactive Flutter gallery."
+    path: doc/assets/family-minimal.png
+  - description: "Soft family: rounded surfaces with coordinated typography, spacing and motion."
+    path: doc/assets/family-soft.png
+  - description: "Spatial family: expressive depth and finite transitions across gallery components."
+    path: doc/assets/family-spatial.png
 
 environment:
   sdk: ^3.11.5
@@ -19,4 +34,3 @@ dev_dependencies:
 flutter:
   assets:
     - assets/flutter_ui_gallery.png
-

@@ -1,3 +1,29 @@
+## 0.1.0
+
+- Add coordinated Minimal, Soft and Spatial theme families with shared and per-component styles that retain the host application's ColorScheme and typography.
+- Add style and motion `copyWith`, partial `merge` and interpolation; partial motion overrides preserve inherited timings.
+- Add eight recommended presets, browsing by task and configuration share links to the playground.
+- Add productivity, shopping and dashboard examples with caller-owned state, input validation, cancellation, empty results and error/retry handling.
+- Add continuous integration and GitHub Pages workflows, integration guidance and package screenshots. Native release and accessibility checks remain part of the release checklist.
+
+- Add Command Palette, Selection Bar, Progress Card and Overflow Dock, bringing the collection to 66 presets.
+- Add typed command search and keyboard navigation, controlled bulk selection, caller-owned task progress and responsive navigation overflow.
+- Expose shared visual/motion overrides on timeline and status convenience methods; replace internal dialog preset labels with an optional caller-supplied eyebrow.
+- Add disabled dialog actions and immediately apply updated navigation motion curves.
+
+- Add Search Switch, Centered Title, Breadcrumb Trail and Section Tabs headers, plus Glass Dock, Liquid Drop, Scroll Dock and Flip Tiles navigation. The gallery now covers 62 presets.
+- Add working search, breadcrumb routing and tabbed collection examples, with matching copyable code.
+
+- Expand to 40 presets: 12 sheets, 10 dialogs, 10 toasts and 8 app bars.
+- Add SurfaceStyle and Motion overrides without requiring a theme wrapper.
+- Add secondary sheet zones, described choice actions, search headers and shared sliver presets.
+- Preserve existing enum values, short-form APIs and Nova aliases; add descriptive preset aliases.
+- Group gallery previews by category and provide a live scenario and snippet for every preset.
+- Requeue excess notifications when reducing the visibility cap.
+- Harden keyboard peek layout, reduced-motion resizing and custom toast slot constraints.
+- Honor independent dialog exit durations and preserve manual toast dismissal under accessible navigation.
+- Add full header/sliver coverage, all-preset gallery tests and representative visual baselines.
+
 ## 0.0.1
 
 ### Initial Release — Flutter UI Gallery (2050 Design Vision)
