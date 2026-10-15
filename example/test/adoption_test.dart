@@ -329,6 +329,28 @@ void main() {
     expect(find.text('Minimal'), findsOneWidget);
   });
 
+  testWidgets('a new shared route updates an already open playground', (
+    tester,
+  ) async {
+    await _gallery(tester);
+    final context = tester.element(find.byTooltip('Share configuration'));
+    unawaited(
+      Navigator.of(context).pushNamed<void>(
+        '/?preset=dialogs.commandPalette&family=spatial&dark=1&title=Shared%20again',
+      ),
+    );
+    await tester.pumpAndSettle();
+    final demo = tester.widget<SurfaceDemo>(find.byType(SurfaceDemo));
+    expect(designs[demo.index].id, 'dialogs.commandPalette');
+    expect(demo.title, 'Shared again');
+    expect(find.text('Spatial'), findsOneWidget);
+    expect(
+      Theme.of(tester.element(find.byType(SurfaceDemo))).brightness,
+      Brightness.dark,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('recommended and task browsing expose matching presets', (
     tester,
   ) async {

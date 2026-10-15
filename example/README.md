@@ -31,7 +31,7 @@ flutter pub get
 flutter run -d chrome
 ```
 
-Use `flutter run -d <device-id>` for an available Android or iOS device/simulator. The example's font dependency is confined to this application; the package itself adds no external runtime dependencies.
+Use `flutter run -d <device-id>` for an available Android or iOS device/simulator. The web example loads its display fonts through Google Fonts; native examples use the platform fallback when those fonts are unavailable. The package itself adds no external runtime dependencies.
 
 ## Validate
 

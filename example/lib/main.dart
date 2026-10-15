@@ -30,15 +30,19 @@ class _FlutterUiGalleryAppState extends State<FlutterUiGalleryApp> {
     super.initState();
     _initial =
         widget.configuration ?? PlaygroundConfiguration.fromUri(Uri.base);
-    _family = _initial.family;
-    _dark = _initial.dark;
-    _rtl = _initial.rtl;
-    _reduced = _initial.reduced;
-    _accent = _initial.accent;
-    _previewWidth = _initial.width;
-    _transitionMs = _initial.transitionMs;
-    _curveDepth = _initial.curveDepth;
-    _depthIntensity = _initial.depthIntensity;
+    _restore(_initial);
+  }
+
+  void _restore(PlaygroundConfiguration configuration) {
+    _family = configuration.family;
+    _dark = configuration.dark;
+    _rtl = configuration.rtl;
+    _reduced = configuration.reduced;
+    _accent = configuration.accent;
+    _previewWidth = configuration.width;
+    _transitionMs = configuration.transitionMs;
+    _curveDepth = configuration.curveDepth;
+    _depthIntensity = configuration.depthIntensity;
   }
 
   bool _dark = false;
@@ -235,10 +239,18 @@ class _FlutterUiGalleryAppState extends State<FlutterUiGalleryApp> {
       },
       child: child!,
     ),
-    onGenerateRoute: (settings) => MaterialPageRoute<void>(
-      settings: settings,
-      builder: (_) => _GalleryHome(configuration: _initial),
-    ),
+    onGenerateRoute: (settings) {
+      final configuration = settings.name == null
+          ? _initial
+          : PlaygroundConfiguration.fromUri(
+              Uri.tryParse(settings.name!) ?? Uri(),
+            );
+      setState(() => _restore(configuration));
+      return MaterialPageRoute<void>(
+        settings: settings,
+        builder: (_) => _GalleryHome(configuration: configuration),
+      );
+    },
   );
 }
 
