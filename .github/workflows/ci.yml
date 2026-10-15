@@ -124,6 +124,7 @@ jobs:
         run: flutter build ios --release --no-codesign
       - name: Boot an available iPhone simulator
         id: simulator
+        timeout-minutes: 5
         shell: bash
         run: |
           device_id=$(xcrun simctl list devices available --json | python3 -c 'import json, sys; devices = json.load(sys.stdin)["devices"]; print(next(device["udid"] for runtime, group in devices.items() if "iOS" in runtime for device in group if "iPhone" in device["name"]))')
@@ -132,6 +133,7 @@ jobs:
           echo "id=$device_id" >> "$GITHUB_OUTPUT"
       - name: Run iOS device smoke
         working-directory: example
+        timeout-minutes: 12
         env:
           SIMULATOR_ID: ${{ steps.simulator.outputs.id }}
-        run: flutter test integration_test/native_smoke_test.dart -d "$SIMULATOR_ID"
+        run: flutter --verbose test integration_test/native_smoke_test.dart -d "$SIMULATOR_ID"
