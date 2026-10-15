@@ -299,6 +299,26 @@ void main() {
     },
   );
 
+  testWidgets('phone preview sheet actions remain reachable after scrolling', (
+    tester,
+  ) async {
+    await _gallery(tester);
+    tester.view.physicalSize = const Size(393, 683);
+    await tester.pumpAndSettle();
+    final launch = find.byKey(const ValueKey('launch-preview'));
+    await tester.ensureVisible(launch);
+    await tester.tap(launch);
+    await tester.pumpAndSettle();
+    final action = find.text('Copy link');
+    await tester.ensureVisible(action);
+    await tester.pumpAndSettle();
+    expect(action.hitTestable(), findsOneWidget);
+    await tester.tap(action);
+    await tester.pumpAndSettle();
+    expect(find.text('Returned: Copy link'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('unknown shared preset safely opens the first design', (
     tester,
   ) async {

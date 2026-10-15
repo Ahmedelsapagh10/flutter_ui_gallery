@@ -20,7 +20,11 @@ void main() {
     await tester.ensureVisible(find.byKey(const ValueKey('launch-preview')));
     await tester.tap(find.byKey(const ValueKey('launch-preview')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Copy link'));
+    final action = find.text('Copy link');
+    await tester.ensureVisible(action);
+    await tester.pumpAndSettle();
+    expect(action.hitTestable(), findsOneWidget);
+    await tester.tap(action);
     await tester.pumpAndSettle();
     expect(find.text('Returned: Copy link'), findsOneWidget);
     expect(tester.takeException(), isNull);
@@ -51,7 +55,9 @@ void main() {
       await selectDestination(tester, 2);
       await selectDestination(tester, 1);
       expect(find.text('4 saved ideas'), findsOneWidget);
-      await tester.tap(find.byKey(const ValueKey('nav-tab-3')));
+      await tester.tapAt(
+        tester.getCenter(find.byKey(const ValueKey('nav-tab-3'))),
+      );
       await tester.pumpAndSettle();
       expect(
         tester
