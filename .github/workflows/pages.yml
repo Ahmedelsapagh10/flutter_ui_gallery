@@ -45,6 +45,7 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: write
+      pages: write
     steps:
       - uses: actions/checkout@v6
       - uses: actions/download-artifact@v4
@@ -56,3 +57,19 @@ jobs:
           branch: gh-pages
           folder: playground-web
           clean: true
+      - name: Publish the updated Pages branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          build_url=$(gh api --method POST "repos/$GH_REPO/pages/builds" --jq .url)
+          for attempt in {1..36}; do
+            status=$(gh api "$build_url" --jq .status)
+            case "$status" in
+              built) exit 0 ;;
+              errored) echo "Pages publication failed"; exit 1 ;;
+            esac
+            sleep 5
+          done
+          echo "Pages publication timed out"
+          exit 1
