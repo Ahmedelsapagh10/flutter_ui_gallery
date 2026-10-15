@@ -36,7 +36,20 @@ Future<void> pumpDesign(
 }
 
 Future<void> selectDestination(WidgetTester tester, int index) async {
-  await tester.tap(find.byKey(ValueKey('nav-tab-$index')));
+  final destination = find.byKey(ValueKey('nav-tab-$index'));
+  // Platform keyboard metrics can arrive after Flutter's current frames settle.
+  if (destination.hitTestable().evaluate().isEmpty) {
+    for (
+      var attempt = 0;
+      attempt < 100 && destination.hitTestable().evaluate().isEmpty;
+      attempt++
+    ) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    await tester.pumpAndSettle();
+  }
+  expect(destination.hitTestable(), findsOneWidget);
+  await tester.tap(destination);
   await tester.pumpAndSettle();
   expect(
     tester

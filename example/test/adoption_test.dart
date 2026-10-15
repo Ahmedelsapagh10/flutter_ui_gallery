@@ -10,6 +10,8 @@ import 'package:nova_surfaces_example/gallery/demo.dart';
 import 'package:nova_surfaces_example/gallery/recipes.dart';
 import 'package:nova_surfaces_example/main.dart';
 
+import '../integration_test/support.dart' as native;
+
 Future<void> _gallery(
   WidgetTester tester, {
   PlaygroundConfiguration configuration = const PlaygroundConfiguration(),
@@ -316,6 +318,25 @@ void main() {
     await tester.tap(action);
     await tester.pumpAndSettle();
     expect(find.text('Returned: Copy link'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('native navigation waits for delayed keyboard metrics', (
+    tester,
+  ) async {
+    tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+    addTearDown(tester.view.resetViewInsets);
+    final design = designs.singleWhere(
+      (design) => design.bottomNav == UiGalleryBottomNavPreset.floatingCove,
+    );
+    await native.pumpDesign(tester, design);
+    expect(find.byKey(const ValueKey('nav-tab-1')), findsNothing);
+    final keyboardClosed = Future<void>.delayed(
+      const Duration(milliseconds: 300),
+      tester.view.resetViewInsets,
+    );
+    await native.selectDestination(tester, 1);
+    await keyboardClosed;
     expect(tester.takeException(), isNull);
   });
 
