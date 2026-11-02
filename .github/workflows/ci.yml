@@ -36,6 +36,13 @@ jobs:
           cache: true
       - name: Record SDK versions
         run: flutter --version
+      - name: Verify approved legacy and Notes Pass A golden hashes
+        run: python3 tool/check_golden_hashes.py
+      - name: Verify Notes render SDK and font pins
+        if: matrix.sdk == 'pinned'
+        run: python3 tool/check_notes_pins.py
+      - name: Verify Still example font pins
+        run: python3 tool/check_still_pins.py
       - name: Resolve package dependencies
         run: flutter pub get
       - name: Resolve example dependencies
@@ -50,8 +57,6 @@ jobs:
       - name: Test package on current stable
         if: matrix.sdk == 'stable'
         run: flutter test --no-pub --exclude-tags golden
-      - name: Preserve approved visual baselines
-        run: python3 tool/check_golden_hashes.py
       - name: Test example with pinned visual baselines
         if: matrix.sdk == 'pinned'
         working-directory: example
@@ -73,7 +78,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: golden-differences
-          path: test/failures/
+          path: |
+            test/failures/
+            example/test/failures/
           if-no-files-found: ignore
 
   android:

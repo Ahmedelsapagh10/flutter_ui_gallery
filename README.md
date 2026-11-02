@@ -5,7 +5,7 @@
 <h1 align="center">Flutter UI Gallery</h1>
 
 <p align="center">
-  <strong>66 modern, production-ready UI presets for Flutter.</strong><br>
+  <strong>66 modern UI presets for Flutter.</strong><br>
   Toasts · Bottom Sheets · Dialogs · AppBars · Bottom Navigation
 </p>
 
@@ -18,6 +18,8 @@
 </p>
 
 An independent Flutter UI component package, not affiliated with the Flutter team’s Gallery demo.
+
+**Release status:** [pub.dev 0.1.0](https://pub.dev/packages/flutter_ui_gallery/versions/0.1.0) is the published release. This checkout also includes unreleased family refinements, opt-in signatures and Margin/Still examples; the documentation below describes this checkout. The unchanged `pubspec.yaml` version does not mean these changes are included in the published archive. Release validation is still pending; see the [release policy and CI plan](doc/REDESIGN_RELEASE_POLICY.md#release-validation-status).
 
 [Open the live playground](https://ahmedelsapagh10.github.io/flutter_ui_gallery/) to compare all 66 presets.
 

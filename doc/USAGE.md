@@ -2,6 +2,8 @@
 
 [Back to the package overview](../README.md) · [All 66 presets](PRESETS.md) · [Integration](INTEGRATION.md)
 
+This guide describes the current repository checkout, including unreleased family refinements, opt-in signatures and Margin/Still examples. The published [0.1.0 archive](https://pub.dev/packages/flutter_ui_gallery/versions/0.1.0) defines what is available from pub.dev; the local version field does not establish publication. See the [release-validation status](REDESIGN_RELEASE_POLICY.md#release-validation-status).
+
 - [Theming](#coordinated-design-families)
 - [Bottom sheets](#bottom-sheets)
 - [Dialogs](#dialogs)
@@ -286,7 +288,7 @@ flutter test
 
 Tests cover opening/dismissal across all sheets/dialogs/toasts, typed results, nested navigation, keyboard insets, retained inputs, real progress, focus traversal, queue/deduplication, route replacement/cleanup, reduced motion, theme overrides, RTL, large text, all header/sliver presets and every live gallery example. The original four representative visual baselines remain in `test/goldens/`. Twenty additional family specimens in `test/goldens/phase1/` cover one preset per component type independently in light, dark, RTL and 2.0 text scale; these are representative specimens, not an all-preset visual matrix. Run with Flutter 3.41.9 for consistent comparison. Review visual changes before regenerating them with `flutter test test/visual_test.dart --update-goldens`.
 
-The [CI workflow](../.github/workflows/ci.yml) runs package/example tests and analysis on the pinned Flutter 3.41.9 SDK and current stable. It also analyzes all 396 generated family/customization examples, checks formatting and macOS visual baselines, builds Android/iOS releases and runs native emulator/simulator smoke tests. The [Pages workflow](../.github/workflows/pages.yml) validates and deploys the web playground on changes to `master`.
+The [CI workflow](../.github/workflows/ci.yml) is configured to run package/example tests and analysis on the pinned Flutter 3.41.9 SDK and current stable. Golden comparisons and exact Notes SDK/font checks run only in the pinned macOS leg; protected image hashes and Still font hashes are checked in both legs. It also generates an analyzer fixture for all 396 family/customization examples, checks formatting in the pinned leg, builds Android/iOS releases and runs native emulator/simulator smoke tests. These are configured checks, not evidence of a successful run for this checkout. The [Pages workflow](../.github/workflows/pages.yml) runs package/example tests excluding renderer-specific goldens on Ubuntu, then builds and deploys the web playground on changes to `master`. See the [branch validation plan](REDESIGN_RELEASE_POLICY.md#release-validation-status) before treating any CI result as release evidence.
 
 For real-device frame timing measurements, use the [profile harness](../example/integration_test/README.md). It measures engine build/raster timings after warmup; no device performance results are claimed without running it on physical hardware.
 

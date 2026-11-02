@@ -26,12 +26,16 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test --concurrency=2 --exclude-tags golden
+      - name: Resolve example dependencies
+        working-directory: example
+        run: flutter pub get
+      - name: Test example without renderer-specific goldens
+        working-directory: example
+        run: flutter test --no-pub --concurrency=2 --exclude-tags golden
       - name: Build the public playground
         working-directory: example
         run: |
-          flutter pub get
-          flutter test --concurrency=2
-          flutter build web --release --base-href /flutter_ui_gallery/
+          flutter build web --no-pub --release --base-href /flutter_ui_gallery/
           touch build/web/.nojekyll
       - uses: actions/upload-artifact@v4
         with:
