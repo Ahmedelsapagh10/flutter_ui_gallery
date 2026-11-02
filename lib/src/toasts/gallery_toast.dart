@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart' show ValueListenable;
 
 import '../core/gallery_theme.dart';
 import '../core/gallery_style.dart';
+import '../core/gallery_signature.dart';
 import '../core/gallery_shape.dart';
 
 enum UiGalleryToastPreset {
@@ -139,6 +140,12 @@ abstract final class UiGalleryToast {
       title: title,
       semanticLabel: semanticLabel,
       margin: margin,
+      focusParent:
+          (preset == UiGalleryToastPreset.ribbonActionBar ||
+                  preset == UiGalleryToastPreset.action) &&
+              scope == UiGalleryToastScope.route
+          ? FocusScope.of(context)
+          : null,
       identity: duplicateKey ?? '${kind.name}:$message',
       themes: InheritedTheme.capture(from: context, to: overlay.context),
     );
@@ -265,7 +272,9 @@ class _ToastItem {
     this.title,
     this.semanticLabel,
     this.margin,
+    this.focusParent,
   });
+  final FocusNode? focusParent;
   final String message;
   final String identity;
   final UiGalleryToastPreset preset;
@@ -439,7 +448,7 @@ class _ToastHostState extends State<_ToastHost> {
                           ? Alignment.topCenter
                           : Alignment.bottomCenter,
                       child: Padding(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(UiGalleryTokens.space3),
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 560),
                           child: SingleChildScrollView(
@@ -581,7 +590,7 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
       UiGalleryToastKind.warning => s.theme.colorScheme.tertiary,
       _ => s.accent,
     };
-    final mark =
+    final rawMark =
         item.icon ??
         Icon(
           switch (item.kind) {
@@ -593,58 +602,65 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
           color: color,
           size: 20,
         );
-    final messageStyle =
-        s.visual.messageStyle ??
-        s.theme.textTheme.bodyMedium?.copyWith(
-          color: s.content,
-          fontFamily: p == UiGalleryToastPreset.miniConsole
-              ? 'monospace'
-              : null,
-        );
+    final mark = GalleryFamilyMark(style: s, child: rawMark);
+    final messageStyle = s.body(
+      s.theme.textTheme.bodyMedium?.copyWith(
+        color: s.content,
+        fontFamily: p == UiGalleryToastPreset.miniConsole ? 'monospace' : null,
+      ),
+      monospace: p == UiGalleryToastPreset.miniConsole,
+    );
     final message = Text(item.message, style: messageStyle);
     final close = IconButton(
       tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
       onPressed: () => widget.queue.dismiss(item),
-      icon: Icon(Icons.close, size: 16, color: s.muted),
+      icon: Icon(Icons.close, size: UiGalleryTokens.iconSmall, color: s.muted),
     );
     final action = item.actionLabel == null
         ? null
         : TextButton(
             style: TextButton.styleFrom(
               foregroundColor: color,
-              minimumSize: const Size(48, 48),
+              minimumSize: const Size(
+                UiGalleryTokens.touchTarget,
+                UiGalleryTokens.touchTarget,
+              ),
             ),
             onPressed: _closing ? null : _action,
             child: Text(item.actionLabel!),
           );
-    final shape =
-        s.visual.shape ??
-        switch (p) {
-          UiGalleryToastPreset.stackTag => BeveledRectangleBorder(
-            borderRadius: const BorderRadiusDirectional.only(
-              topEnd: Radius.circular(14),
-            ),
-            side: BorderSide(color: s.line),
-          ),
-          UiGalleryToastPreset.signal => RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
-            side: BorderSide(color: s.line),
-          ),
-          UiGalleryToastPreset.inlinePulse ||
-          UiGalleryToastPreset.dock ||
-          UiGalleryToastPreset.miniConsole => RoundedRectangleBorder(
-            side: BorderSide(color: s.line),
-          ),
-          _ => RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              p == UiGalleryToastPreset.ribbon ||
-                      p == UiGalleryToastPreset.ribbonActionBar
-                  ? 8
-                  : 20,
-            ),
-            side: BorderSide(color: s.line),
-          ),
-        };
+    final shape = s.shape(switch (p) {
+      UiGalleryToastPreset.stackTag => BeveledRectangleBorder(
+        borderRadius: const BorderRadiusDirectional.only(
+          topEnd: Radius.circular(UiGalleryTokens.tagBevel),
+        ),
+        side: BorderSide(color: s.line),
+      ),
+      UiGalleryToastPreset.ribbonActionBar => RoundedRectangleBorder(
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(UiGalleryTokens.radiusMedium),
+        ),
+        side: BorderSide(color: s.line),
+      ),
+      UiGalleryToastPreset.signal => RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(UiGalleryTokens.radiusCapsule),
+        side: BorderSide(color: s.line),
+      ),
+      UiGalleryToastPreset.inlinePulse ||
+      UiGalleryToastPreset.dock ||
+      UiGalleryToastPreset.miniConsole => RoundedRectangleBorder(
+        side: BorderSide(color: s.line),
+      ),
+      _ => RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(
+          p == UiGalleryToastPreset.ribbon ||
+                  p == UiGalleryToastPreset.ribbonActionBar
+              ? UiGalleryTokens.radiusSmall
+              : UiGalleryTokens.radiusAction,
+        ),
+        side: BorderSide(color: s.line),
+      ),
+    }, preserveRadius: p == UiGalleryToastPreset.signal);
     final measure = TextPainter(
       text: TextSpan(text: item.message, style: messageStyle),
       textDirection: Directionality.of(context),
@@ -652,7 +668,7 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
     )..layout();
     final messageWidth = measure.width;
     measure.dispose();
-    return LayoutBuilder(
+    final tile = LayoutBuilder(
       builder: (context, constraints) {
         final available = (s.visual.maxWidth ?? constraints.maxWidth).clamp(
           0.0,
@@ -665,7 +681,8 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
             : available;
         final stacked =
             action != null &&
-            (width < 380 || s.media.textScaler.scale(1) > 1.3);
+            (width < UiGalleryTokens.choiceBreakpoint ||
+                s.media.textScaler.scale(1) > 1.3);
         Widget line({
           bool actionFirst = false,
           bool omitMark = false,
@@ -676,24 +693,28 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
           children: [
             if (item.leading != null) ...[
               Flexible(child: item.leading!),
-              const SizedBox(width: 10),
+              const SizedBox(width: UiGalleryTokens.gapInline),
             ] else if (!omitMark) ...[
               mark,
-              const SizedBox(width: 10),
+              const SizedBox(width: UiGalleryTokens.gapInline),
             ],
             if (!omitAction && actionFirst && !stacked && action != null) ...[
               action,
-              const SizedBox(width: 8),
+              const SizedBox(width: UiGalleryTokens.space2),
             ],
             Flexible(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  vertical: UiGalleryTokens.space3,
+                ),
                 child: message,
               ),
             ),
             if (!omitAction && !actionFirst && !stacked && action != null)
               Padding(
-                padding: const EdgeInsetsDirectional.only(start: 8),
+                padding: const EdgeInsetsDirectional.only(
+                  start: UiGalleryTokens.space2,
+                ),
                 child: action,
               ),
             if (!stacked && !omitClose) close,
@@ -702,6 +723,37 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
         );
         Widget content;
         switch (p) {
+          case UiGalleryToastPreset.action
+              when s.signatureEnabled && action != null:
+            final recovery = Container(
+              padding: const EdgeInsets.all(UiGalleryTokens.space1),
+              decoration: BoxDecoration(
+                color: s.tinted,
+                border: stacked
+                    ? Border(top: BorderSide(color: s.line))
+                    : BorderDirectional(start: BorderSide(color: s.line)),
+              ),
+              child: Wrap(
+                alignment: WrapAlignment.end,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [action, close],
+              ),
+            );
+            content = stacked
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      line(omitAction: true, omitClose: true),
+                      recovery,
+                    ],
+                  )
+                : Row(
+                    children: [
+                      Expanded(child: line(omitAction: true, omitClose: true)),
+                      recovery,
+                    ],
+                  );
           case UiGalleryToastPreset.progressCard:
             content = Column(
               mainAxisSize: MainAxisSize.min,
@@ -710,7 +762,7 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
                 Row(
                   children: [
                     item.leading ?? mark,
-                    const SizedBox(width: 12),
+                    const SizedBox(width: UiGalleryTokens.space3),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -747,9 +799,9 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
                           '${MaterialLocalizations.of(context).formatDecimal((fraction * 100).round())}%';
                       return Padding(
                         padding: const EdgeInsetsDirectional.only(
-                          end: 12,
-                          top: 8,
-                          bottom: 12,
+                          end: UiGalleryTokens.space3,
+                          top: UiGalleryTokens.space2,
+                          bottom: UiGalleryTokens.space3,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -765,7 +817,7 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: UiGalleryTokens.gapCompact),
                             Align(
                               alignment: AlignmentDirectional.centerEnd,
                               child: ExcludeSemantics(
@@ -793,8 +845,8 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
                   alignment: AlignmentDirectional.centerStart,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 4,
+                      horizontal: UiGalleryTokens.space3,
+                      vertical: UiGalleryTokens.space1,
                     ),
                     color: s.tinted,
                     child: Text(
@@ -812,8 +864,8 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
             content = Row(
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: UiGalleryTokens.touchTarget,
+                  height: UiGalleryTokens.touchTarget,
                   decoration: BoxDecoration(
                     color: s.tinted,
                     shape: BoxShape.circle,
@@ -821,7 +873,7 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
                   ),
                   child: Center(child: mark),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: UiGalleryTokens.space3),
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -841,17 +893,96 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
               ],
             );
           case UiGalleryToastPreset.ribbonActionBar:
-            content = line(actionFirst: true);
+            final command = Container(
+              constraints: const BoxConstraints(
+                minHeight: UiGalleryTokens.touchTarget,
+              ),
+              padding: const EdgeInsets.all(UiGalleryTokens.space2),
+              color: s.theme.colorScheme.primaryContainer,
+              child: action == null
+                  ? Center(child: item.leading ?? mark)
+                  : TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: s.theme.colorScheme.onPrimaryContainer,
+                        minimumSize: const Size(
+                          UiGalleryTokens.touchTarget,
+                          UiGalleryTokens.touchTarget,
+                        ),
+                      ),
+                      onPressed: _closing ? null : _action,
+                      child: Text(
+                        item.actionLabel!,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+            );
+            final narrative = Padding(
+              padding: const EdgeInsets.all(UiGalleryTokens.space3),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (item.title != null) ...[
+                    Text(
+                      item.title!,
+                      style: s.heading(
+                        s.theme.textTheme.labelSmall?.copyWith(color: s.muted),
+                      ),
+                    ),
+                    const SizedBox(height: UiGalleryTokens.space1),
+                  ],
+                  message,
+                  if (item.leading != null && action != null) item.leading!,
+                  if (item.trailing != null) item.trailing!,
+                ],
+              ),
+            );
+            content = Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(height: UiGalleryTokens.baselineHeight, color: color),
+                if (stacked)
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      command,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: narrative),
+                          close,
+                        ],
+                      ),
+                    ],
+                  )
+                else
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: UiGalleryTokens.ribbonActionWidth,
+                        child: command,
+                      ),
+                      Expanded(child: narrative),
+                      close,
+                    ],
+                  ),
+              ],
+            );
           case UiGalleryToastPreset.dock:
             content = Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 line(omitClose: true, omitAction: true),
-                Divider(height: 1, color: s.line),
+                Divider(height: UiGalleryTokens.lineWidth, color: s.line),
                 Container(
                   color: s.tinted,
-                  padding: const EdgeInsetsDirectional.only(start: 12),
+                  padding: const EdgeInsetsDirectional.only(
+                    start: UiGalleryTokens.space3,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
@@ -892,21 +1023,24 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
                     Expanded(
                       child: Text(
                         item.title ?? item.kind.name.toUpperCase(),
-                        style:
-                            s.visual.titleStyle ??
-                            s.theme.textTheme.labelSmall?.copyWith(
-                              fontFamily: 'monospace',
-                              letterSpacing: 1.4,
-                              color: color,
-                            ),
+                        style: s.heading(
+                          s.theme.textTheme.labelSmall?.copyWith(
+                            fontFamily: 'monospace',
+                            letterSpacing: 1.4,
+                            color: color,
+                          ),
+                          monospace: true,
+                        ),
                       ),
                     ),
                     close,
                   ],
                 ),
-                Divider(height: 1, color: s.line),
+                Divider(height: UiGalleryTokens.lineWidth, color: s.line),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: UiGalleryTokens.space3,
+                  ),
                   child: line(omitMark: true, omitClose: true),
                 ),
               ],
@@ -916,7 +1050,9 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
         }
         if (stacked &&
             p != UiGalleryToastPreset.dock &&
-            p != UiGalleryToastPreset.progressCard) {
+            p != UiGalleryToastPreset.progressCard &&
+            p != UiGalleryToastPreset.ribbonActionBar &&
+            !(p == UiGalleryToastPreset.action && s.signatureEnabled)) {
           content = Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -926,15 +1062,16 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
             ],
           );
         }
-        if (p == UiGalleryToastPreset.ribbon ||
-            p == UiGalleryToastPreset.ribbonActionBar) {
+        if (p == UiGalleryToastPreset.ribbon) {
           content = Container(
             decoration: BoxDecoration(
               border: BorderDirectional(
-                start: BorderSide(color: color, width: 4),
+                start: BorderSide(color: color, width: UiGalleryTokens.space1),
               ),
             ),
-            padding: const EdgeInsetsDirectional.only(start: 12),
+            padding: const EdgeInsetsDirectional.only(
+              start: UiGalleryTokens.space3,
+            ),
             child: content,
           );
         }
@@ -949,27 +1086,28 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
           label: item.semanticLabel,
           child: Material(
             color: s.surface,
-            elevation:
-                s.visual.elevation ??
-                (p == UiGalleryToastPreset.inlinePulse ||
-                        p == UiGalleryToastPreset.miniConsole
-                    ? 0
-                    : 8),
-            shadowColor:
-                s.visual.shadowColor ?? Colors.black.withValues(alpha: .18),
+            elevation: s.elevation(
+              p == UiGalleryToastPreset.inlinePulse ||
+                      p == UiGalleryToastPreset.miniConsole
+                  ? 0
+                  : 8,
+            ),
+            shadowColor: s.shadowFor(.18),
             shape: shape,
             clipBehavior: Clip.antiAlias,
             child: DecoratedBox(
               decoration: BoxDecoration(gradient: s.visual.gradient),
               child: Padding(
                 padding:
-                    (s.visual.padding ??
-                            const EdgeInsetsDirectional.only(
-                              start: 16,
-                              end: 4,
-                              top: 4,
-                              bottom: 4,
-                            ))
+                    (p == UiGalleryToastPreset.ribbonActionBar
+                            ? EdgeInsets.zero
+                            : s.visual.padding ??
+                                  const EdgeInsetsDirectional.only(
+                                    start: UiGalleryTokens.space4,
+                                    end: UiGalleryTokens.space1,
+                                    top: UiGalleryTokens.space1,
+                                    bottom: UiGalleryTokens.space1,
+                                  ))
                         .add(galleryCurveInsets(shape)),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -977,7 +1115,10 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
                   children: [
                     content,
                     if (p == UiGalleryToastPreset.inlinePulse)
-                      Container(height: 2, color: color),
+                      Container(
+                        height: UiGalleryTokens.baselineHeight,
+                        color: color,
+                      ),
                     if (showProgress)
                       AnimatedBuilder(
                         animation: _timeout,
@@ -1007,7 +1148,9 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
             child: AnimatedBuilder(
               animation: _entrance,
               child: Padding(
-                padding: item.margin ?? const EdgeInsets.only(bottom: 8),
+                padding:
+                    item.margin ??
+                    const EdgeInsets.only(bottom: UiGalleryTokens.space2),
                 child: surface,
               ),
               builder: (context, child) {
@@ -1024,12 +1167,17 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
                         p == UiGalleryToastPreset.miniConsole
                     ? Offset.zero
                     : fromSide
-                    ? Offset((1 - t) * 20 * direction, 0)
+                    ? Offset(
+                        (1 - t) * UiGalleryTokens.sideDistance * direction,
+                        0,
+                      )
                     : Offset(
                         0,
                         (1 - t) *
                             (item.position == UiGalleryToastPosition.top
                                 ? -24
+                                : p == UiGalleryToastPreset.ribbonActionBar
+                                ? UiGalleryTokens.space2
                                 : 24),
                       );
                 return Opacity(
@@ -1038,7 +1186,8 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
                     offset: shift,
                     child: Transform.scale(
                       scale: p == UiGalleryToastPreset.beacon
-                          ? .95 + .05 * t
+                          ? UiGalleryTokens.beaconRevealScale +
+                                (1 - UiGalleryTokens.beaconRevealScale) * t
                           : 1,
                       child: child,
                     ),
@@ -1050,5 +1199,13 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
         );
       },
     );
+    return item.focusParent == null
+        ? tile
+        : Focus(
+            parentNode: item.focusParent,
+            canRequestFocus: false,
+            includeSemantics: false,
+            child: tile,
+          );
   }
 }

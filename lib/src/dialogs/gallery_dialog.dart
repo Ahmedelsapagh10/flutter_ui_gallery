@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 
 import '../core/gallery_theme.dart';
 import '../core/gallery_style.dart';
+import '../core/gallery_signature.dart';
+import '../core/gallery_signature_exceptions.dart';
 import '../core/gallery_shape.dart';
 
 enum UiGalleryDialogPreset {
@@ -94,7 +96,8 @@ abstract final class UiGalleryDialog {
         duration: s.duration(s.motion.entrance),
         reverseDuration: s.duration(s.motion.exit),
         curve: s.curve,
-        barrierColor: barrierColor ?? Colors.black54,
+        barrierColor:
+            barrierColor ?? s.theme.colorScheme.scrim.withValues(alpha: .54),
         themes: InheritedTheme.capture(from: context, to: navigator.context),
         barrierDismissible: barrierDismissible,
         requestFocus: requestFocus,
@@ -286,12 +289,12 @@ class _GalleryDialogRoute<T> extends DialogRoute<T> {
           offset: Offset(
             preset == UiGalleryDialogPreset.split ||
                     preset == UiGalleryDialogPreset.sideBySideChoice
-                ? (1 - t) * 20
+                ? (1 - t) * UiGalleryTokens.sideDistance
                 : 0,
             preset == UiGalleryDialogPreset.timeline ||
                     preset == UiGalleryDialogPreset.milestone ||
                     preset == UiGalleryDialogPreset.alertCapsule
-                ? (1 - t) * 16
+                ? (1 - t) * UiGalleryTokens.revealDistance
                 : 0,
           ),
           child: Transform.scale(
@@ -299,7 +302,8 @@ class _GalleryDialogRoute<T> extends DialogRoute<T> {
                 preset == UiGalleryDialogPreset.halo ||
                     preset == UiGalleryDialogPreset.spotlight ||
                     preset == UiGalleryDialogPreset.orbitConfirm
-                ? .96 + .04 * t
+                ? UiGalleryTokens.dialogRevealScale +
+                      (1 - UiGalleryTokens.dialogRevealScale) * t
                 : 1,
             child: child,
           ),
@@ -359,7 +363,7 @@ class _DialogSurface<T> extends StatelessWidget {
       UiGalleryResult.failure => s.theme.colorScheme.error,
     };
     Widget body = Padding(
-      padding: s.visual.padding ?? const EdgeInsets.all(28),
+      padding: s.visual.padding ?? const EdgeInsets.all(UiGalleryTokens.space7),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: spotlight
@@ -368,8 +372,8 @@ class _DialogSurface<T> extends StatelessWidget {
         children: [
           if (spotlight) ...[
             SizedBox(
-              width: 112,
-              height: 112,
+              width: UiGalleryTokens.resultMarkSize,
+              height: UiGalleryTokens.resultMarkSize,
               child: CustomPaint(
                 painter: _SpotlightPainter(resultColor, s.line),
                 child: Center(
@@ -385,26 +389,28 @@ class _DialogSurface<T> extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: UiGalleryTokens.space6),
           ] else ...[
             Row(
               children: [
                 Container(
                   width: preset == UiGalleryDialogPreset.timeline ? 6 : 24,
-                  height: 6,
+                  height: UiGalleryTokens.gapCompact,
                   decoration: BoxDecoration(
                     color: s.accent,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(
+                      UiGalleryTokens.radiusSmall,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: UiGalleryTokens.gapInline),
                 if (eyebrow != null)
                   Expanded(
                     child: UiGallerySectionLabel(eyebrow!, color: s.muted),
                   ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: UiGalleryTokens.space6),
           ],
           Semantics(
             namesRoute: true,
@@ -412,34 +418,42 @@ class _DialogSurface<T> extends StatelessWidget {
             child: Text(
               title,
               textAlign: spotlight ? TextAlign.center : TextAlign.start,
-              style:
-                  s.visual.titleStyle ??
-                  s.theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: s.content,
-                    height: 1.15,
-                  ),
+              style: s.heading(
+                s.theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: s.content,
+                  height: 1.15,
+                ),
+              ),
             ),
           ),
           if (message != null) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: UiGalleryTokens.space4),
             Text(
               message!,
               textAlign: spotlight ? TextAlign.center : TextAlign.start,
-              style:
-                  s.visual.messageStyle ??
-                  s.theme.textTheme.bodyLarge?.copyWith(
-                    color: s.muted,
-                    height: 1.5,
-                  ),
+              style: s.body(
+                s.theme.textTheme.bodyLarge?.copyWith(
+                  color: s.muted,
+                  height: 1.5,
+                ),
+              ),
             ),
           ],
-          if (child != null) ...[const SizedBox(height: 24), child!],
+          if (child != null) ...[
+            const SizedBox(height: UiGalleryTokens.space6),
+            child!,
+          ],
         ],
       ),
     );
+    body = GalleryFamilyRegion(
+      style: s,
+      framed: GallerySignatureExceptions.dialogWells.contains(preset),
+      child: body,
+    );
     Widget decisions = Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(UiGalleryTokens.space5),
       child: Wrap(
         alignment: WrapAlignment.end,
         spacing: 10,
@@ -462,7 +476,7 @@ class _DialogSurface<T> extends StatelessWidget {
               : preset == UiGalleryDialogPreset.statusBeacon
               ? Icons.sensors_rounded
               : Icons.check_rounded,
-          size: 32,
+          size: UiGalleryTokens.iconLarge,
           color: resultColor,
         );
     switch (preset) {
@@ -472,12 +486,15 @@ class _DialogSurface<T> extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsetsDirectional.only(top: 24, end: 24),
+              padding: const EdgeInsetsDirectional.only(
+                top: UiGalleryTokens.space6,
+                end: UiGalleryTokens.space6,
+              ),
               child: Align(
                 alignment: AlignmentDirectional.centerEnd,
                 child: Container(
-                  width: 64,
-                  height: 64,
+                  width: UiGalleryTokens.space16,
+                  height: UiGalleryTokens.space16,
                   decoration: BoxDecoration(
                     color: s.tinted,
                     shape: BoxShape.circle,
@@ -492,20 +509,20 @@ class _DialogSurface<T> extends StatelessWidget {
         );
       case UiGalleryDialogPreset.sideBySideChoice:
         decisions = Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(UiGalleryTokens.space5),
           child: LayoutBuilder(
             builder: (context, constraints) {
               final cards = [
                 for (final action in actions)
                   _ChoiceCard<T>(action: action, style: s),
               ];
-              if (constraints.maxWidth >= 380 &&
+              if (constraints.maxWidth >= UiGalleryTokens.choiceBreakpoint &&
                   s.media.textScaler.scale(1) < 1.5) {
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     for (var i = 0; i < cards.length; i++) ...[
-                      if (i > 0) const SizedBox(width: 12),
+                      if (i > 0) const SizedBox(width: UiGalleryTokens.space3),
                       Expanded(child: cards[i]),
                     ],
                   ],
@@ -517,7 +534,9 @@ class _DialogSurface<T> extends StatelessWidget {
                 children: [
                   for (final card in cards)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.only(
+                        bottom: UiGalleryTokens.space2,
+                      ),
                       child: card,
                     ),
                 ],
@@ -530,7 +549,10 @@ class _DialogSurface<T> extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsetsDirectional.only(start: 20, top: 28),
+              padding: const EdgeInsetsDirectional.only(
+                start: UiGalleryTokens.space5,
+                top: UiGalleryTokens.space7,
+              ),
               child: mark,
             ),
             Expanded(child: body),
@@ -543,11 +565,11 @@ class _DialogSurface<T> extends StatelessWidget {
           children: [
             Container(
               color: s.tinted,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(UiGalleryTokens.space5),
               child: Row(
                 children: [
                   mark,
-                  const SizedBox(width: 16),
+                  const SizedBox(width: UiGalleryTokens.space4),
                   Expanded(child: Divider(color: s.line)),
                 ],
               ),
@@ -559,7 +581,7 @@ class _DialogSurface<T> extends StatelessWidget {
         body = Container(
           decoration: BoxDecoration(
             border: BorderDirectional(
-              start: BorderSide(color: s.accent, width: 4),
+              start: BorderSide(color: s.accent, width: UiGalleryTokens.space1),
             ),
           ),
           child: body,
@@ -569,9 +591,11 @@ class _DialogSurface<T> extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 56,
+              width: UiGalleryTokens.space14,
               color: s.tinted,
-              padding: const EdgeInsets.symmetric(vertical: 28),
+              padding: const EdgeInsets.symmetric(
+                vertical: UiGalleryTokens.space7,
+              ),
               child: mark,
             ),
             Expanded(child: body),
@@ -584,14 +608,14 @@ class _DialogSurface<T> extends StatelessWidget {
         preset == UiGalleryDialogPreset.statusBeacon ||
         preset == UiGalleryDialogPreset.panelDecision) {
       decisions = Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(UiGalleryTokens.space5),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             for (final action in actions)
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: UiGalleryTokens.space2),
                 child: _DecisionButton<T>(
                   action: action,
                   style: s,
@@ -604,7 +628,7 @@ class _DialogSurface<T> extends StatelessWidget {
     } else if (actionLayout == UiGalleryActionLayout.sideBySide &&
         preset != UiGalleryDialogPreset.sideBySideChoice) {
       decisions = Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(UiGalleryTokens.space5),
         child: Wrap(
           spacing: 12,
           runSpacing: 12,
@@ -621,22 +645,25 @@ class _DialogSurface<T> extends StatelessWidget {
         alignment: alignment.resolve(Directionality.of(context)),
         backgroundColor: s.surface,
         surfaceTintColor: Colors.transparent,
-        elevation: s.visual.elevation ?? 12,
+        elevation: s.elevation(UiGalleryTokens.elevationHigh),
         shadowColor: s.visual.shadowColor,
         insetAnimationDuration: s.duration(s.motion.change),
-        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        shape:
-            s.visual.shape ??
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                spotlight
-                    ? 40
-                    : split
-                    ? 16
-                    : 28,
-              ),
-              side: BorderSide(color: s.line),
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: UiGalleryTokens.space5,
+          vertical: UiGalleryTokens.space6,
+        ),
+        shape: s.shape(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              spotlight
+                  ? UiGalleryTokens.radiusSpotlight
+                  : split
+                  ? UiGalleryTokens.radiusMedium
+                  : UiGalleryTokens.radiusPanel,
             ),
+            side: BorderSide(color: s.line),
+          ),
+        ),
         clipBehavior: Clip.antiAlias,
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -655,9 +682,66 @@ class _DialogSurface<T> extends StatelessWidget {
                   style: TextStyle(color: s.content),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
+                      if (preset == UiGalleryDialogPreset.split &&
+                          s.signatureEnabled &&
+                          actionLayout == null) {
+                        final lanes = [
+                          for (final action in actions)
+                            _ConsequenceLane<T>(action: action, style: s),
+                        ];
+                        final horizontal =
+                            constraints.maxWidth >=
+                                UiGalleryTokens.choiceBreakpoint &&
+                            s.media.textScaler.scale(1) < 1.5;
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            body,
+                            Padding(
+                              padding: const EdgeInsets.all(
+                                UiGalleryTokens.space4,
+                              ),
+                              child: horizontal
+                                  ? Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        for (
+                                          var i = 0;
+                                          i < lanes.length;
+                                          i++
+                                        ) ...[
+                                          if (i > 0)
+                                            const SizedBox(
+                                              width: UiGalleryTokens.space3,
+                                            ),
+                                          Expanded(child: lanes[i]),
+                                        ],
+                                      ],
+                                    )
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        for (final lane in lanes)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              bottom: UiGalleryTokens.space3,
+                                            ),
+                                            child: lane,
+                                          ),
+                                      ],
+                                    ),
+                            ),
+                          ],
+                        );
+                      }
                       final divided =
                           split &&
-                          constraints.maxWidth >= 480 &&
+                          constraints.maxWidth >=
+                              UiGalleryTokens.dialogSplitBreakpoint &&
                           s.media.textScaler.scale(1) < 1.5;
                       if (divided) {
                         return IntrinsicHeight(
@@ -675,7 +759,9 @@ class _DialogSurface<T> extends StatelessWidget {
                                         CrossAxisAlignment.stretch,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.all(20),
+                                        padding: const EdgeInsets.all(
+                                          UiGalleryTokens.space5,
+                                        ),
                                         child: Icon(
                                           Icons.call_split_rounded,
                                           size: 40,
@@ -720,6 +806,58 @@ class _DialogSurface<T> extends StatelessWidget {
   }
 }
 
+class _ConsequenceLane<T> extends StatelessWidget {
+  const _ConsequenceLane({required this.action, required this.style});
+  final UiGalleryDialogAction<T> action;
+  final UiGalleryStyle style;
+  @override
+  Widget build(BuildContext context) {
+    final colors = style.theme.colorScheme;
+    final ink = action.destructive ? colors.onErrorContainer : style.content;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: action.destructive ? colors.errorContainer : style.tinted,
+        border: BorderDirectional(
+          start: BorderSide(
+            color: action.destructive ? colors.error : style.accent,
+            width: UiGalleryTokens.accentWidth,
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(UiGalleryTokens.space3),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (action.icon != null)
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: ExcludeSemantics(
+                  child: IconTheme.merge(
+                    data: IconThemeData(color: ink),
+                    child: action.icon!,
+                  ),
+                ),
+              ),
+            if (action.description != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: UiGalleryTokens.space3,
+                ),
+                child: Text(
+                  action.description!,
+                  style: TextStyle(color: ink, height: 1.4),
+                ),
+              ),
+            _DecisionButton<T>(action: action, style: style, halo: false),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _ChoiceCard<T> extends StatelessWidget {
   const _ChoiceCard({required this.action, required this.style});
   final UiGalleryDialogAction<T> action;
@@ -728,25 +866,27 @@ class _ChoiceCard<T> extends StatelessWidget {
   Widget build(BuildContext context) => Material(
     color: action.primary ? style.tinted : style.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(UiGalleryTokens.radiusMedium),
       side: BorderSide(color: style.line),
     ),
     child: InkWell(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(UiGalleryTokens.radiusMedium),
       onTap: action.enabled
           ? () => Navigator.of(context).pop<T>(action.value)
           : null,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 48),
+        constraints: const BoxConstraints(
+          minHeight: UiGalleryTokens.touchTarget,
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(UiGalleryTokens.space5),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (action.icon != null) ...[
                 action.icon!,
-                const SizedBox(height: 16),
+                const SizedBox(height: UiGalleryTokens.space4),
               ],
               Text(
                 action.label,
@@ -757,7 +897,7 @@ class _ChoiceCard<T> extends StatelessWidget {
                 ),
               ),
               if (action.description != null) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: UiGalleryTokens.space2),
                 Text(action.description!, style: TextStyle(color: style.muted)),
               ],
             ],
@@ -783,14 +923,16 @@ class _DecisionButton<T> extends StatelessWidget {
     final color = action.destructive
         ? style.theme.colorScheme.error
         : style.accent;
-    final onColor =
-        ThemeData.estimateBrightnessForColor(color) == Brightness.dark
-        ? Colors.white
-        : Colors.black;
+    final onColor = style.foregroundFor(color);
     final buttonStyle = ButtonStyle(
-      minimumSize: const WidgetStatePropertyAll(Size(48, 48)),
+      minimumSize: const WidgetStatePropertyAll(
+        Size(UiGalleryTokens.touchTarget, UiGalleryTokens.touchTarget),
+      ),
       padding: const WidgetStatePropertyAll(
-        EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        EdgeInsets.symmetric(
+          horizontal: UiGalleryTokens.space5,
+          vertical: UiGalleryTokens.insetHandle,
+        ),
       ),
       foregroundColor: WidgetStatePropertyAll(
         !action.enabled
@@ -807,17 +949,19 @@ class _DecisionButton<T> extends StatelessWidget {
             : Colors.transparent,
       ),
       shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(UiGalleryTokens.radiusMedium),
+        ),
       ),
     );
     return Container(
       padding: halo && action.primary && action.enabled
-          ? const EdgeInsets.all(4)
+          ? const EdgeInsets.all(UiGalleryTokens.space1)
           : EdgeInsets.zero,
       decoration: halo && action.primary && action.enabled
           ? BoxDecoration(
               border: Border.all(color: color.withValues(alpha: .3)),
-              borderRadius: BorderRadius.circular(21),
+              borderRadius: BorderRadius.circular(UiGalleryTokens.radiusHalo),
             )
           : null,
       child: TextButton(
@@ -963,10 +1107,10 @@ class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
           }),
           onSubmitted: (_) => _select(),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: UiGalleryTokens.space3),
         if (commands.isEmpty)
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(UiGalleryTokens.space4),
             child: Text(widget.emptyLabel, style: TextStyle(color: s.muted)),
           )
         else
@@ -980,7 +1124,9 @@ class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
                   Material(
                     key: _keys.putIfAbsent(i, GlobalKey.new),
                     color: i == _active ? s.tinted : Colors.transparent,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(
+                      UiGalleryTokens.radiusToolbar,
+                    ),
                     child: ListTile(
                       selected: i == _active,
                       enabled: commands[i].enabled,
@@ -1092,7 +1238,7 @@ class UiGalleryTimeline extends StatelessWidget {
         children: [
           for (var i = 0; i < state.steps.length; i++)
             Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: UiGalleryTokens.space3),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1100,8 +1246,8 @@ class UiGalleryTimeline extends StatelessWidget {
                     children: [
                       AnimatedContainer(
                         duration: s.duration(s.motion.change),
-                        width: 28,
-                        height: 28,
+                        width: UiGalleryTokens.space7,
+                        height: UiGalleryTokens.space7,
                         decoration: BoxDecoration(
                           color: i <= state.currentStep ? s.tinted : s.surface,
                           shape: BoxShape.circle,
@@ -1131,13 +1277,19 @@ class UiGalleryTimeline extends StatelessWidget {
                         ),
                       ),
                       if (i < state.steps.length - 1)
-                        Container(width: 1, height: 18, color: s.line),
+                        Container(
+                          width: UiGalleryTokens.lineWidth,
+                          height: 18,
+                          color: s.line,
+                        ),
                     ],
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: UiGalleryTokens.insetHandle),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 4),
+                      padding: const EdgeInsets.only(
+                        top: UiGalleryTokens.space1,
+                      ),
                       child: Text(
                         state.steps[i],
                         style: s.theme.textTheme.bodyMedium?.copyWith(

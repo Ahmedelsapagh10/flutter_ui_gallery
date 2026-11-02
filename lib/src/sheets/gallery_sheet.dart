@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../core/gallery_theme.dart';
 import '../core/gallery_style.dart';
+import '../core/gallery_signature.dart';
+import '../core/gallery_signature_exceptions.dart';
 import '../core/gallery_shape.dart';
 
 enum UiGallerySheetPreset {
@@ -159,38 +161,112 @@ class _SheetSurfaceState extends State<_SheetSurface> {
             .clamp(0.0, double.infinity);
     final radius = switch (p) {
       UiGallerySheetPreset.orbit => const BorderRadiusDirectional.only(
-        topStart: Radius.circular(48),
-        topEnd: Radius.circular(20),
-        bottomStart: Radius.circular(24),
-        bottomEnd: Radius.circular(36),
+        topStart: Radius.circular(UiGalleryTokens.radiusOrbitStart),
+        topEnd: Radius.circular(UiGalleryTokens.radiusAction),
+        bottomStart: Radius.circular(UiGalleryTokens.radiusLarge),
+        bottomEnd: Radius.circular(UiGalleryTokens.radiusOrbitEnd),
       ),
       UiGallerySheetPreset.prism => const BorderRadiusDirectional.only(
-        topStart: Radius.circular(8),
-        topEnd: Radius.circular(52),
-        bottomStart: Radius.circular(8),
-        bottomEnd: Radius.circular(8),
+        topStart: Radius.circular(UiGalleryTokens.radiusSmall),
+        topEnd: Radius.circular(UiGalleryTokens.radiusStage),
+        bottomStart: Radius.circular(UiGalleryTokens.radiusSmall),
+        bottomEnd: Radius.circular(UiGalleryTokens.radiusSmall),
       ),
       UiGallerySheetPreset.fold => const BorderRadius.vertical(
-        top: Radius.circular(32),
+        top: Radius.circular(UiGalleryTokens.radiusCapsule),
       ),
       UiGallerySheetPreset.flow => const BorderRadius.vertical(
-        top: Radius.circular(24),
+        top: Radius.circular(UiGalleryTokens.radiusLarge),
       ),
       UiGallerySheetPreset.edgeLift => BorderRadius.zero,
-      UiGallerySheetPreset.depthFrame => BorderRadius.circular(4),
-      UiGallerySheetPreset.neoTray || UiGallerySheetPreset.taskRail =>
-        const BorderRadius.vertical(top: Radius.circular(12)),
-      UiGallerySheetPreset.pulseDock => BorderRadius.circular(36),
-      _ => BorderRadius.circular(24),
+      UiGallerySheetPreset.depthFrame => BorderRadius.circular(
+        UiGalleryTokens.radiusFrame,
+      ),
+      UiGallerySheetPreset.neoTray ||
+      UiGallerySheetPreset.taskRail => const BorderRadius.vertical(
+        top: Radius.circular(UiGalleryTokens.radiusToolbar),
+      ),
+      UiGallerySheetPreset.pulseDock => BorderRadius.circular(
+        UiGalleryTokens.radiusOrbitEnd,
+      ),
+      _ => BorderRadius.circular(UiGalleryTokens.radiusLarge),
     };
+    Widget content = GalleryFamilyRegion(
+      style: s,
+      framed: GallerySignatureExceptions.sheetWells.contains(p),
+      child: widget.child,
+    );
+    if (s.signatureEnabled && p == UiGallerySheetPreset.orbit) {
+      final canvas = content;
+      content = LayoutBuilder(
+        builder: (context, bounds) {
+          final stacked =
+              bounds.maxWidth < 360 || s.media.textScaler.scale(1) >= 1.5;
+          final rail = Container(
+            padding: const EdgeInsets.all(UiGalleryTokens.space3),
+            decoration: BoxDecoration(
+              color: s.tinted,
+              border: BorderDirectional(
+                start: BorderSide(
+                  color: s.accent,
+                  width: UiGalleryTokens.accentWidth,
+                ),
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ExcludeSemantics(
+                  child: Icon(
+                    Icons.edit_note_rounded,
+                    color: s.accent,
+                    size: UiGalleryTokens.icon,
+                  ),
+                ),
+                if (widget.secondary != null) ...[
+                  const SizedBox(height: UiGalleryTokens.space2),
+                  widget.secondary!,
+                ],
+              ],
+            ),
+          );
+          final railWidth = widget.secondary == null
+              ? UiGalleryTokens.touchTarget
+              : UiGalleryTokens.space10 * 3;
+          // Keep both children under the same parents when the rail wraps.
+          // Controller and form state must survive width/text-scale changes.
+          return Wrap(
+            spacing: UiGalleryTokens.space3,
+            runSpacing: UiGalleryTokens.space3,
+            children: [
+              SizedBox(
+                width: stacked ? bounds.maxWidth : railWidth,
+                child: rail,
+              ),
+              SizedBox(
+                width: stacked
+                    ? bounds.maxWidth
+                    : bounds.maxWidth - railWidth - UiGalleryTokens.space3,
+                child: canvas,
+              ),
+            ],
+          );
+        },
+      );
+    }
     final body = widget.scrollable
         ? SingleChildScrollView(
-            padding: s.visual.padding ?? const EdgeInsets.all(24),
-            child: widget.child,
+            padding:
+                s.visual.padding ??
+                const EdgeInsets.all(UiGalleryTokens.space6),
+            child: content,
           )
         : Padding(
-            padding: s.visual.padding ?? const EdgeInsets.all(24),
-            child: widget.child,
+            padding:
+                s.visual.padding ??
+                const EdgeInsets.all(UiGalleryTokens.space6),
+            child: content,
           );
     final header =
         widget.header == null &&
@@ -198,17 +274,28 @@ class _SheetSurfaceState extends State<_SheetSurface> {
             widget.trailing == null
         ? null
         : Padding(
-            padding: const EdgeInsets.fromLTRB(24, 12, 24, 16),
+            padding: const EdgeInsets.fromLTRB(
+              UiGalleryTokens.space6,
+              UiGalleryTokens.space3,
+              UiGalleryTokens.space6,
+              UiGalleryTokens.space4,
+            ),
             child: Row(
               children: [
                 if (widget.leading != null) ...[
                   widget.leading!,
-                  const SizedBox(width: 12),
+                  const SizedBox(width: UiGalleryTokens.space3),
                 ],
                 if (widget.header != null)
                   Expanded(
                     child: DefaultTextStyle.merge(
-                      style: s.visual.titleStyle,
+                      style: s.gallery.designFamily == null
+                          ? s.visual.titleStyle
+                          : s.heading(
+                              s.theme.textTheme.titleLarge?.copyWith(
+                                color: s.content,
+                              ),
+                            ),
                       child: widget.header!,
                     ),
                   ),
@@ -219,7 +306,7 @@ class _SheetSurfaceState extends State<_SheetSurface> {
     final footer = widget.footer == null
         ? null
         : Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(UiGalleryTokens.space4),
             decoration: BoxDecoration(
               color: s.tinted,
               border: Border(top: BorderSide(color: s.line)),
@@ -233,9 +320,11 @@ class _SheetSurfaceState extends State<_SheetSurface> {
             child: InkWell(
               onTap: () => setState(() => _expanded = !_expanded),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 48),
+                constraints: const BoxConstraints(
+                  minHeight: UiGalleryTokens.touchTarget,
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(UiGalleryTokens.space2),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -244,7 +333,7 @@ class _SheetSurfaceState extends State<_SheetSurface> {
                             ? Icons.keyboard_arrow_down
                             : Icons.keyboard_arrow_up,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: UiGalleryTokens.space2),
                       Flexible(
                         child: Text(
                           _expanded
@@ -263,14 +352,19 @@ class _SheetSurfaceState extends State<_SheetSurface> {
             ),
           )
         : Padding(
-            padding: const EdgeInsets.only(top: 14, bottom: 8),
+            padding: const EdgeInsets.only(
+              top: UiGalleryTokens.insetHandle,
+              bottom: UiGalleryTokens.space2,
+            ),
             child: Center(
               child: Container(
-                width: 36,
-                height: 4,
+                width: UiGalleryTokens.handleWidth,
+                height: UiGalleryTokens.space1,
                 decoration: BoxDecoration(
                   color: s.line,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(
+                    UiGalleryTokens.radiusFrame,
+                  ),
                 ),
               ),
             ),
@@ -283,7 +377,8 @@ class _SheetSurfaceState extends State<_SheetSurface> {
           children: children,
         );
         final wide =
-            constraints.maxWidth >= 500 && s.media.textScaler.scale(1) < 1.5;
+            constraints.maxWidth >= UiGalleryTokens.sheetSplitBreakpoint &&
+            s.media.textScaler.scale(1) < 1.5;
         if (p == UiGallerySheetPreset.splitLayer &&
             wide &&
             (widget.secondary != null || footer != null)) {
@@ -298,7 +393,7 @@ class _SheetSurfaceState extends State<_SheetSurface> {
                 flex: 2,
                 child: Container(
                   color: s.tinted,
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(UiGalleryTokens.space5),
                   child: SingleChildScrollView(
                     child: column([
                       if (widget.secondary != null) widget.secondary!,
@@ -315,9 +410,11 @@ class _SheetSurfaceState extends State<_SheetSurface> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 48,
+                width: UiGalleryTokens.touchTarget,
                 color: s.tinted,
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  vertical: UiGalleryTokens.space5,
+                ),
                 child: const Icon(Icons.tune_rounded),
               ),
               Expanded(
@@ -328,11 +425,11 @@ class _SheetSurfaceState extends State<_SheetSurface> {
         }
         if (p == UiGallerySheetPreset.neoTray) {
           return column([
-            Container(height: 4, color: s.accent),
+            Container(height: UiGalleryTokens.space1, color: s.accent),
             if (header != null) ColoredBox(color: s.tinted, child: header),
             Flexible(
               child: Container(
-                margin: const EdgeInsets.all(12),
+                margin: const EdgeInsets.all(UiGalleryTokens.space3),
                 decoration: BoxDecoration(border: Border.all(color: s.line)),
                 child: body,
               ),
@@ -346,8 +443,12 @@ class _SheetSurfaceState extends State<_SheetSurface> {
               Container(
                 color: s.tinted,
                 child: column([
-                  const SizedBox(height: 20),
-                  Icon(Icons.bolt_rounded, size: 32, color: s.accent),
+                  const SizedBox(height: UiGalleryTokens.space5),
+                  Icon(
+                    Icons.bolt_rounded,
+                    size: UiGalleryTokens.iconLarge,
+                    color: s.accent,
+                  ),
                   header,
                 ]),
               ),
@@ -357,13 +458,13 @@ class _SheetSurfaceState extends State<_SheetSurface> {
         }
         return column([
           if (p == UiGallerySheetPreset.edgeLift)
-            Container(height: 2, color: s.accent)
+            Container(height: UiGalleryTokens.baselineHeight, color: s.accent)
           else
             handle,
           if (p == UiGallerySheetPreset.horizonPeek && widget.secondary != null)
             Flexible(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(UiGalleryTokens.space4),
                 child: widget.secondary!,
               ),
             ),
@@ -377,32 +478,38 @@ class _SheetSurfaceState extends State<_SheetSurface> {
               child: header,
             ),
           Flexible(child: body),
-          if (p != UiGallerySheetPreset.horizonPeek && widget.secondary != null)
+          if (p != UiGallerySheetPreset.horizonPeek &&
+              !(s.signatureEnabled && p == UiGallerySheetPreset.orbit) &&
+              widget.secondary != null)
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(UiGalleryTokens.space4),
               child: widget.secondary!,
             ),
           ?footer,
           if (p == UiGallerySheetPreset.prism)
-            Container(height: 3, color: s.accent),
+            Container(height: UiGalleryTokens.markerThickness, color: s.accent),
         ]);
       },
     );
     composition = Material(
       color: s.surface,
-      elevation: s.visual.elevation ?? (floating ? 10 : 2),
-      shadowColor: s.visual.shadowColor ?? Colors.black.withValues(alpha: .2),
-      shape:
-          s.visual.shape ??
-          RoundedRectangleBorder(
-            borderRadius: radius,
-            side: BorderSide(color: s.line),
-          ),
+      elevation: s.elevation(floating ? 10 : 2),
+      shadowColor: s.shadowFor(.2),
+      shape: s.shape(
+        RoundedRectangleBorder(
+          borderRadius: radius,
+          side: BorderSide(color: s.line),
+        ),
+      ),
       clipBehavior: Clip.antiAlias,
       child: DecoratedBox(
         decoration: BoxDecoration(gradient: s.visual.gradient),
         child: DefaultTextStyle.merge(
-          style: s.visual.messageStyle ?? TextStyle(color: s.content),
+          style: s.body(
+            s.gallery.designFamily == null
+                ? TextStyle(color: s.content)
+                : s.theme.textTheme.bodyMedium?.copyWith(color: s.content),
+          ),
           child: IconTheme(
             data: IconThemeData(color: s.accent),
             child: Padding(
@@ -415,10 +522,13 @@ class _SheetSurfaceState extends State<_SheetSurface> {
     );
     if (p == UiGallerySheetPreset.depthFrame) {
       composition = Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(UiGalleryTokens.space2),
         decoration: BoxDecoration(
           color: s.tinted,
-          border: Border.all(color: s.line, width: 2),
+          border: Border.all(
+            color: s.line,
+            width: UiGalleryTokens.baselineHeight,
+          ),
         ),
         child: composition,
       );
@@ -434,7 +544,9 @@ class _SheetSurfaceState extends State<_SheetSurface> {
             child: Container(
               decoration: BoxDecoration(
                 color: s.accent.withValues(alpha: .12),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(
+                  UiGalleryTokens.radiusLarge,
+                ),
               ),
             ),
           ),
@@ -447,11 +559,16 @@ class _SheetSurfaceState extends State<_SheetSurface> {
               decoration: BoxDecoration(
                 color: s.tinted,
                 border: Border.all(color: s.line),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(
+                  UiGalleryTokens.radiusLarge,
+                ),
               ),
             ),
           ),
-          Padding(padding: const EdgeInsets.only(top: 16), child: composition),
+          Padding(
+            padding: const EdgeInsets.only(top: UiGalleryTokens.space4),
+            child: composition,
+          ),
         ],
       );
     }
@@ -484,10 +601,10 @@ class _SheetSurfaceState extends State<_SheetSurface> {
         top: false,
         child: Padding(
           padding: EdgeInsets.fromLTRB(
-            floating ? 16 : 0,
-            12,
-            floating ? 16 : 0,
-            floating ? 16 : 0,
+            floating ? UiGalleryTokens.space4 : 0,
+            UiGalleryTokens.space3,
+            floating ? UiGalleryTokens.space4 : 0,
+            floating ? UiGalleryTokens.space4 : 0,
           ),
           child: sized,
         ),
@@ -518,13 +635,20 @@ class _SheetReveal extends StatelessWidget {
         final t = style.curve.transform(animation.value).clamp(0.0, 1.0);
         return switch (preset) {
           UiGallerySheetPreset.stackPanel => Transform.translate(
-            offset: Offset(0, (1 - t) * 12),
+            offset: Offset(0, (1 - t) * UiGalleryTokens.sheetRevealDistance),
             child: child,
           ),
-          UiGallerySheetPreset.depthFrame || UiGallerySheetPreset.prism =>
-            Transform.scale(scale: .97 + .03 * t, child: child),
+          UiGallerySheetPreset.depthFrame ||
+          UiGallerySheetPreset.prism => Transform.scale(
+            scale:
+                UiGalleryTokens.sheetRevealScale +
+                (1 - UiGalleryTokens.sheetRevealScale) * t,
+            child: child,
+          ),
           UiGallerySheetPreset.pulseDock => Transform.scale(
-            scale: .94 + .06 * t,
+            scale:
+                UiGalleryTokens.pulseRevealScale +
+                (1 - UiGalleryTokens.pulseRevealScale) * t,
             child: child,
           ),
           UiGallerySheetPreset.edgeLift ||
@@ -585,12 +709,16 @@ class UiGalleryFlow extends StatelessWidget {
                     child: AnimatedContainer(
                       duration: s.duration(UiGalleryTokens.change),
                       margin: EdgeInsetsDirectional.only(
-                        end: i == steps.length - 1 ? 0 : 6,
+                        end: i == steps.length - 1
+                            ? 0
+                            : UiGalleryTokens.gapCompact,
                       ),
                       height: i == currentStep ? 6 : 3,
                       decoration: BoxDecoration(
                         color: i <= currentStep ? s.accent : s.line,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(
+                          UiGalleryTokens.radiusStep,
+                        ),
                       ),
                     ),
                   ),
@@ -598,12 +726,12 @@ class UiGalleryFlow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: UiGalleryTokens.space5),
         Text(
           steps[currentStep],
           style: s.theme.textTheme.titleLarge?.copyWith(color: s.content),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: UiGalleryTokens.space5),
         _FlowPages(currentStep: currentStep, children: children),
       ],
     );

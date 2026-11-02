@@ -7,6 +7,8 @@ import 'package:flutter/semantics.dart';
 
 import '../core/gallery_shape.dart';
 import '../core/gallery_style.dart';
+import '../core/gallery_signature.dart';
+import '../core/gallery_signature_exceptions.dart';
 import '../core/gallery_theme.dart';
 
 enum UiGalleryBottomNavPreset {
@@ -261,15 +263,21 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                 widget.options.margin ??
                 (minimal
                     ? EdgeInsets.zero
-                    : const EdgeInsets.fromLTRB(12, 6, 12, 8)),
+                    : const EdgeInsets.fromLTRB(
+                        UiGalleryTokens.space3,
+                        UiGalleryTokens.gapCompact,
+                        UiGalleryTokens.space3,
+                        UiGalleryTokens.space2,
+                      )),
             child: Align(
               heightFactor: 1,
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: s.visual.maxWidth ?? 760),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    if (widget.preset ==
-                        UiGalleryBottomNavPreset.overflowDock) {
+                    if (GallerySignatureExceptions.navComposition.contains(
+                      widget.preset,
+                    )) {
                       return AnimatedBuilder(
                         animation: _selection,
                         builder: (context, _) =>
@@ -341,12 +349,12 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
 
   Widget _overflow(BuildContext context, UiGalleryStyle s, double available) {
     final direction = Directionality.of(context);
-    final shape =
-        s.visual.shape ??
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-          side: BorderSide(color: s.line),
-        );
+    final shape = s.shape(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(UiGalleryTokens.radiusNotch),
+        side: BorderSide(color: s.line),
+      ),
+    );
     final padding = (s.visual.padding ?? EdgeInsets.zero)
         .add(galleryCurveInsets(shape))
         .resolve(direction);
@@ -380,7 +388,7 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
         width: width,
         child: Material(
           color: s.surface,
-          elevation: s.visual.elevation ?? 4,
+          elevation: s.elevation(4),
           shadowColor: s.visual.shadowColor,
           shape: shape,
           clipBehavior: Clip.antiAlias,
@@ -461,7 +469,10 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                               child: TextButton(
                                 style: TextButton.styleFrom(
                                   foregroundColor: color,
-                                  minimumSize: const Size(48, 48),
+                                  minimumSize: const Size(
+                                    UiGalleryTokens.touchTarget,
+                                    UiGalleryTokens.touchTarget,
+                                  ),
                                   padding: EdgeInsets.symmetric(
                                     horizontal: widget.options.spacing,
                                   ),
@@ -491,7 +502,9 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                                             Icons.more_horiz_rounded,
                                           ),
                                         ),
-                                        const SizedBox(height: 4),
+                                        const SizedBox(
+                                          height: UiGalleryTokens.space1,
+                                        ),
                                         Flexible(
                                           child: Text(
                                             label,
@@ -575,71 +588,71 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
     );
     final notchCenter =
         widths.take(split).fold<double>(0.0, (a, b) => a + b) + gap / 2;
-    final shape =
-        s.visual.shape ??
-        switch (p) {
-          UiGalleryBottomNavPreset.floatingCove => UiGalleryCurvedBorder(
-            curve: UiGalleryCurve.wave,
-            edge: UiGalleryCurveEdge.bottom,
-            depth: o.curveDepth,
-            span: 1,
-            position: .3,
-            radius: 26,
-            side: BorderSide(color: s.line),
-          ),
-          UiGalleryBottomNavPreset.concaveNotch => UiGalleryCurvedBorder(
-            curve: UiGalleryCurve.concave,
-            depth: o.notchDepth,
-            position:
-                ((direction == TextDirection.rtl
-                        ? horizontalPadding.right
-                        : horizontalPadding.left) +
-                    notchCenter) /
-                width,
-            span: (o.notchWidth / width).clamp(.01, 1.0),
-            radius: 18,
-            side: BorderSide(color: s.line),
-          ),
-          UiGalleryBottomNavPreset.convexWave => UiGalleryCurvedBorder(
-            curve: UiGalleryCurve.convex,
-            depth: o.curveDepth,
-            position: shapePosition,
-            span: (2 / count).clamp(.01, 1.0),
-            radius: 20,
-            side: BorderSide(color: s.line),
-          ),
-          UiGalleryBottomNavPreset.ribbonCurve => UiGalleryCurvedBorder(
-            curve: UiGalleryCurve.ribbon,
-            edge: UiGalleryCurveEdge.bottom,
-            depth: o.curveDepth,
-            position: shapePosition,
-            span: .7,
-            radius: 12,
-            side: BorderSide(color: s.line),
-          ),
-          UiGalleryBottomNavPreset.adaptiveMinimal => Border(
-            top: BorderSide(color: s.line),
-          ),
-          UiGalleryBottomNavPreset.splitIsland => _IslandBorder(
-            leadingWidth: widths.take(split).fold<double>(0, (a, b) => a + b),
-            trailingWidth: widths.skip(split).fold<double>(0, (a, b) => a + b),
-            padding: horizontalPadding,
-            side: BorderSide(color: s.line),
-          ),
-          UiGalleryBottomNavPreset.perspectiveDock => BeveledRectangleBorder(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(16),
-              bottom: Radius.circular(6),
-            ),
-            side: BorderSide(color: s.line),
-          ),
-          _ => RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              p == UiGalleryBottomNavPreset.morphingCapsule ? 40 : 22,
-            ),
-            side: BorderSide(color: s.line),
-          ),
-        };
+    final shape = s.shape(switch (p) {
+      UiGalleryBottomNavPreset.floatingCove => UiGalleryCurvedBorder(
+        curve: UiGalleryCurve.wave,
+        edge: UiGalleryCurveEdge.bottom,
+        depth: o.curveDepth,
+        span: 1,
+        position: .3,
+        radius: 26,
+        side: BorderSide(color: s.line),
+      ),
+      UiGalleryBottomNavPreset.concaveNotch => UiGalleryCurvedBorder(
+        curve: UiGalleryCurve.concave,
+        depth: o.notchDepth,
+        position:
+            ((direction == TextDirection.rtl
+                    ? horizontalPadding.right
+                    : horizontalPadding.left) +
+                notchCenter) /
+            width,
+        span: (o.notchWidth / width).clamp(.01, 1.0),
+        radius: 18,
+        side: BorderSide(color: s.line),
+      ),
+      UiGalleryBottomNavPreset.convexWave => UiGalleryCurvedBorder(
+        curve: UiGalleryCurve.convex,
+        depth: o.curveDepth,
+        position: shapePosition,
+        span: (2 / count).clamp(.01, 1.0),
+        radius: 20,
+        side: BorderSide(color: s.line),
+      ),
+      UiGalleryBottomNavPreset.ribbonCurve => UiGalleryCurvedBorder(
+        curve: UiGalleryCurve.ribbon,
+        edge: UiGalleryCurveEdge.bottom,
+        depth: o.curveDepth,
+        position: shapePosition,
+        span: .7,
+        radius: 12,
+        side: BorderSide(color: s.line),
+      ),
+      UiGalleryBottomNavPreset.adaptiveMinimal => Border(
+        top: BorderSide(color: s.line),
+      ),
+      UiGalleryBottomNavPreset.splitIsland => _IslandBorder(
+        leadingWidth: widths.take(split).fold<double>(0, (a, b) => a + b),
+        trailingWidth: widths.skip(split).fold<double>(0, (a, b) => a + b),
+        padding: horizontalPadding,
+        side: BorderSide(color: s.line),
+      ),
+      UiGalleryBottomNavPreset.perspectiveDock => BeveledRectangleBorder(
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(UiGalleryTokens.radiusMedium),
+          bottom: Radius.circular(UiGalleryTokens.radiusStep),
+        ),
+        side: BorderSide(color: s.line),
+      ),
+      _ => RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(
+          p == UiGalleryBottomNavPreset.morphingCapsule
+              ? UiGalleryTokens.radiusSpotlight
+              : UiGalleryTokens.radiusSoft,
+        ),
+        side: BorderSide(color: s.line),
+      ),
+    }, preserveRadius: p == UiGalleryBottomNavPreset.morphingCapsule);
     final insets = (s.visual.padding ?? EdgeInsets.zero)
         .add(galleryCurveInsets(shape))
         .resolve(direction);
@@ -670,17 +683,20 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
     final panelWidth = widths[widget.selectedIndex].clamp(48.0, width);
     final movingPanel =
         p == UiGalleryBottomNavPreset.floatingCove ||
-        p == UiGalleryBottomNavPreset.layeredShelf;
+        (p == UiGalleryBottomNavPreset.layeredShelf && !s.signatureEnabled);
     Widget face = Material(
       color: grouped
           ? Colors.transparent
           : p == UiGalleryBottomNavPreset.glassDock
-          ? s.visual.surfaceColor ?? s.surface.withValues(alpha: .74)
+          ? s.cheapEffects
+                ? Color.alphaBlend(s.surface, s.theme.colorScheme.surface)
+                : s.visual.surfaceColor ??
+                      s.surface.withValues(alpha: UiGalleryTokens.glassOpacity)
           : s.surface,
-      elevation:
-          s.visual.elevation ??
-          (p == UiGalleryBottomNavPreset.adaptiveMinimal || grouped ? 0 : 6),
-      shadowColor: s.visual.shadowColor ?? Colors.black.withValues(alpha: .13),
+      elevation: s.elevation(
+        p == UiGalleryBottomNavPreset.adaptiveMinimal || grouped ? 0 : 6,
+      ),
+      shadowColor: s.shadowFor(.13),
       shape: shape,
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
@@ -704,7 +720,9 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                       decoration: BoxDecoration(
                         color: s.surface,
                         gradient: s.visual.gradient,
-                        borderRadius: BorderRadius.circular(22),
+                        borderRadius: BorderRadius.circular(
+                          UiGalleryTokens.radiusSoft,
+                        ),
                         border: Border.all(color: s.line),
                       ),
                     ),
@@ -722,7 +740,9 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                       decoration: BoxDecoration(
                         color: s.surface,
                         gradient: s.visual.gradient,
-                        borderRadius: BorderRadius.circular(22),
+                        borderRadius: BorderRadius.circular(
+                          UiGalleryTokens.radiusSoft,
+                        ),
                         border: Border.all(color: s.line),
                       ),
                     ),
@@ -774,22 +794,22 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                 left: horizontalPadding.left,
                 right: horizontalPadding.right,
                 height: rowHeight,
-                child: row,
+                child: GalleryFamilyWell(style: s, child: row),
               ),
               if (p == UiGalleryBottomNavPreset.ribbonCurve)
                 Positioned(
                   left: physical - 18,
                   bottom: 3,
-                  width: 36,
-                  height: 3,
+                  width: UiGalleryTokens.handleWidth,
+                  height: UiGalleryTokens.markerThickness,
                   child: IgnorePointer(child: ColoredBox(color: s.accent)),
                 ),
               if (p == UiGalleryBottomNavPreset.adaptiveMinimal)
                 Positioned(
                   left: physical - 12,
                   bottom: 0,
-                  width: 24,
-                  height: 2,
+                  width: UiGalleryTokens.space6,
+                  height: UiGalleryTokens.baselineHeight,
                   child: IgnorePointer(child: ColoredBox(color: s.accent)),
                 ),
               if (p == UiGalleryBottomNavPreset.glassDock ||
@@ -800,12 +820,14 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                       (p == UiGalleryBottomNavPreset.glassDock ? 3 : 14),
                   bottom: 4,
                   width: p == UiGalleryBottomNavPreset.glassDock ? 6 : 28,
-                  height: 3,
+                  height: UiGalleryTokens.markerThickness,
                   child: IgnorePointer(
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: o.selectedColor ?? s.accent,
-                        borderRadius: BorderRadius.circular(3),
+                        borderRadius: BorderRadius.circular(
+                          UiGalleryTokens.radiusMarker,
+                        ),
                       ),
                     ),
                   ),
@@ -815,18 +837,22 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
         ),
       ),
     );
-    if (p == UiGalleryBottomNavPreset.glassDock) {
+    if (p == UiGalleryBottomNavPreset.glassDock && !s.cheapEffects) {
       face = ClipPath(
         clipper: ShapeBorderClipper(shape: shape, textDirection: direction),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          filter: ImageFilter.blur(
+            sigmaX: UiGalleryTokens.glassBlur,
+            sigmaY: UiGalleryTokens.glassBlur,
+          ),
           child: face,
         ),
       );
     }
-    if (p == UiGalleryBottomNavPreset.orbitDock ||
-        p == UiGalleryBottomNavPreset.layeredShelf ||
-        p == UiGalleryBottomNavPreset.perspectiveDock) {
+    if ((!s.cheapEffects || s.signatureEnabled) &&
+        (p == UiGalleryBottomNavPreset.orbitDock ||
+            p == UiGalleryBottomNavPreset.layeredShelf ||
+            p == UiGalleryBottomNavPreset.perspectiveDock)) {
       final perspective = p == UiGalleryBottomNavPreset.perspectiveDock;
       face = SizedBox(
         height: height + 8,
@@ -841,11 +867,15 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                   alignment: Alignment.bottomCenter,
                   transform: Matrix4.identity()
                     ..setEntry(3, 2, .001)
-                    ..rotateX(perspective ? -.12 * depth : 0),
+                    ..rotateX(
+                      perspective && !s.cheapEffects ? -.12 * depth : 0,
+                    ),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: s.accent.withValues(alpha: .14),
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(
+                        UiGalleryTokens.radiusLarge,
+                      ),
                     ),
                   ),
                 ),
@@ -884,7 +914,12 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
         ),
       );
     }
-    return face;
+    return GalleryFamilyEdge(
+      style: s,
+      shape: shape,
+      ownsDepth: GallerySignatureExceptions.navDepth.contains(p),
+      child: face,
+    );
   }
 
   Widget _item(
@@ -912,7 +947,7 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
         (o.labels == UiGalleryNavLabels.adaptive && (width >= 72 || selected));
     Widget icon = ExcludeSemantics(
       child: IconTheme.merge(
-        data: IconThemeData(color: color, size: 24),
+        data: IconThemeData(color: color, size: UiGalleryTokens.icon),
         child: selected ? item.selectedIcon ?? item.icon : item.icon,
       ),
     );
@@ -941,11 +976,11 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
             shape: BoxShape.circle,
             color: s.accent.withValues(alpha: .12 * active),
             border: Border.all(color: Color.lerp(s.line, s.accent, active)!),
-            boxShadow: active > 0
+            boxShadow: active > 0 && !s.cheapEffects
                 ? [
                     BoxShadow(
                       color: s.accent.withValues(alpha: .1 * active),
-                      blurRadius: 6 * depth,
+                      blurRadius: UiGalleryTokens.gapCompact * depth,
                       offset: Offset(0, 3 * depth),
                     ),
                   ]
@@ -973,7 +1008,9 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: selected ? s.tinted : Colors.transparent,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(
+                UiGalleryTokens.radiusCompact,
+              ),
               border: Border.all(color: selected ? color : s.line),
             ),
             child: Center(child: icon),
@@ -1005,7 +1042,7 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
               if (showLabel &&
                   (p != UiGalleryBottomNavPreset.morphingCapsule ||
                       selected)) ...[
-                const SizedBox(width: 6),
+                const SizedBox(width: UiGalleryTokens.gapCompact),
                 Flexible(child: label),
               ],
             ],
@@ -1015,7 +1052,7 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
             children: [
               icon,
               if (showLabel) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: UiGalleryTokens.space1),
                 Flexible(child: label),
               ],
             ],
@@ -1043,15 +1080,45 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
               onTap: callback,
               excludeFromSemantics: true,
               canRequestFocus: item.enabled,
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(UiGalleryTokens.radiusLarge),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: o.spacing),
+                padding: EdgeInsets.symmetric(
+                  horizontal: o.spacing,
+                  vertical:
+                      p == UiGalleryBottomNavPreset.layeredShelf &&
+                          s.signatureEnabled
+                      ? UiGalleryTokens.space1
+                      : 0,
+                ),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: p == UiGalleryBottomNavPreset.morphingCapsule
+                    border:
+                        p == UiGalleryBottomNavPreset.layeredShelf &&
+                            s.signatureEnabled
+                        ? Border(
+                            top: BorderSide(
+                              color: selected ? s.accent : s.line,
+                              width: selected
+                                  ? UiGalleryTokens.accentWidth
+                                  : UiGalleryTokens.lineWidth,
+                            ),
+                            left: BorderSide(color: s.line),
+                            right: BorderSide(color: s.line),
+                            bottom: BorderSide(color: s.line),
+                          )
+                        : null,
+                    color:
+                        p == UiGalleryBottomNavPreset.layeredShelf &&
+                            s.signatureEnabled
+                        ? Color.lerp(s.surface, s.tinted, active)
+                        : p == UiGalleryBottomNavPreset.morphingCapsule
                         ? s.accent.withValues(alpha: .14 * active)
                         : Colors.transparent,
-                    borderRadius: BorderRadius.circular(32),
+                    borderRadius:
+                        p == UiGalleryBottomNavPreset.layeredShelf &&
+                            s.signatureEnabled
+                        ? null
+                        : BorderRadius.circular(UiGalleryTokens.radiusCapsule),
                   ),
                   child: AbsorbPointer(
                     absorbing: !item.enabled,
@@ -1132,7 +1199,7 @@ class _IslandBorder extends ShapeBorder {
             leftWidth,
             rect.height,
           ),
-          const Radius.circular(22),
+          const Radius.circular(UiGalleryTokens.radiusSoft),
         ),
       )
       ..addRRect(
@@ -1143,7 +1210,7 @@ class _IslandBorder extends ShapeBorder {
             rightWidth,
             rect.height,
           ),
-          const Radius.circular(22),
+          const Radius.circular(UiGalleryTokens.radiusSoft),
         ),
       );
   }

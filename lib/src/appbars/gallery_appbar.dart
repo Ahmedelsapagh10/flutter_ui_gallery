@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../core/gallery_theme.dart';
 import '../core/gallery_style.dart';
+import '../core/gallery_signature.dart';
+import '../core/gallery_signature_exceptions.dart';
 import '../core/gallery_shape.dart';
 
 enum UiGalleryAppBarPreset {
@@ -25,21 +27,23 @@ enum UiGalleryAppBarPreset {
 
 double _height(UiGalleryAppBarPreset preset) => switch (preset) {
   UiGalleryAppBarPreset.adaptiveHorizon ||
-  UiGalleryAppBarPreset.compactRail => 56,
-  UiGalleryAppBarPreset.floatingArc => 80,
-  UiGalleryAppBarPreset.splitHeader => 96,
-  UiGalleryAppBarPreset.focusBar || UiGalleryAppBarPreset.layeredNav => 112,
-  UiGalleryAppBarPreset.panoramaBar => 144,
-  UiGalleryAppBarPreset.editorialTopbar => 128,
-  UiGalleryAppBarPreset.sculptedWave => 120,
-  UiGalleryAppBarPreset.foldedCanopy => 144,
-  UiGalleryAppBarPreset.parallaxCrest => 168,
-  UiGalleryAppBarPreset.orbitCommand => 96,
+  UiGalleryAppBarPreset.compactRail => UiGalleryTokens.space14,
+  UiGalleryAppBarPreset.floatingArc => UiGalleryTokens.headerIslandHeight,
+  UiGalleryAppBarPreset.splitHeader => UiGalleryTokens.headerSplitHeight,
+  UiGalleryAppBarPreset.focusBar ||
+  UiGalleryAppBarPreset.layeredNav => UiGalleryTokens.headerSearchHeight,
+  UiGalleryAppBarPreset.panoramaBar => UiGalleryTokens.headerPanoramaHeight,
+  UiGalleryAppBarPreset.editorialTopbar =>
+    UiGalleryTokens.headerEditorialHeight,
+  UiGalleryAppBarPreset.sculptedWave => UiGalleryTokens.headerWaveHeight,
+  UiGalleryAppBarPreset.foldedCanopy => UiGalleryTokens.headerPanoramaHeight,
+  UiGalleryAppBarPreset.parallaxCrest => UiGalleryTokens.headerCrestHeight,
+  UiGalleryAppBarPreset.orbitCommand => UiGalleryTokens.headerSplitHeight,
   UiGalleryAppBarPreset.searchSwitch ||
-  UiGalleryAppBarPreset.centeredTitle => 64,
-  UiGalleryAppBarPreset.breadcrumbTrail => 96,
+  UiGalleryAppBarPreset.centeredTitle => UiGalleryTokens.space16,
+  UiGalleryAppBarPreset.breadcrumbTrail => UiGalleryTokens.headerSplitHeight,
   UiGalleryAppBarPreset.sectionTabs => 88,
-  UiGalleryAppBarPreset.selectionBar => 64,
+  UiGalleryAppBarPreset.selectionBar => UiGalleryTokens.space16,
 };
 
 /// All headers work with Scaffold, without a required ScrollController.
@@ -139,19 +143,28 @@ class _UiGalleryAppBarState extends State<UiGalleryAppBar> {
           Expanded(
             child: _HeaderWidth(
               maxWidth: s.visual.maxWidth,
-              child: _HeaderSurface(
-                title: widget.title,
-                selectionCount: widget.selectionCount,
-                onSelectionCleared: widget.onSelectionCleared,
-                subtitle: widget.subtitle,
-                leading: widget.leading,
-                actions: widget.actions,
-                implyLeading: widget.automaticallyImplyLeading,
-                progress: widget.scrollAware ? _progress : 0,
+              child: GalleryFamilyEdge(
                 style: s,
-                preset: widget.preset,
-                searchField: widget.searchField,
-                onSearchChanged: widget.onSearchChanged,
+                ownsRule: GallerySignatureExceptions.headerRules.contains(
+                  widget.preset,
+                ),
+                ownsDepth: GallerySignatureExceptions.headerDepth.contains(
+                  widget.preset,
+                ),
+                child: _HeaderSurface(
+                  title: widget.title,
+                  selectionCount: widget.selectionCount,
+                  onSelectionCleared: widget.onSelectionCleared,
+                  subtitle: widget.subtitle,
+                  leading: widget.leading,
+                  actions: widget.actions,
+                  implyLeading: widget.automaticallyImplyLeading,
+                  progress: widget.scrollAware ? _progress : 0,
+                  style: s,
+                  preset: widget.preset,
+                  searchField: widget.searchField,
+                  onSearchChanged: widget.onSearchChanged,
+                ),
               ),
             ),
           ),
@@ -244,19 +257,28 @@ class UiGallerySliverAppBar extends StatelessWidget {
               ),
               child: _HeaderWidth(
                 maxWidth: s.visual.maxWidth,
-                child: _HeaderSurface(
-                  title: title,
-                  selectionCount: selectionCount,
-                  onSelectionCleared: onSelectionCleared,
-                  subtitle: subtitle,
-                  leading: leading,
-                  actions: actions,
-                  implyLeading: automaticallyImplyLeading,
-                  progress: progress,
+                child: GalleryFamilyEdge(
                   style: s,
-                  preset: preset,
-                  searchField: searchField,
-                  onSearchChanged: onSearchChanged,
+                  ownsRule: GallerySignatureExceptions.headerRules.contains(
+                    preset,
+                  ),
+                  ownsDepth: GallerySignatureExceptions.headerDepth.contains(
+                    preset,
+                  ),
+                  child: _HeaderSurface(
+                    title: title,
+                    selectionCount: selectionCount,
+                    onSelectionCleared: onSelectionCleared,
+                    subtitle: subtitle,
+                    leading: leading,
+                    actions: actions,
+                    implyLeading: automaticallyImplyLeading,
+                    progress: progress,
+                    style: s,
+                    preset: preset,
+                    searchField: searchField,
+                    onSearchChanged: onSearchChanged,
+                  ),
                 ),
               ),
             ),
@@ -303,7 +325,10 @@ class _HeaderActions extends StatelessWidget {
         children: [
           for (final action in actions)
             ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+              constraints: const BoxConstraints(
+                minWidth: UiGalleryTokens.touchTarget,
+                minHeight: UiGalleryTokens.touchTarget,
+              ),
               child: action,
             ),
         ],
@@ -401,36 +426,44 @@ class _HeaderSurface extends StatelessWidget {
         DefaultTextStyle(
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style:
-              style.visual.titleStyle ??
-              (editorial
-                      ? style.theme.textTheme.headlineMedium
-                      : large
-                      ? style.theme.textTheme.headlineSmall
-                      : style.theme.textTheme.titleLarge)!
-                  .copyWith(
-                    color: style.content,
-                    fontWeight: editorial ? FontWeight.w400 : FontWeight.w600,
-                    height: 1.1,
-                  ),
+          style: style.heading(
+            (editorial
+                    ? style.theme.textTheme.headlineMedium
+                    : large
+                    ? style.theme.textTheme.headlineSmall
+                    : style.theme.textTheme.titleLarge)!
+                .copyWith(
+                  color: style.content,
+                  fontWeight: editorial ? FontWeight.w400 : FontWeight.w600,
+                  height: 1.1,
+                ),
+            editorial: editorial,
+          ),
           child: displayTitle,
         );
     Widget toolbar(Widget buttons, {bool rail = false}) => Row(
       children: [
         if (navigation != null)
-          SizedBox.square(dimension: 48, child: navigation),
+          SizedBox.square(
+            dimension: UiGalleryTokens.touchTarget,
+            child: navigation,
+          ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsetsDirectional.only(start: 12),
+            padding: const EdgeInsetsDirectional.only(
+              start: UiGalleryTokens.space3,
+            ),
             child: headline(),
           ),
         ),
         if (actions.isNotEmpty) buttons,
         if (rail)
           Container(
-            width: 3,
-            height: 24,
-            margin: const EdgeInsetsDirectional.only(start: 12),
+            width: UiGalleryTokens.markerThickness,
+            height: UiGalleryTokens.space6,
+            margin: const EdgeInsetsDirectional.only(
+              start: UiGalleryTokens.space3,
+            ),
             color: style.accent,
           ),
       ],
@@ -452,7 +485,7 @@ class _HeaderSurface extends StatelessWidget {
             final floating = preset == UiGalleryAppBarPreset.floatingArc;
             final padding =
                 style.visual.padding ??
-                const EdgeInsets.symmetric(horizontal: 16);
+                const EdgeInsets.symmetric(horizontal: UiGalleryTokens.space4);
             final buttons = _HeaderActions(
               actions: actions,
               maxWidth:
@@ -478,7 +511,10 @@ class _HeaderSurface extends StatelessWidget {
                 middleSpacing: 12,
                 leading: navigation == null
                     ? null
-                    : SizedBox.square(dimension: 48, child: navigation),
+                    : SizedBox.square(
+                        dimension: UiGalleryTokens.touchTarget,
+                        child: navigation,
+                      ),
                 middle: headline(),
                 trailing: actions.isEmpty ? null : buttons,
               );
@@ -497,7 +533,10 @@ class _HeaderSurface extends StatelessWidget {
                   composition = Row(
                     children: [
                       if (navigation != null)
-                        SizedBox.square(dimension: 48, child: navigation),
+                        SizedBox.square(
+                          dimension: UiGalleryTokens.touchTarget,
+                          child: navigation,
+                        ),
                       Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -518,10 +557,15 @@ class _HeaderSurface extends StatelessWidget {
                       ),
                       if (actions.isNotEmpty)
                         Container(
-                          padding: const EdgeInsetsDirectional.only(start: 16),
+                          padding: const EdgeInsetsDirectional.only(
+                            start: UiGalleryTokens.space4,
+                          ),
                           decoration: BoxDecoration(
                             border: BorderDirectional(
-                              start: BorderSide(color: style.line, width: 2),
+                              start: BorderSide(
+                                color: style.line,
+                                width: UiGalleryTokens.baselineHeight,
+                              ),
                             ),
                           ),
                           child: buttons,
@@ -531,7 +575,10 @@ class _HeaderSurface extends StatelessWidget {
                 case UiGalleryAppBarPreset.focusBar:
                   composition = Column(
                     children: [
-                      SizedBox(height: 48, child: toolbar(buttons)),
+                      SizedBox(
+                        height: UiGalleryTokens.touchTarget,
+                        child: toolbar(buttons),
+                      ),
                       Expanded(
                         child: Center(
                           child:
@@ -546,7 +593,7 @@ class _HeaderSurface extends StatelessWidget {
                                   filled: true,
                                   fillColor: style.tinted,
                                   contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
+                                    horizontal: UiGalleryTokens.space4,
                                   ),
                                   border: const OutlineInputBorder(
                                     borderSide: BorderSide.none,
@@ -571,12 +618,12 @@ class _HeaderSurface extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           SizedBox(
-                            height: 48,
+                            height: UiGalleryTokens.touchTarget,
                             child: Row(
                               children: [
                                 if (navigation != null)
                                   SizedBox.square(
-                                    dimension: 48,
+                                    dimension: UiGalleryTokens.touchTarget,
                                     child: navigation,
                                   ),
                                 const Spacer(),
@@ -599,7 +646,7 @@ class _HeaderSurface extends StatelessWidget {
                                 child: subtitle!,
                               ),
                             ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: UiGalleryTokens.space2),
                         ],
                       ),
                     ],
@@ -609,11 +656,14 @@ class _HeaderSurface extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SizedBox(
-                        height: 48,
+                        height: UiGalleryTokens.touchTarget,
                         child: Row(
                           children: [
                             if (navigation != null)
-                              SizedBox.square(dimension: 48, child: navigation),
+                              SizedBox.square(
+                                dimension: UiGalleryTokens.touchTarget,
+                                child: navigation,
+                              ),
                             Expanded(
                               child: DefaultTextStyle.merge(
                                 style: TextStyle(color: style.muted),
@@ -628,11 +678,16 @@ class _HeaderSurface extends StatelessWidget {
                       ),
                       Expanded(
                         child: Container(
-                          padding: const EdgeInsetsDirectional.only(start: 20),
+                          padding: const EdgeInsetsDirectional.only(
+                            start: UiGalleryTokens.space5,
+                          ),
                           decoration: BoxDecoration(
                             color: style.tinted,
                             border: BorderDirectional(
-                              start: BorderSide(color: style.accent, width: 3),
+                              start: BorderSide(
+                                color: style.accent,
+                                width: UiGalleryTokens.markerThickness,
+                              ),
                             ),
                           ),
                           alignment: AlignmentDirectional.centerStart,
@@ -646,11 +701,14 @@ class _HeaderSurface extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SizedBox(
-                        height: 48,
+                        height: UiGalleryTokens.touchTarget,
                         child: Row(
                           children: [
                             if (navigation != null)
-                              SizedBox.square(dimension: 48, child: navigation),
+                              SizedBox.square(
+                                dimension: UiGalleryTokens.touchTarget,
+                                child: navigation,
+                              ),
                             if (subtitle != null)
                               Expanded(
                                 child: DefaultTextStyle.merge(
@@ -676,7 +734,10 @@ class _HeaderSurface extends StatelessWidget {
                           child: headline(editorial: true),
                         ),
                       ),
-                      Divider(height: 1, color: style.content),
+                      Divider(
+                        height: UiGalleryTokens.lineWidth,
+                        color: style.content,
+                      ),
                     ],
                   );
                 case UiGalleryAppBarPreset.breadcrumbTrail:
@@ -685,7 +746,7 @@ class _HeaderSurface extends StatelessWidget {
                     children: [
                       if (subtitle != null)
                         SizedBox(
-                          height: 36,
+                          height: UiGalleryTokens.handleWidth,
                           child: Align(
                             alignment: AlignmentDirectional.centerStart,
                             child: SingleChildScrollView(
@@ -710,8 +771,8 @@ class _HeaderSurface extends StatelessWidget {
                       if (subtitle != null)
                         Padding(
                           padding: const EdgeInsetsDirectional.only(
-                            start: 12,
-                            bottom: 12,
+                            start: UiGalleryTokens.space3,
+                            bottom: UiGalleryTokens.space3,
                           ),
                           child: DefaultTextStyle.merge(
                             maxLines: 1,
@@ -759,12 +820,11 @@ class _HeaderSurface extends StatelessWidget {
                 decoration: ShapeDecoration(
                   color: surfaceColor,
                   gradient: style.visual.gradient,
-                  shadows: floating
+                  shadows: floating && !style.cheapEffects
                       ? [
                           BoxShadow(
                             color:
-                                style.visual.shadowColor ??
-                                Colors.black.withValues(alpha: .1),
+                                style.visual.shadowColor ?? style.shadowFor(.1),
                             blurRadius: style.visual.elevation ?? 12,
                           ),
                         ]
@@ -777,7 +837,7 @@ class _HeaderSurface extends StatelessWidget {
                 ),
                 child: IconTheme(
                   data: IconThemeData(color: style.accent),
-                  child: composition,
+                  child: GalleryFamilyWell(style: style, child: composition),
                 ),
               ),
             );
@@ -829,10 +889,16 @@ class _SearchToolbarState extends State<_SearchToolbar> {
   Widget build(BuildContext context) => Row(
     children: [
       if (widget.navigation != null)
-        SizedBox.square(dimension: 48, child: widget.navigation),
+        SizedBox.square(
+          dimension: UiGalleryTokens.touchTarget,
+          child: widget.navigation,
+        ),
       Expanded(
         child: Padding(
-          padding: const EdgeInsetsDirectional.only(start: 12, end: 8),
+          padding: const EdgeInsetsDirectional.only(
+            start: UiGalleryTokens.space3,
+            end: UiGalleryTokens.space2,
+          ),
           child: AnimatedSwitcher(
             duration: widget.style.duration(widget.style.motion.change),
             switchInCurve: widget.style.curve,
@@ -858,8 +924,8 @@ class _SearchToolbarState extends State<_SearchToolbar> {
                             fillColor: widget.style.tinted,
                             isDense: true,
                             contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 12,
+                              horizontal: UiGalleryTokens.space3,
+                              vertical: UiGalleryTokens.space3,
                             ),
                             border: const OutlineInputBorder(
                               borderSide: BorderSide.none,
@@ -875,7 +941,7 @@ class _SearchToolbarState extends State<_SearchToolbar> {
         ),
       ),
       SizedBox.square(
-        dimension: 48,
+        dimension: UiGalleryTokens.touchTarget,
         child: IconButton(
           tooltip: _searching
               ? MaterialLocalizations.of(context).closeButtonTooltip
@@ -929,36 +995,38 @@ class _SpatialHeader extends StatelessWidget {
           final direction = Directionality.of(context) == TextDirection.rtl
               ? -1.0
               : 1.0;
-          final shape =
-              style.visual.shape ??
-              UiGalleryCurvedBorder(
-                edge: UiGalleryCurveEdge.bottom,
-                curve: orbit
-                    ? UiGalleryCurve.ribbon
-                    : canopy
-                    ? UiGalleryCurve.convex
-                    : UiGalleryCurve.wave,
-                depth: compact ? 0 : (canopy ? 12 : 18) * (1 - t * .7),
-                position: orbit
-                    ? .78
-                    : canopy
-                    ? .65
-                    : .35 + t * .3,
-                span: orbit
-                    ? .65
-                    : canopy
-                    ? .85
-                    : 1,
-                radius: orbit
-                    ? 28
-                    : canopy
-                    ? 12
-                    : 0,
-                side: BorderSide(color: style.line),
-              );
+          final shape = style.shape(
+            UiGalleryCurvedBorder(
+              edge: UiGalleryCurveEdge.bottom,
+              curve: orbit
+                  ? UiGalleryCurve.ribbon
+                  : canopy
+                  ? UiGalleryCurve.convex
+                  : UiGalleryCurve.wave,
+              depth: compact ? 0 : (canopy ? 12 : 18) * (1 - t * .7),
+              position: orbit
+                  ? .78
+                  : canopy
+                  ? .65
+                  : .35 + t * .3,
+              span: orbit
+                  ? .65
+                  : canopy
+                  ? .85
+                  : 1,
+              radius: orbit
+                  ? UiGalleryTokens.radiusPanel
+                  : canopy
+                  ? UiGalleryTokens.radiusToolbar
+                  : 0,
+              side: BorderSide(color: style.line),
+            ),
+          );
           final padding =
               (style.visual.padding ??
-                      const EdgeInsets.symmetric(horizontal: 16))
+                      const EdgeInsets.symmetric(
+                        horizontal: UiGalleryTokens.space4,
+                      ))
                   .add(galleryCurveInsets(shape));
           final surfaceInset = compact
               ? 0.0
@@ -979,11 +1047,15 @@ class _SpatialHeader extends StatelessWidget {
             duration: style.duration(style.motion.change),
           );
           Widget controls({bool includeTitle = true}) => SizedBox(
-            height: 48,
+            height: UiGalleryTokens.touchTarget,
             child: Row(
               children: [
                 if (navigation != null)
-                  SizedBox(width: 48, height: 48, child: navigation),
+                  SizedBox(
+                    width: UiGalleryTokens.touchTarget,
+                    height: UiGalleryTokens.touchTarget,
+                    child: navigation,
+                  ),
                 if (includeTitle)
                   Expanded(child: heading())
                 else
@@ -999,7 +1071,11 @@ class _SpatialHeader extends StatelessWidget {
             content = Row(
               children: [
                 if (navigation != null)
-                  SizedBox(width: 48, height: 48, child: navigation),
+                  SizedBox(
+                    width: UiGalleryTokens.touchTarget,
+                    height: UiGalleryTokens.touchTarget,
+                    child: navigation,
+                  ),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1022,12 +1098,18 @@ class _SpatialHeader extends StatelessWidget {
                 ),
                 if (actions.isNotEmpty)
                   Container(
-                    margin: const EdgeInsetsDirectional.only(start: 12),
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    margin: const EdgeInsetsDirectional.only(
+                      start: UiGalleryTokens.space3,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: UiGalleryTokens.space1,
+                    ),
                     decoration: BoxDecoration(
                       color: style.tinted,
                       border: Border.all(color: style.line),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(
+                        UiGalleryTokens.radiusMedium,
+                      ),
                     ),
                     child: buttons,
                   ),
@@ -1062,8 +1144,8 @@ class _SpatialHeader extends StatelessWidget {
           }
           final surface = Material(
             color: style.surface,
-            elevation: style.visual.elevation ?? (orbit ? 6 : 0),
-            shadowColor: style.visual.shadowColor,
+            elevation: style.elevation(orbit ? 6 : 0),
+            shadowColor: style.shadowFor(.1),
             shape: shape,
             clipBehavior: Clip.antiAlias,
             child: DecoratedBox(
@@ -1078,7 +1160,7 @@ class _SpatialHeader extends StatelessWidget {
             ),
           );
           if (compact) return surface;
-          if (canopy) {
+          if (canopy && !style.cheapEffects) {
             return Stack(
               children: [
                 Positioned.fill(
@@ -1090,7 +1172,7 @@ class _SpatialHeader extends StatelessWidget {
                     color: style.tinted,
                     shape: RoundedRectangleBorder(
                       borderRadius: const BorderRadius.vertical(
-                        bottom: Radius.circular(12),
+                        bottom: Radius.circular(UiGalleryTokens.radiusToolbar),
                       ),
                       side: BorderSide(color: style.line),
                     ),
@@ -1104,7 +1186,7 @@ class _SpatialHeader extends StatelessWidget {
               ],
             );
           }
-          if (crest) {
+          if (crest && !style.cheapEffects) {
             return Stack(
               children: [
                 PositionedDirectional(
@@ -1115,7 +1197,9 @@ class _SpatialHeader extends StatelessWidget {
                   child: _SpatialPlane(
                     color: style.accent.withValues(alpha: .16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32),
+                      borderRadius: BorderRadius.circular(
+                        UiGalleryTokens.radiusCapsule,
+                      ),
                     ),
                     transform: Matrix4.translationValues(
                       0,
@@ -1154,7 +1238,7 @@ class _SpatialHeader extends StatelessWidget {
               ],
             );
           }
-          if (orbit) {
+          if (orbit && !style.cheapEffects) {
             return Stack(
               children: [
                 PositionedDirectional(
@@ -1258,10 +1342,10 @@ class _HorizonSurface extends StatelessWidget {
     final duration = style.duration(style.motion.change);
     return Material(
       color: style.surface,
-      elevation: style.visual.elevation ?? 0,
+      elevation: style.elevation(0),
       shape: style.visual.shape,
       clipBehavior: style.visual.shape == null ? Clip.none : Clip.antiAlias,
-      shadowColor: style.visual.shadowColor,
+      shadowColor: style.shadowFor(.1),
       child: DecoratedBox(
         decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: style.line)),
@@ -1274,7 +1358,9 @@ class _HorizonSurface extends StatelessWidget {
               final expanded = constraints.maxHeight >= 88 && progress < .5;
               final padding =
                   (style.visual.padding ??
-                          const EdgeInsets.symmetric(horizontal: 12))
+                          const EdgeInsets.symmetric(
+                            horizontal: UiGalleryTokens.space3,
+                          ))
                       .add(galleryCurveInsets(style.visual.shape));
               return Padding(
                 padding: padding,
@@ -1285,8 +1371,8 @@ class _HorizonSurface extends StatelessWidget {
                         data: IconThemeData(color: style.content),
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(
-                            minWidth: 48,
-                            minHeight: 48,
+                            minWidth: UiGalleryTokens.touchTarget,
+                            minHeight: UiGalleryTokens.touchTarget,
                           ),
                           child: navigation,
                         ),
@@ -1302,8 +1388,8 @@ class _HorizonSurface extends StatelessWidget {
                           duration: duration,
                           curve: style.curve,
                           padding: EdgeInsetsDirectional.only(
-                            start: 12,
-                            bottom: expanded ? 16 : 0,
+                            start: UiGalleryTokens.space3,
+                            bottom: expanded ? UiGalleryTokens.space4 : 0,
                           ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -1332,7 +1418,9 @@ class _HorizonSurface extends StatelessWidget {
                     ),
                     if (actions.isNotEmpty)
                       Container(
-                        padding: const EdgeInsetsDirectional.only(start: 8),
+                        padding: const EdgeInsetsDirectional.only(
+                          start: UiGalleryTokens.space2,
+                        ),
                         decoration: BoxDecoration(
                           border: BorderDirectional(
                             start: BorderSide(color: style.line),
@@ -1381,12 +1469,12 @@ class _HorizonTitle extends StatelessWidget {
           curve: style.curve,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style:
-              style.visual.titleStyle ??
-              (expanded
-                      ? style.theme.textTheme.headlineSmall
-                      : style.theme.textTheme.titleLarge)!
-                  .copyWith(color: style.content, fontWeight: FontWeight.w600),
+          style: style.heading(
+            (expanded
+                    ? style.theme.textTheme.headlineSmall
+                    : style.theme.textTheme.titleLarge)!
+                .copyWith(color: style.content, fontWeight: FontWeight.w600),
+          ),
           child: title,
         ),
       ),
