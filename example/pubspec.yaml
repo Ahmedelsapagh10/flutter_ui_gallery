@@ -62,6 +62,25 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  fonts:
+    - family: MarginArabic
+      fonts:
+        - asset: assets/fonts/Alexandria.ttf
+
+    - family: StillSerif
+      fonts:
+        - asset: assets/fonts/still/SourceSerif4.ttf
+    - family: StillSerifStatic
+      fonts:
+        - asset: assets/fonts/still/SourceSerif4-300-60.ttf
+          weight: 300
+    - family: StillSans
+      fonts:
+        - asset: assets/fonts/still/SourceSans3.ttf
+    - family: StillNaskh
+      fonts:
+        - asset: assets/fonts/still/NotoNaskhArabic.ttf
+
   assets:
     - assets/flutter_ui_gallery.png
 

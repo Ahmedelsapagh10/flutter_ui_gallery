@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_gallery/flutter_ui_gallery.dart';
+import 'notes.dart';
+import 'wallet.dart';
 
 typedef ExampleOperation =
     Future<void> Function(
@@ -32,6 +34,24 @@ class RecipeGallery extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         for (final recipe in [
+          (
+            'Wallet · Still (Pass A)',
+            'Local accounts, transfer drafts and statement previews',
+            Icons.account_balance_wallet_outlined,
+            const StillExample(),
+          ),
+          (
+            'Notes · Margin (Pass B)',
+            'Persistent search, protected drafts and workspace navigation',
+            Icons.auto_stories_outlined,
+            const NotesExample(passB: true),
+          ),
+          (
+            'Notes · Margin (Pass A)',
+            'Authored notebook, Arabic, retained state and showcase controls',
+            Icons.notes_outlined,
+            const NotesExample(),
+          ),
           (
             'Productivity',
             'Search, commands, validated editing and bulk actions',
