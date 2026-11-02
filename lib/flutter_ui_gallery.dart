@@ -11,6 +11,8 @@ export 'src/core/gallery_theme.dart'
         UiGalleryTheme,
         UiGalleryTokens,
         UiGalleryDesignFamily,
+        UiGalleryEffects,
+        UiGallerySpringCurve,
         NovaTheme,
         NovaTokens;
 export 'src/dialogs/gallery_dialog.dart';

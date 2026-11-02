@@ -2,6 +2,8 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
+import 'gallery_theme.dart' show UiGalleryTokens;
+
 /// Partial visual overrides. Unspecified fields inherit the surrounding theme.
 @immutable
 class UiGallerySurfaceStyle {
@@ -172,10 +174,10 @@ class UiGalleryMotion {
   final Duration? _entrance, _exit, _change;
   final Curve? _curve;
   final double? _intensity;
-  Duration get entrance => _entrance ?? const Duration(milliseconds: 340);
-  Duration get exit => _exit ?? const Duration(milliseconds: 220);
-  Duration get change => _change ?? const Duration(milliseconds: 240);
-  Curve get curve => _curve ?? Curves.easeOutCubic;
+  Duration get entrance => _entrance ?? UiGalleryTokens.entrance;
+  Duration get exit => _exit ?? UiGalleryTokens.exit;
+  Duration get change => _change ?? UiGalleryTokens.change;
+  Curve get curve => _curve ?? UiGalleryTokens.curve;
   double get intensity => _intensity ?? 1;
 
   UiGalleryMotion copyWith({
