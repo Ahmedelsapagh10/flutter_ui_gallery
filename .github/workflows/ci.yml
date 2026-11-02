@@ -50,9 +50,16 @@ jobs:
       - name: Test package on current stable
         if: matrix.sdk == 'stable'
         run: flutter test --no-pub --exclude-tags golden
-      - name: Test example
+      - name: Preserve approved visual baselines
+        run: python3 tool/check_golden_hashes.py
+      - name: Test example with pinned visual baselines
+        if: matrix.sdk == 'pinned'
         working-directory: example
         run: flutter test --no-pub test
+      - name: Test example on current stable
+        if: matrix.sdk == 'stable'
+        working-directory: example
+        run: flutter test --no-pub test --exclude-tags golden
       - name: Generate every default and customized snippet
         working-directory: example
         run: flutter test --no-pub test/snippet_test.dart --dart-define=WRITE_SNIPPET_FIXTURE=true
