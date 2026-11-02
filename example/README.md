@@ -16,6 +16,7 @@ The public gallery URL is [ahmedelsapagh10.github.io/flutter_ui_gallery](https:/
 
 Open **Real app examples** from the toolbar:
 
+- **Notes · Margin (Pass A)** uses eight presets for notebook editing, commands, selection and archive/undo. It includes real Arabic copy, light/dark, 2.0 text, reduced motion, a wide reading pane and a clearly labeled Navigation style showcase setting. Its briefs are in [Notes Pass A](../doc/NOTES_PASS_A.md).
 - **Productivity** combines search, typed commands, validated note creation, bulk selection, confirmation and archive/undo.
 - **Shopping** retains its basket while navigating, validates the recipient, runs cancellable preparation with progress, and handles failure/retry.
 - **Dashboard** handles loading, metrics, empty results, errors, refresh and retry.
@@ -31,7 +32,7 @@ flutter pub get
 flutter run -d chrome
 ```
 
-Use `flutter run -d <device-id>` for an available Android or iOS device/simulator. The web example loads its display fonts through Google Fonts; native examples use the platform fallback when those fonts are unavailable. The package itself adds no external runtime dependencies.
+Use `flutter run -d <device-id>` for an available Android or iOS device/simulator. The web example loads its display fonts through Google Fonts; Margin bundles Alexandria (OFL) for deterministic Arabic rendering on native and web; the other native examples use platform fallbacks. The package itself adds no external runtime dependencies.
 
 ## Validate
 
@@ -42,3 +43,11 @@ flutter build web --release --base-href /flutter_ui_gallery/
 ```
 
 Preview frames help compare layouts, but native keyboard, back navigation, screen-reader and performance checks still require Android/iOS testing. See the [package README](../README.md) for the full validation and release scope.
+
+
+Margin **Notes Pass B** is a separate entry under Real app examples, retaining Pass A for comparison. It adds an Edge Lift note-action shelf (move/save/archive), a Split Decision guard for unsaved drafts, local-save Inline Pulse feedback, persistent Focus Bar search and Layered Shelf/Scroll Dock navigation choices. Header and navigation style settings are explicitly showcase controls. [Read the six briefs and direction choices](../doc/NOTES_PASS_B.md). Data remains local to the session.
+
+The approved Spatial recipe is now edge-only, with the same flat structural cue in cheap mode and no extra content plane. [Precedence exceptions and revised budget](../doc/FAMILY_SIGNATURES.md) record Minimal 3/66, Soft 3/66 and Spatial 10/66 (14 distinct presets). Existing opt-out family behavior is unchanged.
+
+
+**Wallet · Still (Pass A)** is available under Real app examples: local single-currency accounts, same-currency transfer drafts, editable ledger categories and cancellable in-memory statement previews. Sample money only; no bank API, FX total, executed payment or file-save claim. Light/dark, Arabic with the example-only Alexandria font, 2.0 text, reduced motion and tablet layouts are included. [Seven briefs and Pass B boundary](../doc/WALLET_PASS_A.md). [Per-preset redesign default/migration proposal and CI evidence](../doc/REDESIGN_RELEASE_POLICY.md).

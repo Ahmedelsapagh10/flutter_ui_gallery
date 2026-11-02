@@ -25,7 +25,7 @@ Use **Browse by task** to filter the full catalog by Quick actions, Search, Bulk
 - **Soft** (`UiGalleryDesignFamily.soft`): more rounded surfaces, comfortable spacing and gentle elevation.
 - **Spatial** (`UiGalleryDesignFamily.spatial`): larger radii, generous spacing, stronger depth and longer finite transitions.
 
-Families coordinate shared colors, message typography and elevation, with component-specific typography and spacing. Sheets, dialogs and toasts receive matching rounded shapes; app bars and bottom navigation preserve their preset silhouettes. Per-call overrides refine the result. See [integration guidance](INTEGRATION.md) for attaching a family to an existing ThemeData and connecting real application state.
+Families coordinate shared color roles, typography and elevation, with component-specific spacing. All components retain their preset silhouettes: families refine corner relationships instead of applying a common rounded shape. Minimal uses medium headings, tight corners and precise eased motion; Soft uses semibold headings, comfortable corners and a critically damped spring; Spatial uses bold headings, broader corners and finite damped overshoot. Editorial and monospace type roles remain distinct. Select `UiGalleryEffects.cheap` for opaque, blur-free surfaces with simpler depth. Per-call overrides refine the result. See [integration guidance](INTEGRATION.md) for attaching a family to an existing ThemeData and connecting real application state.
 
 ## Sheets
 
@@ -65,7 +65,7 @@ Families coordinate shared colors, message typography and elevation, with compon
 - **Stack Tag** (`stackTag`): Labeled clipped-corner tag for grouped events. Motion: directional slide. Use: stackable compact event notices.
 - **Inline Pulse** (`inlinePulse`): Flat information strip with a precise baseline. Motion: minimal fade. Use: passive synchronization updates.
 - **Beacon Toast** (`beacon`): Separate circular status well and message region. Motion: small scale with slide. Use: status notices with extra context.
-- **Ribbon Action Bar** (`ribbonActionBar`): Action precedes the message on a directional strip. Motion: selected-edge entrance. Use: action-first retry notifications.
+- **Ribbon Action Bar** (`ribbonActionBar`): Docked bar with a separate tinted leading command segment, narrative and dismissal. Narrow/large-text layouts place the action above the message. Motion: short finite dock rise. Use: action-first retry notifications.
 - **Dock Toast** (`dock`): Wide docked status deck and divider. Motion: bottom rise. Use: persistent session and download status.
 - **Snap Notice** (`snapNotice`): Small side-anchored vertical notice. Motion: quick side snap. Use: short context-specific feedback.
 - **Mini Console** (`miniConsole`): Monospace status header and message log region. Motion: minimal fade. Use: developer and system information.

@@ -11,12 +11,14 @@ topics:
   - navigation
   - accessibility
 screenshots:
-  - description: "Minimal family: restrained component styling in the interactive Flutter gallery."
-    path: doc/assets/family-minimal.png
-  - description: "Soft family: rounded surfaces with coordinated typography, spacing and motion."
-    path: doc/assets/family-soft.png
-  - description: "Spatial family: expressive depth and finite transitions across gallery components."
-    path: doc/assets/family-spatial.png
+  - description: "Six toast presets with success, undo, upload progress, and status messages."
+    path: doc/assets/preview-toasts.png
+  - description: "Orbit Dock and Depth Frame bottom sheets in light and dark mode."
+    path: doc/assets/preview-sheets.png
+  - description: "Side-by-Side Choice and Spotlight Result dialogs in light and dark mode."
+    path: doc/assets/preview-dialogs.png
+  - description: "Focus Bar and Sculpted Wave headers with Floating Cove and Glass Dock navigation."
+    path: doc/assets/preview-navigation.png
 
 environment:
   sdk: ^3.11.5
