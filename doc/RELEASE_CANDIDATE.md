@@ -9,6 +9,14 @@ running Flutter CI. Merge and publication remain prohibited. Exact new-SHA CI
 results are recorded separately in the release-0.2.0 evidence; the freeze report
 below describes the preceding local RC and is retained as historical evidence.
 
+The first exact-SHA run (`41721276614`, preparation commit `fbb267d`) passed stable
+and Android checks but found 20 strict phase1 golden failures on macOS 15.8.2:
+13–57 glyph-edge pixels per image, with matching pinned SDK/font hashes. Those
+same comparisons pass on the local macOS 26.5.1 capture environment. The pinned
+golden job is therefore aligned to macOS 26 arm64; stable/native runners remain
+unchanged. Historical PNGs, manifests and strict comparisons are preserved. This
+follow-up is not a successful-CI claim: final exact-SHA results are required.
+
 # Historical local RC report — 2026-11-03
 
 **Decision: accepted for local RC review.** The implementation has no known

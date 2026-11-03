@@ -17,7 +17,8 @@ concurrency:
 jobs:
   checks:
     name: Analyze and test (${{ matrix.sdk }})
-    runs-on: macos-15
+    # Approved font-rendered goldens were captured on macOS 26 arm64.
+    runs-on: ${{ matrix.sdk == 'pinned' && 'macos-26' || 'macos-15' }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -35,7 +36,10 @@ jobs:
           flutter-version: ${{ matrix.flutter }}
           cache: true
       - name: Record SDK versions
-        run: flutter --version
+        run: |
+          flutter --version
+          sw_vers
+          uname -m
       - name: Verify approved legacy and Notes Pass A golden hashes
         run: python3 tool/check_golden_hashes.py
       - name: Verify Notes render SDK and font pins

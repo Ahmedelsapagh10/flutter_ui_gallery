@@ -17,6 +17,19 @@ and run Flutter CI. Merge, deployment and publication remain prohibited. Histori
   outcomes externally in release-0.2.0. No merge or publication authorized.
 - Earlier local RC evidence below remains historical and is not a hosted-CI claim.
 
+### Exact-SHA hosted validation follow-up
+
+- Preparation commit `fbb267d49da65d05deb18a4825a761ad872fe225` was pushed to
+  design-overhaul; PR #2 and manual Flutter CI run `41721276614` target that SHA.
+- Stable 3.47.9 and Android build/smoke passed. Pinned 3.41.9 passed 647 tests but
+  failed all 20 phase1 comparisons with 13–57 differing glyph-edge pixels each.
+  SDK/font/hash/format guards passed; failure artifacts were uploaded/downloaded.
+- The same 20 strict comparisons pass locally on macOS 26.5.1 arm64; CI used
+  macOS 15.8.2 arm64. Align only the pinned golden runner to macOS 26 and record
+  the host version/architecture. Stable and native runners stay unchanged.
+- No golden images, manifests, tolerances, tests or SDK constraints are changed.
+  This environment correction requires a fresh exact-SHA CI result before GO.
+
 ## Finalization freeze — 2026-11-03
 
 The finalization request supersedes the open-ended continuation below. No further
