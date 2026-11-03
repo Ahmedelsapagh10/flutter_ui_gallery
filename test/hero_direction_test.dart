@@ -667,4 +667,48 @@ void main() {
       );
     }
   }
+  testWidgets('Repeated enabled command objects have independent row focus', (
+    tester,
+  ) async {
+    final owner = await _host(tester);
+    const command = UiGalleryDialogAction(label: 'Repeated', value: 7);
+    final result = UiGalleryDialog.commands<int>(
+      context: owner,
+      title: 'Commands',
+      emptyLabel: 'Empty',
+      commands: const [command, command],
+    );
+    await tester.pumpAndSettle();
+    InkWell row(int index) => tester.widget<InkWell>(
+      find
+          .ancestor(
+            of: find.text('Repeated').at(index),
+            matching: find.byType(InkWell),
+          )
+          .first,
+    );
+    expect(row(0).focusNode, isNot(same(row(1).focusNode)));
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(row(0).focusNode!.hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(row(1).focusNode!.hasFocus, isTrue);
+    expect(
+      find.descendant(
+        of: find
+            .ancestor(
+              of: find.text('Repeated').at(1),
+              matching: find.byType(InkWell),
+            )
+            .first,
+        matching: find.byIcon(Icons.keyboard_return_rounded),
+      ),
+      findsOneWidget,
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(await result, 7);
+    expect(tester.takeException(), isNull);
+  });
 }

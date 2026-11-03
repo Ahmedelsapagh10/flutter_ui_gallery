@@ -1011,7 +1011,7 @@ class _CommandPalette<T> extends StatefulWidget {
 
 class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
   final _focus = FocusNode();
-  final _commandFocus = <UiGalleryDialogAction<T>, FocusNode>{};
+  final _commandFocus = <int, FocusNode>{};
   final _keys = <int, GlobalKey>{};
   String _query = '';
   int _active = -1;
@@ -1038,8 +1038,8 @@ class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
     super.dispose();
   }
 
-  FocusNode _commandNode(UiGalleryDialogAction<T> command) =>
-      _commandFocus.putIfAbsent(command, FocusNode.new);
+  FocusNode _commandNode(int index) =>
+      _commandFocus.putIfAbsent(index, FocusNode.new);
 
   void _activate(int index) {
     if (_active != index) setState(() => _active = index);
@@ -1090,7 +1090,7 @@ class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
           (current + (key == LogicalKeyboardKey.arrowDown ? 1 : -1)) %
           enabled.length;
       _activate(enabled[next]);
-      if (!_focus.hasFocus) _commandNode(commands[_active]).requestFocus();
+      if (!_focus.hasFocus) _commandNode(_active).requestFocus();
     } else {
       return KeyEventResult.ignored;
     }
@@ -1119,7 +1119,7 @@ class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
       enabled: command.enabled,
       selected: active,
       child: InkWell(
-        focusNode: _commandNode(command),
+        focusNode: _commandNode(index),
         onFocusChange: (focused) {
           if (focused) _activate(index);
         },
@@ -1282,7 +1282,7 @@ class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
                         child: s.signatureEnabled
                             ? _command(s, commands[i], i)
                             : ListTile(
-                                focusNode: _commandNode(commands[i]),
+                                focusNode: _commandNode(i),
                                 onFocusChange: (focused) {
                                   if (focused) _activate(i);
                                 },
