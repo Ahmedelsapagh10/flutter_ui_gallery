@@ -137,7 +137,9 @@ void main() {
             await expectLater(
               find.byKey(boundary),
               matchesGoldenFile(
-                family == UiGalleryDesignFamily.spatial
+                preset == 'orbit'
+                    ? 'goldens/sheet-calm-v1/orbit-existing/${family.name}-$env.png'
+                    : family == UiGalleryDesignFamily.spatial
                     ? 'goldens/spatial-edge/$preset/${family.name}-$env.png'
                     : 'goldens/notes-pass-a/$preset/${family.name}-$env.png',
               ),

@@ -25,6 +25,7 @@ Future<BuildContext> hostDialogHero(
   String scenario,
   GlobalKey boundary, {
   bool signature = true,
+  double? textScale,
 }) async {
   final ar = scenario.startsWith('rtl');
   tester.view.physicalSize = switch (scenario) {
@@ -68,9 +69,10 @@ Future<BuildContext> hostDialogHero(
           data: MediaQuery.of(context).copyWith(
             disableAnimations: true,
             textScaler: TextScaler.linear(
-              ['large-text', 'rtl-large', 'keyboard'].contains(scenario)
-                  ? 2
-                  : 1,
+              textScale ??
+                  (['large-text', 'rtl-large', 'keyboard'].contains(scenario)
+                      ? 2
+                      : 1),
             ),
           ),
           child: child!,

@@ -31,3 +31,10 @@ assert len(approved_dialogs) == 24, 'Dialog Calm v1 must contain 24 approved fil
 for name, digest in approved_dialogs.items():
     assert hashlib.sha256((root / name).read_bytes()).hexdigest() == digest, name
 print('24/24 approved Dialog Calm v1 baselines unchanged')
+
+sheets = root / 'example/test/goldens/sheet-calm-v1/approved_manifest.json'
+approved_sheets = json.loads(sheets.read_text())
+assert len(approved_sheets) == 40, 'Sheet Calm v1 must contain 40 approved files'
+for name, digest in approved_sheets.items():
+    assert hashlib.sha256((root / name).read_bytes()).hexdigest() == digest, name
+print('40/40 approved Sheet Calm v1 baselines unchanged')

@@ -121,10 +121,20 @@ void main() {
           child: const Text('Body'),
         );
         await tester.pumpAndSettle();
-        final region = tester.widget<GalleryFamilyRegion>(
-          find.byType(GalleryFamilyRegion),
-        );
-        expect(region.framed, preset == UiGallerySheetPreset.neoTray);
+        final calm =
+            preset == UiGallerySheetPreset.orbit ||
+            preset == UiGallerySheetPreset.splitLayer;
+        final region = calm
+            ? null
+            : tester.widget<GalleryFamilyRegion>(
+                find.byType(GalleryFamilyRegion),
+              );
+        if (calm) {
+          expect(find.byType(GalleryFamilyRegion), findsNothing);
+          expect(find.byType(GalleryFamilyEdge), findsWidgets);
+        } else {
+          expect(region!.framed, preset == UiGallerySheetPreset.neoTray);
+        }
         final shape =
             tokens.surface(tester, 'Shape').shape! as RoundedRectangleBorder;
         final radius = shape.borderRadius.resolve(TextDirection.ltr);
@@ -153,7 +163,7 @@ void main() {
             findsWidgets,
           );
           expect(
-            region.framed,
+            region!.framed,
             isTrue,
           ); // Soft cannot round away the framed well.
         }

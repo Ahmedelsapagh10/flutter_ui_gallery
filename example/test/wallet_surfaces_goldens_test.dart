@@ -203,7 +203,11 @@ void main() {
         expect(tester.takeException(), isNull);
         await expectLater(
           find.byKey(key),
-          matchesGoldenFile('goldens/wallet-pass-a/surfaces/$preset-$env.png'),
+          matchesGoldenFile(
+            preset == 'splitLayer'
+                ? 'goldens/sheet-calm-v1/wallet-splitLayer/$env.png'
+                : 'goldens/wallet-pass-a/surfaces/$preset-$env.png',
+          ),
         );
         await tester.pumpWidget(const SizedBox());
         await tester.pumpAndSettle();
