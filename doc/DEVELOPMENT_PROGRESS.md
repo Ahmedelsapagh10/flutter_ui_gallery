@@ -3,6 +3,39 @@
 Local development only. Remote push, workflows, merge, deployment and publication
 remain separately authorized actions. Historical PNGs and manifests are immutable.
 
+## Finalization freeze — 2026-11-03
+
+The finalization request supersedes the open-ended continuation below. No further
+Hero sprint or P2/P3 expansion is required for this local RC. The historical
+sections remain evidence of what was and was not completed.
+
+- Local RC code: `3981a46e2489a2e18415b11c232a7672be82ea51`.
+- Selection count freeze fix: `b416350a4562c571d7fd24c5230cfbce06ae4cb8`.
+- Scaled navigation: `a024c115bd9a214d42aead7632923ba25df9fd48`.
+- All final code verified on pinned3.41.9:667package/518example including strict
+  goldens; stable3.47.9:643package/364compatible example. Both:5snippet checks,
+  396generated helpers and clean analysis. Format72files0changes; guards pass.
+- 262prior golden files including243PNGs remain byte-identical. No new golden
+  migration during finalization. Public APIs/aliases/constraints/deps unchanged.
+- Optional coordinated recipe delivered with existing family(useSignature:true)
+  and a functional all-five-category Quick Start. No new theme API needed.
+- Practical playground:14recommended starting points, Calm structure opt-in,
+  backward-compatible links, corrected typed Copy Code. All66remain accessible.
+- Clean implementation-commit pub publish --dry-run:exit0,0warnings,14MB archive.
+  Pubspec remains0.1.0; suggest0.2.0, not published. Final report-only commit's
+  dry-run is recorded externally after committing.
+- Full report: doc/RELEASE_CANDIDATE.md. Actual visual gallery, raw logs,
+  inventories, diff and hashes: external release-candidate/ evidence directory.
+- Editorial3xArabic reading gestures and compact3xnavigation scrolling remain
+  OPEN native accessibility limitations. No physical-device, native screen-reader,
+  measured performance or current remote CI verification claimed.
+- Remaining20Hero redesign/register, newrecipefactory and expanded playground
+  features intentionally deferred. Existing strong components kept unchanged.
+- Disk recovered safely under explicit approval; about7.9GiB free. No further
+  cleanup needed. Repository should be clean after this documentation commit.
+- Next steps are version/release approval, exact-SHA hosted CI and publication
+  checks listed in the RC report. Do not resume optional visual sprints by default.
+
 ## Verified starting point — 2026-11-03
 
 Branch: `design-overhaul`; clean starting HEAD:
@@ -105,7 +138,7 @@ Branch: `design-overhaul`; clean starting HEAD:
   symlinks or active writes; inventory saved before deletion. About8.1GiB free.
 - Focused local commit contains this batch. P1.6 as a whole remains incomplete.
 
-## Exact continuation after batch A
+## Historical continuation after batch A — superseded by finalization freeze
 
 1. Verify branch/HEAD/status, read `p1-6-navigation/commit.json` and report.md,
    recheck disk. Keep accepted scaled-label implementation and historical images.
@@ -123,7 +156,7 @@ Branch: `design-overhaul`; clean starting HEAD:
    No remote actions. Editorial3xArabicreading limitation remains OPEN for native
    accessibility review; widget tests do not close that evidence gap.
 
-## Remaining sequence
+## Historical remaining sequence — deferred by finalization freeze
 
 P1.5 Toast + AppBar → P1.6 final Hero quality register → P2 optional coordinated
 recipe and functional example → P3 discovery/snippets/documentation → P4 final
