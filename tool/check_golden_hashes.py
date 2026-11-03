@@ -24,3 +24,10 @@ assert len(approved) == 13, 'Hero Calm v1 must contain exactly 13 approved files
 for name, digest in approved.items():
     assert hashlib.sha256((root / name).read_bytes()).hexdigest() == digest, name
 print('13/13 approved Hero Calm v1 baselines unchanged')
+
+dialogs = root / 'example/test/goldens/dialog-calm-v1/approved_manifest.json'
+approved_dialogs = json.loads(dialogs.read_text())
+assert len(approved_dialogs) == 24, 'Dialog Calm v1 must contain 24 approved files'
+for name, digest in approved_dialogs.items():
+    assert hashlib.sha256((root / name).read_bytes()).hexdigest() == digest, name
+print('24/24 approved Dialog Calm v1 baselines unchanged')

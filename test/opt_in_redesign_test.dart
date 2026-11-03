@@ -116,29 +116,33 @@ void main() {
                 (b) =>
                     b.border is BorderDirectional &&
                     (b.border! as BorderDirectional).start.width ==
-                        UiGalleryTokens.accentWidth,
+                        UiGalleryTokens.lineWidth * 2,
               )
               .toList();
           expect(lanes.length, 2);
-          expect(lanes.any((b) => b.color == colors.errorContainer), isTrue);
+          expect(lanes.any((b) => b.color == colors.errorContainer), isFalse);
+          expect(
+            lanes.where(
+              (b) =>
+                  (b.border! as BorderDirectional).start.color == colors.error,
+            ),
+            hasLength(1),
+          );
+          expect(
+            tester
+                .widget<TextButton>(destructive)
+                .style!
+                .foregroundColor!
+                .resolve({}),
+            colors.error,
+          );
           expect(lanes.every((b) => b.boxShadow == null), isTrue);
-          if (scale == 2) {
-            await tester.ensureVisible(destructive);
-            await tester.pumpAndSettle();
-            expect(
-              tester.getRect(destructive).top,
-              greaterThan(tester.getRect(safe).bottom),
-            );
-          } else {
-            expect(
-              tester.getCenter(safe).dy,
-              closeTo(tester.getCenter(destructive).dy, 30),
-            );
-            expect(
-              tester.getCenter(safe).dx < tester.getCenter(destructive).dx,
-              !rtl,
-            );
-          }
+          await tester.ensureVisible(destructive);
+          await tester.pumpAndSettle();
+          expect(
+            tester.getRect(destructive).top,
+            greaterThan(tester.getRect(safe).bottom),
+          );
           await tester.tap(destructive);
           await tester.pumpAndSettle();
           expect(await result, 'discard');

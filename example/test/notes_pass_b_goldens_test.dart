@@ -153,7 +153,9 @@ void main() {
             await expectLater(
               find.byKey(boundary),
               matchesGoldenFile(
-                'goldens/notes-pass-b/$preset/${family.name}-$env.png',
+                preset == 'split'
+                    ? 'goldens/dialog-calm-v1/split/${family.name}-$env.png'
+                    : 'goldens/notes-pass-b/$preset/${family.name}-$env.png',
               ),
             );
           }

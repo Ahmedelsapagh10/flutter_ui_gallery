@@ -173,12 +173,17 @@ void main() {
           actions: const [],
         );
         await tester.pumpAndSettle();
-        if (preset == UiGalleryDialogPreset.commandPalette) {
+        if (preset == UiGalleryDialogPreset.commandPalette ||
+            preset == UiGalleryDialogPreset.split ||
+            preset == UiGalleryDialogPreset.sideBySideChoice) {
           expect(find.byType(GalleryFamilyRegion), findsNothing);
           expect(
             tester.widget<Text>(find.text('Decision')).style!.fontSize,
             Theme.of(owner).textTheme.titleLarge!.fontSize,
           );
+          if (preset != UiGalleryDialogPreset.commandPalette) {
+            expect(find.byType(GalleryFamilyEdge), findsWidgets);
+          }
         } else {
           final region = tester.widget<GalleryFamilyRegion>(
             find.byType(GalleryFamilyRegion),
