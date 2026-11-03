@@ -378,11 +378,13 @@ class _HeaderSurface extends StatelessWidget {
     final selecting =
         preset == UiGalleryAppBarPreset.selectionBar && selectionCount > 0;
     final displayTitle = selecting
-        ? Text(
-            MaterialLocalizations.of(
-              context,
-            ).selectedRowCountTitle(selectionCount),
-          )
+        ? style.signatureEnabled
+              ? _SelectionTitle(count: selectionCount, style: style)
+              : Text(
+                  MaterialLocalizations.of(
+                    context,
+                  ).selectedRowCountTitle(selectionCount),
+                )
         : title;
     final surfaceColor = selecting && style.visual.surfaceColor == null
         ? style.tinted
@@ -858,6 +860,53 @@ class _HeaderSurface extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+class _SelectionTitle extends StatelessWidget {
+  const _SelectionTitle({required this.count, required this.style});
+
+  final int count;
+  final UiGalleryStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = MaterialLocalizations.of(context);
+    final phrase = localizations.selectedRowCountTitle(count);
+    return LayoutBuilder(
+      builder: (context, bounds) {
+        final inherited = DefaultTextStyle.of(context).style;
+        final painter = TextPainter(
+          text: TextSpan(text: phrase, style: inherited),
+          textDirection: Directionality.of(context),
+          textScaler: MediaQuery.textScalerOf(context),
+          locale: Localizations.maybeLocaleOf(context),
+          maxLines: 1,
+        )..layout();
+        final fits =
+            painter.width <= bounds.maxWidth &&
+            painter.height <= bounds.maxHeight;
+        painter.dispose();
+        if (fits) return Text(phrase);
+        return Semantics(
+          label: phrase,
+          excludeSemantics: true,
+          child: Tooltip(
+            message: phrase,
+            excludeFromSemantics: true,
+            child: Text(
+              localizations.formatDecimal(count),
+              style: style.heading(
+                style.theme.textTheme.titleSmall?.copyWith(
+                  color: style.content,
+                  height: 1,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
