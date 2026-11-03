@@ -26,6 +26,7 @@ Future<BuildContext> hostDialogHero(
   GlobalKey boundary, {
   bool signature = true,
   double? textScale,
+  Widget Function(BuildContext)? home,
 }) async {
   final ar = scenario.startsWith('rtl');
   tester.view.physicalSize = switch (scenario) {
@@ -80,7 +81,7 @@ Future<BuildContext> hostDialogHero(
         home: Builder(
           builder: (context) {
             owner = context;
-            return const Scaffold();
+            return home?.call(context) ?? const Scaffold();
           },
         ),
       ),

@@ -612,6 +612,12 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
     );
     final message = Text(item.message, style: messageStyle);
     final close = IconButton(
+      constraints: p == UiGalleryToastPreset.action && s.signatureEnabled
+          ? const BoxConstraints(
+              minWidth: UiGalleryTokens.touchTarget,
+              minHeight: UiGalleryTokens.touchTarget,
+            )
+          : null,
       tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
       onPressed: () => widget.queue.dismiss(item),
       icon: Icon(Icons.close, size: UiGalleryTokens.iconSmall, color: s.muted),
@@ -725,26 +731,74 @@ class _ToastTileState extends State<_ToastTile> with TickerProviderStateMixin {
         switch (p) {
           case UiGalleryToastPreset.action
               when s.signatureEnabled && action != null:
+            final textFirst =
+                s.media.textScaler.scale(1) > 1.3 ||
+                messageWidth > width - UiGalleryTokens.space4 * 2;
+            final recoveryBelow = stacked || textFirst;
+            final status = item.leading ?? rawMark;
+            final controls = textFirst
+                ? s.media.textScaler.scale(1) > 1.3
+                      ? Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            action,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(child: status),
+                                if (item.trailing != null) ...[
+                                  const SizedBox(width: UiGalleryTokens.space2),
+                                  Flexible(child: item.trailing!),
+                                ],
+                                close,
+                              ],
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (item.leading != null)
+                              Flexible(child: status)
+                            else
+                              status,
+                            const SizedBox(width: UiGalleryTokens.space2),
+                            Expanded(child: action),
+                            close,
+                            if (item.trailing != null)
+                              Flexible(child: item.trailing!),
+                          ],
+                        )
+                : Wrap(
+                    alignment: WrapAlignment.end,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [action, close],
+                  );
             final recovery = Container(
               padding: const EdgeInsets.all(UiGalleryTokens.space1),
               decoration: BoxDecoration(
                 color: s.tinted,
-                border: stacked
+                border: recoveryBelow
                     ? Border(top: BorderSide(color: s.line))
                     : BorderDirectional(start: BorderSide(color: s.line)),
               ),
-              child: Wrap(
-                alignment: WrapAlignment.end,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [action, close],
-              ),
+              child: controls,
             );
-            content = stacked
+            content = recoveryBelow
                 ? Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      line(omitAction: true, omitClose: true),
+                      if (textFirst)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: UiGalleryTokens.space3,
+                          ),
+                          child: message,
+                        )
+                      else
+                        line(omitAction: true, omitClose: true),
                       recovery,
                     ],
                   )

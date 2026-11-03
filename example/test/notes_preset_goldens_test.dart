@@ -139,6 +139,8 @@ void main() {
               matchesGoldenFile(
                 preset == 'orbit'
                     ? 'goldens/sheet-calm-v1/orbit-existing/${family.name}-$env.png'
+                    : env == 'large-text'
+                    ? 'goldens/feedback-calm-v1/action-existing/${family.name}-$env.png'
                     : family == UiGalleryDesignFamily.spatial
                     ? 'goldens/spatial-edge/$preset/${family.name}-$env.png'
                     : 'goldens/notes-pass-a/$preset/${family.name}-$env.png',

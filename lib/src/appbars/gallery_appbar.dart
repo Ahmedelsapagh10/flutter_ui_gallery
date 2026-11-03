@@ -495,8 +495,20 @@ class _HeaderSurface extends StatelessWidget {
                       (preset == UiGalleryAppBarPreset.searchSwitch ? 48 : 0)) /
                   2,
             );
+            final calmEditorial =
+                preset == UiGalleryAppBarPreset.editorialTopbar &&
+                style.signatureEnabled &&
+                !compact;
             Widget composition;
-            if (preset == UiGalleryAppBarPreset.searchSwitch) {
+            if (calmEditorial) {
+              composition = _EditorialHeader(
+                title: displayTitle,
+                subtitle: subtitle,
+                navigation: navigation,
+                actions: actions.isEmpty ? null : buttons,
+                style: style,
+              );
+            } else if (preset == UiGalleryAppBarPreset.searchSwitch) {
               composition = _SearchToolbar(
                 title: headline(),
                 navigation: navigation,
@@ -837,12 +849,147 @@ class _HeaderSurface extends StatelessWidget {
                 ),
                 child: IconTheme(
                   data: IconThemeData(color: style.accent),
-                  child: GalleryFamilyWell(style: style, child: composition),
+                  child: calmEditorial
+                      ? composition
+                      : GalleryFamilyWell(style: style, child: composition),
                 ),
               ),
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class _EditorialHeader extends StatelessWidget {
+  const _EditorialHeader({
+    required this.title,
+    required this.subtitle,
+    required this.navigation,
+    required this.actions,
+    required this.style,
+  });
+
+  final Widget title;
+  final Widget? subtitle, navigation, actions;
+  final UiGalleryStyle style;
+
+  double _wordWidth(BuildContext context, Widget child, TextStyle inherited) {
+    if (child is! Text || child.data == null) return 0;
+    final textStyle = child.style?.inherit == false
+        ? child.style!
+        : inherited.merge(child.style);
+    final painter = TextPainter(
+      textDirection: child.textDirection ?? Directionality.of(context),
+      textScaler: child.textScaler ?? MediaQuery.textScalerOf(context),
+      locale: child.locale ?? Localizations.maybeLocaleOf(context),
+    );
+    var width = 0.0;
+    for (final word in child.data!.split(RegExp(r'\s+'))) {
+      painter.text = TextSpan(text: word, style: textStyle);
+      painter.layout();
+      if (painter.width > width) width = painter.width;
+    }
+    painter.dispose();
+    return width;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final titleStyle = style.heading(
+      style.theme.textTheme.headlineSmall?.copyWith(
+        color: style.content,
+        height: 1.15,
+      ),
+      editorial: true,
+    );
+    final subtitleStyle = style.body(
+      style.theme.textTheme.labelMedium?.copyWith(color: style.muted),
+    );
+    final heading = Semantics(
+      header: true,
+      child: DefaultTextStyle(style: titleStyle, child: title),
+    );
+    final supporting = subtitle == null
+        ? null
+        : DefaultTextStyle(style: subtitleStyle, child: subtitle!);
+    final titleFirst = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+    return NotificationListener<ScrollNotification>(
+      onNotification: (_) => true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (navigation != null) ...[
+                  SizedBox(
+                    width: UiGalleryTokens.touchTarget,
+                    child: Align(child: navigation),
+                  ),
+                  const SizedBox(width: UiGalleryTokens.space2),
+                ],
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, bounds) {
+                      var width = bounds.maxWidth;
+                      for (final wordWidth in [
+                        _wordWidth(context, title, titleStyle),
+                        if (subtitle != null)
+                          _wordWidth(context, subtitle!, subtitleStyle),
+                      ]) {
+                        if (wordWidth > width) width = wordWidth;
+                      }
+                      return SingleChildScrollView(
+                        primary: false,
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: width,
+                          height: bounds.maxHeight,
+                          child: SingleChildScrollView(
+                            primary: false,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: bounds.maxHeight,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  if (titleFirst) heading,
+                                  if (supporting != null) ...[
+                                    if (titleFirst)
+                                      const SizedBox(
+                                        height: UiGalleryTokens.space2,
+                                      ),
+                                    supporting,
+                                    if (!titleFirst)
+                                      const SizedBox(
+                                        height: UiGalleryTokens.space2,
+                                      ),
+                                  ],
+                                  if (!titleFirst) heading,
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                if (actions != null) ...[
+                  const SizedBox(width: UiGalleryTokens.space3),
+                  Align(alignment: AlignmentDirectional.topEnd, child: actions),
+                ],
+              ],
+            ),
+          ),
+          Divider(height: UiGalleryTokens.lineWidth, color: style.line),
+        ],
       ),
     );
   }

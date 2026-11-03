@@ -42,15 +42,46 @@ Branch: `design-overhaul`; clean starting HEAD:
 - Reclaimed 560 MiB only from the previously explicitly approved unopened,
   unchanged Gradle transform folder. No SDK/user/recovery/evidence deletion.
 
-## Current phase: P1.5 — next
+## P1.5 — locally verified; commit containing this entry
 
-- Select Toast.action and AppBar.editorialTopbar from the existing audit.
-- Preserve Action's proven recovery layout; improve constrained message/action
-  readability. Editorial needs readable compact/large-text hierarchy within
-  the existing preferred-height contract.
-- Read-only preparation complete; no P1.5 implementation/pass claimed here.
-- Next action: capture current Flutter before renders, implement scoped signature
-  improvements, render/review/refine, tests/guards, then a separate local commit.
+- Action Toast: full-width long/scaled messages, readable recovery action and
+  48px Close. FIFO, duplicate handling, timers and overlay architecture retained.
+- EditorialTopbar: quiet host-theme hierarchy, whole-word reading width, large
+  text heading priority, stable actions; internal reading scroll isolated from
+  caller primary controller and scroll-aware collapse. Signature-off unchanged.
+- Actual render evidence: `p1-5-feedback-header-implementation/gallery.html`
+  under the existing external evidence root. 54 before/after pairs, exact masks,
+  three historical migrations and three extreme Arabic reading captures.
+- Pinned 3.41.9: 667 package / 468 example passes, including strict goldens.
+  Stable 3.47.9 isolated checkout: 643 package / 314 compatible example passes.
+- 37 focused behavior cases; 24 new strict specimens; 3 reviewed Action 2x
+  migrations in feedback-calm-v1. All 213 prior PNGs and seven associated
+  protected metadata files unchanged. All current hash/font guards pass.
+- Both SDKs pass 396 generated helpers / three snippet checks and analysis.
+  Final pinned format: 69 files, zero changes. After two test-only lint fixes,
+  affected pinned 42 tests and stable Action 18 + snippets 3 tests passed again.
+- Actual gallery browser verification: 174 images decoded, zero failed images,
+  no horizontal page overflow. This validates evidence presentation, not native UI.
+- Trade-off: fixed 128px Editorial header requires reading gestures at extreme
+  3x Arabic; 2x tested headings fully initially visible. Native screen readers,
+  physical devices, real IME and measured performance remain unverified.
+- Recovered 618,466,088 bytes only from the explicitly approved unused compiler
+  cache. Automatic review initially rejected deletion; user then explicitly
+  approved this exact scope. No other deletion performed.
+
+## Current checkpoint — P1.6 next
+
+- P1.4 commit: `4f4bd51f129511f722454dcdaaaff4b5e538b27a`.
+- Finish this P1.5 focused commit; record SHA in external commit.json.
+- Next batch: AdaptiveMinimal + LayeredShelf scaled navigation labels. Read-only
+  findings and exact evidence hashes are in `p1-6-preparation/next-batch.md`.
+  Fixed horizontal breakpoint ignores actual font/scaler; measure label width,
+  preserve signature-off behavior, test scroll/focus reachability. Then address
+  SelectionBar localized count visibility while preserving full semantics.
+- Preserve proposed/approved distinction for final 20 register, including two
+  conditional showcase entries. No inferred /100 scores from earlier /65 audit.
+- P1.6 implementation and P2/P3/P4 are not complete. Continue in required order.
+- Available disk about 580 MiB at checkpoint: recheck before Flutter/native builds.
 
 ## Remaining sequence
 
