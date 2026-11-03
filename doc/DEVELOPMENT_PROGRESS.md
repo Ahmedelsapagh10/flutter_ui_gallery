@@ -72,7 +72,7 @@ Branch: `design-overhaul`; clean starting HEAD:
 ## Current checkpoint — P1.6 next
 
 - P1.4 commit: `4f4bd51f129511f722454dcdaaaff4b5e538b27a`.
-- Finish this P1.5 focused commit; record SHA in external commit.json.
+- P1.5 committed: `1a4e69b92240583e591312c3c8c3cd2ecaeca659`.
 - Next batch: AdaptiveMinimal + LayeredShelf scaled navigation labels. Read-only
   findings and exact evidence hashes are in `p1-6-preparation/next-batch.md`.
   Fixed horizontal breakpoint ignores actual font/scaler; measure label width,
@@ -82,6 +82,46 @@ Branch: `design-overhaul`; clean starting HEAD:
   conditional showcase entries. No inferred /100 scores from earlier /65 audit.
 - P1.6 implementation and P2/P3/P4 are not complete. Continue in required order.
 - Available disk about 580 MiB at checkpoint: recheck before Flutter/native builds.
+
+## P1.6 batch A — scaled navigation readability
+
+- Signature-enabled AdaptiveMinimal and LayeredShelf now reserve the actual
+  merged selected/unselected label width and scaled line height. AdaptiveMinimal
+  uses measured horizontal fit instead of a fixed120px threshold. Existing
+  horizontal scrolling is reused; no API, state or dependency changes.
+- 30 actual before/after pairs in `p1-6-navigation/gallery.html`; independent
+  pixel review accepted all30. Normal light/dark pixels unchanged. Compact3x
+  Arabic uses horizontal scrolling rather than truncation: native accessibility
+  of this trade-off remains unverified.
+- 30 focused cases pass on both3.41.9 and3.47.9: full paragraphs, user drag,
+  keyboard activation, pointer activation and caller-owned selection.
+- Pinned full suite:667 package /498 example passes including strict goldens.
+  Initial example run495passed/3expected differences; all3 inspected/versioned
+  separately in navigation-calm-v1, then full498passed without update flags.
+- Stable full package643 /example344passes; analysis clean on both SDKs.
+  format70files0changes; renderer/font/hash guards pass.
+- All256 prior golden-related files (including240PNGs) remain byte-identical.
+- User explicitly approved only Gradle8.14.3/transforms cleanup. Noopen files,
+  symlinks or active writes; inventory saved before deletion. About8.1GiB free.
+- Focused local commit contains this batch. P1.6 as a whole remains incomplete.
+
+## Exact continuation after batch A
+
+1. Verify branch/HEAD/status, read `p1-6-navigation/commit.json` and report.md,
+   recheck disk. Keep accepted scaled-label implementation and historical images.
+2. P1.6 batch B: SelectionBar localized count visibility. Use existing
+   MaterialLocalizations.formatDecimal and complete selectedRowCountTitle
+   semantics; preserve caller count/clear/actions, signature-off layout, height.
+   Preparation: `p1-6-preparation/next-batch.md`. Capture before first.
+3. Complete evidence-driven remaining portfolio work/register; retain strong
+   TaskRail/Timeline/Signal/SearchSwitch. Fold, FocusBar, Ribbon and conditional
+   MiniConsole/ConcaveNotch require the specific existing audit concerns only.
+4. P2 optional host-theme recipe through existing UiGalleryTheme mechanism and
+   functional five-category Notes variant; defaults must remain unchanged.
+5. P3 Hero-first discovery, matching snippets/deep links, simple runnable README.
+6. P4 fresh full matrix, archive/dry-run and honest release classification.
+   No remote actions. Editorial3xArabicreading limitation remains OPEN for native
+   accessibility review; widget tests do not close that evidence gap.
 
 ## Remaining sequence
 

@@ -155,6 +155,8 @@ void main() {
               matchesGoldenFile(
                 preset == 'split'
                     ? 'goldens/dialog-calm-v1/split/${family.name}-$env.png'
+                    : preset == 'layeredShelf' && env == 'large-text'
+                    ? 'goldens/navigation-calm-v1/${family.name}-$env.png'
                     : 'goldens/notes-pass-b/$preset/${family.name}-$env.png',
               ),
             );

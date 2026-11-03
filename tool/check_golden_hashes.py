@@ -45,3 +45,9 @@ assert len(approved_feedback) == 27, 'Feedback Calm v1 must contain 27 approved 
 for name, digest in approved_feedback.items():
     assert hashlib.sha256((root / name).read_bytes()).hexdigest() == digest, name
 print('27/27 approved Feedback Calm v1 baselines unchanged')
+
+nav = json.loads((root / 'example/test/goldens/navigation-calm-v1/approved_manifest.json').read_text())
+assert len(nav) == 3, 'Navigation Calm v1 must contain 3 approved files'
+for name, digest in nav.items():
+    assert hashlib.sha256((root / name).read_bytes()).hexdigest() == digest, name
+print('3/3 approved Navigation Calm v1 baselines unchanged')

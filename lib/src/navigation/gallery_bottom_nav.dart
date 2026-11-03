@@ -314,6 +314,23 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                         widget.itemBuilder == null) {
                       width = math.max(width, _capsuleWidth(context, s));
                     }
+                    if (_readableLabels(s)) {
+                      final metrics = _labelMetrics(context, s);
+                      width = math.max(
+                        width,
+                        widget.items.length *
+                                math.max(
+                                  48,
+                                  metrics.width +
+                                      widget.options.spacing * 2 +
+                                      4,
+                                ) +
+                            (s.visual.padding
+                                    ?.resolve(Directionality.of(context))
+                                    .horizontal ??
+                                0),
+                      );
+                    }
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       hitTestBehavior: HitTestBehavior.deferToChild,
@@ -568,6 +585,41 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
         (s.visual.padding?.resolve(Directionality.of(context)).horizontal ?? 0);
   }
 
+  bool _readableLabels(UiGalleryStyle s) =>
+      s.signatureEnabled &&
+      widget.itemBuilder == null &&
+      (widget.preset == UiGalleryBottomNavPreset.adaptiveMinimal ||
+          widget.preset == UiGalleryBottomNavPreset.layeredShelf);
+
+  TextStyle _readingStyle(UiGalleryStyle s, bool selected) =>
+      (s.theme.textTheme.labelSmall ?? const TextStyle(fontSize: 12))
+          .merge(s.visual.messageStyle)
+          .merge(
+            selected
+                ? widget.options.selectedLabelStyle
+                : widget.options.unselectedLabelStyle,
+          );
+
+  Size _labelMetrics(BuildContext context, UiGalleryStyle s, [String? label]) {
+    var width = 0.0, height = 0.0;
+    for (final item in widget.items) {
+      if (label != null && item.label != label) continue;
+      for (final selected in [false, true]) {
+        final painter = TextPainter(
+          text: TextSpan(text: item.label, style: _readingStyle(s, selected)),
+          textDirection: Directionality.of(context),
+          textScaler: s.media.textScaler,
+          locale: Localizations.maybeLocaleOf(context),
+          maxLines: 1,
+        )..layout();
+        width = math.max(width, painter.width);
+        height = math.max(height, painter.height);
+        painter.dispose();
+      }
+    }
+    return Size(width, height);
+  }
+
   Widget _surface(
     BuildContext context,
     UiGalleryStyle s,
@@ -617,7 +669,9 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
     final calmCapsule =
         p == UiGalleryBottomNavPreset.morphingCapsule && s.signatureEnabled;
     final labelStyle = _capsuleLabelStyle(s);
-    final scaledLabel = calmCapsule
+    final scaledLabel = _readableLabels(s)
+        ? _labelMetrics(context, s).height + 8
+        : calmCapsule
         ? s.media.textScaler.scale(labelStyle.fontSize ?? 12) *
               (labelStyle.height ?? 1.4)
         : s.media.textScaler.scale(12).clamp(12.0, 28.0);
@@ -1087,7 +1141,13 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
     final horizontal =
         p == UiGalleryBottomNavPreset.morphingCapsule ||
         p == UiGalleryBottomNavPreset.ribbonCurve ||
-        (p == UiGalleryBottomNavPreset.adaptiveMinimal && width >= 120);
+        (p == UiGalleryBottomNavPreset.adaptiveMinimal &&
+            (_readableLabels(s)
+                ? width - o.spacing * 2 >=
+                      UiGalleryTokens.icon +
+                          UiGalleryTokens.gapCompact +
+                          _labelMetrics(context, s, item.label).width
+                : width >= 120));
     Widget content = horizontal
         ? Row(
             mainAxisAlignment: MainAxisAlignment.center,
