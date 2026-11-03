@@ -369,17 +369,26 @@ class _StillExampleState extends State<StillExample> {
           const SizedBox(height: 8),
           _Amount(money(entry.minor)),
           const SizedBox(height: 20),
-          for (final id in ['home', 'travel', 'income', 'other'])
-            ListTile(
-              title: Text(c.category(id)),
-              leading: Icon(
-                entry.category == id
-                    ? Icons.radio_button_checked
-                    : Icons.radio_button_off,
-              ),
-              selected: entry.category == id,
-              onTap: () => Navigator.of(owner).pop(id),
+          Material(
+            type: MaterialType.transparency,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final id in ['home', 'travel', 'income', 'other'])
+                  ListTile(
+                    title: Text(c.category(id)),
+                    leading: Icon(
+                      entry.category == id
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_off,
+                    ),
+                    selected: entry.category == id,
+                    onTap: () => Navigator.of(owner).pop(id),
+                  ),
+              ],
             ),
+          ),
         ],
       ),
     );

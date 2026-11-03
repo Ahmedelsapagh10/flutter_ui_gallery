@@ -81,6 +81,22 @@ void main() {
       await host(tester);
       await tester.tap(find.text('Groceries'));
       await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.widget<ListTile>(find.widgetWithText(ListTile, 'Home')).selected,
+        isTrue,
+      );
+      await tester.tap(find.widgetWithText(ListTile, 'Other'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Groceries'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(
+        tester
+            .widget<ListTile>(find.widgetWithText(ListTile, 'Other'))
+            .selected,
+        isTrue,
+      );
       await tester.tap(find.widgetWithText(ListTile, 'Other'));
       await tester.pumpAndSettle();
       expect(
