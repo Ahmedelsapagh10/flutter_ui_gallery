@@ -354,6 +354,8 @@ class _DialogSurface<T> extends StatelessWidget {
       UiGallerySurface.dialog,
     );
     final spotlight = preset == UiGalleryDialogPreset.spotlight;
+    final calmCommands =
+        preset == UiGalleryDialogPreset.commandPalette && s.signatureEnabled;
     final split =
         preset == UiGalleryDialogPreset.split ||
         preset == UiGalleryDialogPreset.panelDecision;
@@ -395,7 +397,7 @@ class _DialogSurface<T> extends StatelessWidget {
               children: [
                 Container(
                   width: preset == UiGalleryDialogPreset.timeline ? 6 : 24,
-                  height: UiGalleryTokens.gapCompact,
+                  height: calmCommands ? 3 : UiGalleryTokens.gapCompact,
                   decoration: BoxDecoration(
                     color: s.accent,
                     borderRadius: BorderRadius.circular(
@@ -410,7 +412,11 @@ class _DialogSurface<T> extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: UiGalleryTokens.space6),
+            SizedBox(
+              height: calmCommands
+                  ? UiGalleryTokens.space3
+                  : UiGalleryTokens.space6,
+            ),
           ],
           Semantics(
             namesRoute: true,
@@ -419,11 +425,14 @@ class _DialogSurface<T> extends StatelessWidget {
               title,
               textAlign: spotlight ? TextAlign.center : TextAlign.start,
               style: s.heading(
-                s.theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: s.content,
-                  height: 1.15,
-                ),
+                (calmCommands
+                        ? s.theme.textTheme.titleLarge
+                        : s.theme.textTheme.headlineSmall)
+                    ?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: s.content,
+                      height: 1.15,
+                    ),
               ),
             ),
           ),
@@ -441,17 +450,23 @@ class _DialogSurface<T> extends StatelessWidget {
             ),
           ],
           if (child != null) ...[
-            const SizedBox(height: UiGalleryTokens.space6),
+            SizedBox(
+              height: calmCommands
+                  ? UiGalleryTokens.space3
+                  : UiGalleryTokens.space6,
+            ),
             child!,
           ],
         ],
       ),
     );
-    body = GalleryFamilyRegion(
-      style: s,
-      framed: GallerySignatureExceptions.dialogWells.contains(preset),
-      child: body,
-    );
+    if (!calmCommands) {
+      body = GalleryFamilyRegion(
+        style: s,
+        framed: GallerySignatureExceptions.dialogWells.contains(preset),
+        child: body,
+      );
+    }
     Widget decisions = Padding(
       padding: const EdgeInsets.all(UiGalleryTokens.space5),
       child: Wrap(
@@ -995,7 +1010,8 @@ class _CommandPalette<T> extends StatefulWidget {
 }
 
 class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
-  late final FocusNode _focus = FocusNode(onKeyEvent: _key);
+  final _focus = FocusNode();
+  final _commandFocus = <UiGalleryDialogAction<T>, FocusNode>{};
   final _keys = <int, GlobalKey>{};
   String _query = '';
   int _active = -1;
@@ -1016,7 +1032,30 @@ class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
   @override
   void dispose() {
     _focus.dispose();
+    for (final node in _commandFocus.values) {
+      node.dispose();
+    }
     super.dispose();
+  }
+
+  FocusNode _commandNode(UiGalleryDialogAction<T> command) =>
+      _commandFocus.putIfAbsent(command, FocusNode.new);
+
+  void _activate(int index) {
+    if (_active != index) setState(() => _active = index);
+    final command = _filtered[index];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          _active != index ||
+          index >= _filtered.length ||
+          !identical(_filtered[index], command)) {
+        return;
+      }
+      final activeContext = _keys[index]?.currentContext;
+      if (activeContext != null) {
+        Scrollable.ensureVisible(activeContext, alignment: .5);
+      }
+    });
   }
 
   void _select() {
@@ -1050,24 +1089,129 @@ class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
       final next =
           (current + (key == LogicalKeyboardKey.arrowDown ? 1 : -1)) %
           enabled.length;
-      setState(() => _active = enabled[next]);
-      final command = commands[_active];
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted ||
-            _active < 0 ||
-            _active >= _filtered.length ||
-            !identical(_filtered[_active], command)) {
-          return;
-        }
-        final activeContext = _keys[_active]?.currentContext;
-        if (activeContext != null) {
-          Scrollable.ensureVisible(activeContext, alignment: .5);
-        }
-      });
+      _activate(enabled[next]);
+      if (!_focus.hasFocus) _commandNode(commands[_active]).requestFocus();
     } else {
       return KeyEventResult.ignored;
     }
     return KeyEventResult.handled;
+  }
+
+  Widget _command(
+    UiGalleryStyle s,
+    UiGalleryDialogAction<T> command,
+    int index,
+  ) {
+    final active = index == _active;
+    final ink = !command.enabled
+        ? s.muted
+        : command.destructive
+        ? s.theme.colorScheme.error
+        : s.content;
+    final labelStyle = s.body(
+      s.theme.textTheme.titleMedium?.copyWith(
+        color: ink,
+        fontWeight: active ? FontWeight.w600 : FontWeight.w500,
+      ),
+    );
+    return Semantics(
+      button: true,
+      enabled: command.enabled,
+      selected: active,
+      child: InkWell(
+        focusNode: _commandNode(command),
+        onFocusChange: (focused) {
+          if (focused) _activate(index);
+        },
+        borderRadius: BorderRadius.circular(UiGalleryTokens.radiusToolbar),
+        onTap: command.enabled
+            ? () => Navigator.of(context).pop<T>(command.value)
+            : null,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minHeight: UiGalleryTokens.touchTarget,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(UiGalleryTokens.space3),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final painter = TextPainter(
+                  text: TextSpan(text: command.label, style: labelStyle),
+                  textDirection: Directionality.of(context),
+                  textScaler: s.media.textScaler,
+                  locale: Localizations.maybeLocaleOf(context),
+                  maxLines: 1,
+                )..layout();
+                final textWidth =
+                    constraints.maxWidth -
+                    (command.icon == null ? 0 : 36) -
+                    (active ? 36 : 0);
+                final reflow =
+                    constraints.maxWidth < 240 ||
+                    s.media.textScaler.scale(1) >= 1.5 ||
+                    painter.width > textWidth;
+                painter.dispose();
+                final copy = Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(command.label, style: labelStyle),
+                    if (command.description != null) ...[
+                      const SizedBox(height: UiGalleryTokens.space1),
+                      Text(
+                        command.description!,
+                        style: s.body(
+                          s.theme.textTheme.bodyMedium?.copyWith(
+                            color: s.muted,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                );
+                final hint = ExcludeSemantics(
+                  child: Icon(Icons.keyboard_return_rounded, color: ink),
+                );
+                final icon = command.icon == null
+                    ? null
+                    : IconTheme.merge(
+                        data: IconThemeData(color: ink),
+                        child: command.icon!,
+                      );
+                return reflow
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          copy,
+                          if (icon != null || active) ...[
+                            const SizedBox(height: UiGalleryTokens.space2),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [?icon, if (active) hint],
+                            ),
+                          ],
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          if (icon != null) ...[
+                            icon,
+                            const SizedBox(width: UiGalleryTokens.space3),
+                          ],
+                          Expanded(child: copy),
+                          if (active) ...[
+                            const SizedBox(width: UiGalleryTokens.space3),
+                            hint,
+                          ],
+                        ],
+                      );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -1086,74 +1230,91 @@ class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
                 s.media.padding.vertical -
                 240)
             .clamp(48.0, 280.0);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        TextField(
-          autofocus: true,
-          focusNode: _focus,
-          style: TextStyle(color: s.content),
-          decoration: InputDecoration(
-            hintText:
-                widget.searchHint ??
-                MaterialLocalizations.of(context).searchFieldLabel,
-            prefixIcon: Icon(Icons.search_rounded, color: s.accent),
-            filled: true,
-            fillColor: s.tinted,
-          ),
-          onChanged: (value) => setState(() {
-            _query = value.trim().toLowerCase();
-            _active = _filtered.indexWhere((command) => command.enabled);
-          }),
-          onSubmitted: (_) => _select(),
-        ),
-        const SizedBox(height: UiGalleryTokens.space3),
-        if (commands.isEmpty)
-          Padding(
-            padding: const EdgeInsets.all(UiGalleryTokens.space4),
-            child: Text(widget.emptyLabel, style: TextStyle(color: s.muted)),
-          )
-        else
-          ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: available),
-            child: ListView(
-              shrinkWrap: true,
-              primary: false,
-              children: [
-                for (var i = 0; i < commands.length; i++)
-                  Material(
-                    key: _keys.putIfAbsent(i, GlobalKey.new),
-                    color: i == _active ? s.tinted : Colors.transparent,
-                    borderRadius: BorderRadius.circular(
-                      UiGalleryTokens.radiusToolbar,
-                    ),
-                    child: ListTile(
-                      selected: i == _active,
-                      enabled: commands[i].enabled,
-                      selectedColor: commands[i].destructive
-                          ? s.theme.colorScheme.error
-                          : s.accent,
-                      textColor: commands[i].destructive
-                          ? s.theme.colorScheme.error
-                          : s.content,
-                      leading: commands[i].icon,
-                      title: Text(commands[i].label),
-                      subtitle: commands[i].description == null
-                          ? null
-                          : Text(commands[i].description!),
-                      trailing: i == _active
-                          ? const Icon(Icons.keyboard_return_rounded)
-                          : null,
-                      onTap: commands[i].enabled
-                          ? () =>
-                                Navigator.of(context).pop<T>(commands[i].value)
-                          : null,
-                    ),
-                  ),
-              ],
+    return FocusTraversalGroup(
+      policy: WidgetOrderTraversalPolicy(),
+      child: Focus(
+        canRequestFocus: false,
+        onKeyEvent: _key,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              autofocus: true,
+              focusNode: _focus,
+              style: TextStyle(color: s.content),
+              decoration: InputDecoration(
+                hintText:
+                    widget.searchHint ??
+                    MaterialLocalizations.of(context).searchFieldLabel,
+                prefixIcon: Icon(Icons.search_rounded, color: s.accent),
+                filled: true,
+                fillColor: s.tinted,
+              ),
+              onChanged: (value) => setState(() {
+                _query = value.trim().toLowerCase();
+                _active = _filtered.indexWhere((command) => command.enabled);
+              }),
+              onSubmitted: (_) => _select(),
             ),
-          ),
-      ],
+            const SizedBox(height: UiGalleryTokens.space3),
+            if (commands.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(UiGalleryTokens.space4),
+                child: Text(
+                  widget.emptyLabel,
+                  style: TextStyle(color: s.muted),
+                ),
+              )
+            else
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: available),
+                child: ListView(
+                  shrinkWrap: true,
+                  primary: false,
+                  children: [
+                    for (var i = 0; i < commands.length; i++)
+                      Material(
+                        key: _keys.putIfAbsent(i, GlobalKey.new),
+                        color: i == _active ? s.tinted : Colors.transparent,
+                        borderRadius: BorderRadius.circular(
+                          UiGalleryTokens.radiusToolbar,
+                        ),
+                        child: s.signatureEnabled
+                            ? _command(s, commands[i], i)
+                            : ListTile(
+                                focusNode: _commandNode(commands[i]),
+                                onFocusChange: (focused) {
+                                  if (focused) _activate(i);
+                                },
+                                selected: i == _active,
+                                enabled: commands[i].enabled,
+                                selectedColor: commands[i].destructive
+                                    ? s.theme.colorScheme.error
+                                    : s.accent,
+                                textColor: commands[i].destructive
+                                    ? s.theme.colorScheme.error
+                                    : s.content,
+                                leading: commands[i].icon,
+                                title: Text(commands[i].label),
+                                subtitle: commands[i].description == null
+                                    ? null
+                                    : Text(commands[i].description!),
+                                trailing: i == _active
+                                    ? const Icon(Icons.keyboard_return_rounded)
+                                    : null,
+                                onTap: commands[i].enabled
+                                    ? () => Navigator.of(
+                                        context,
+                                      ).pop<T>(commands[i].value)
+                                    : null,
+                              ),
+                      ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

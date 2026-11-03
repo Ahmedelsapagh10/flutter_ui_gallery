@@ -295,7 +295,7 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                               ? 16.0
                               : widget.options.notchWidth)
                         : 0.0;
-                    final width = math.max(
+                    var width = math.max(
                       constraints.maxWidth,
                       widget.items.length * 48.0 +
                           gap +
@@ -308,6 +308,12 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                                   .horizontal ??
                               0),
                     );
+                    if (widget.preset ==
+                            UiGalleryBottomNavPreset.morphingCapsule &&
+                        s.signatureEnabled &&
+                        widget.itemBuilder == null) {
+                      width = math.max(width, _capsuleWidth(context, s));
+                    }
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       hitTestBehavior: HitTestBehavior.deferToChild,
@@ -535,6 +541,33 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
     );
   }
 
+  TextStyle _capsuleLabelStyle(UiGalleryStyle s) =>
+      (s.theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12))
+          .merge(s.visual.messageStyle)
+          .merge(widget.options.selectedLabelStyle);
+
+  double _capsuleWidth(BuildContext context, UiGalleryStyle s) {
+    var labelWidth = 0.0;
+    for (final item in widget.items) {
+      final painter = TextPainter(
+        text: TextSpan(text: item.label, style: _capsuleLabelStyle(s)),
+        textDirection: Directionality.of(context),
+        textScaler: s.media.textScaler,
+        locale: Localizations.maybeLocaleOf(context),
+        maxLines: 1,
+      )..layout();
+      labelWidth = math.max(labelWidth, painter.width);
+      painter.dispose();
+    }
+    final selectedWidth =
+        labelWidth +
+        UiGalleryTokens.icon +
+        UiGalleryTokens.gapCompact +
+        widget.options.spacing * 2;
+    return (widget.items.length + .85) * math.max(48, selectedWidth / 1.85) +
+        (s.visual.padding?.resolve(Directionality.of(context)).horizontal ?? 0);
+  }
+
   Widget _surface(
     BuildContext context,
     UiGalleryStyle s,
@@ -581,10 +614,21 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                     selectedCenter) /
                 width)
             .clamp(0.0, 1.0);
-    final scaledLabel = s.media.textScaler.scale(12).clamp(12.0, 28.0);
+    final calmCapsule =
+        p == UiGalleryBottomNavPreset.morphingCapsule && s.signatureEnabled;
+    final labelStyle = _capsuleLabelStyle(s);
+    final scaledLabel = calmCapsule
+        ? s.media.textScaler.scale(labelStyle.fontSize ?? 12) *
+              (labelStyle.height ?? 1.4)
+        : s.media.textScaler.scale(12).clamp(12.0, 28.0);
     final rowHeight = math.max(
       o.height,
-      scaledLabel + (p == UiGalleryBottomNavPreset.orbitDock ? 48 : 40),
+      scaledLabel +
+          (calmCapsule
+              ? UiGalleryTokens.space6
+              : p == UiGalleryBottomNavPreset.orbitDock
+              ? 48
+              : 40),
     );
     final notchCenter =
         widths.take(split).fold<double>(0.0, (a, b) => a + b) + gap / 2;
@@ -794,7 +838,9 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
                 left: horizontalPadding.left,
                 right: horizontalPadding.right,
                 height: rowHeight,
-                child: GalleryFamilyWell(style: s, child: row),
+                child: calmCapsule
+                    ? row
+                    : GalleryFamilyWell(style: s, child: row),
               ),
               if (p == UiGalleryBottomNavPreset.ribbonCurve)
                 Positioned(
@@ -934,10 +980,12 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
     final o = widget.options;
     final p = widget.preset;
     final selected = index == widget.selectedIndex;
+    final calmCapsule =
+        p == UiGalleryBottomNavPreset.morphingCapsule && s.signatureEnabled;
     final color = item.enabled
         ? Color.lerp(
             o.unselectedColor ?? s.muted,
-            o.selectedColor ?? s.accent,
+            o.selectedColor ?? (calmCapsule ? s.content : s.accent),
             active,
           )!
         : s.muted.withValues(alpha: .45);
@@ -1022,12 +1070,18 @@ class _UiGalleryBottomNavState extends State<UiGalleryBottomNav>
     final label = ExcludeSemantics(
       child: Text(
         item.label,
-        maxLines: 1,
+        maxLines: calmCapsule ? 2 : 1,
         overflow: TextOverflow.ellipsis,
-        style: (s.theme.textTheme.labelSmall ?? const TextStyle(fontSize: 12))
-            .copyWith(color: color)
-            .merge(s.visual.messageStyle)
-            .merge(selected ? o.selectedLabelStyle : o.unselectedLabelStyle),
+        style:
+            ((calmCapsule && selected
+                        ? s.theme.textTheme.labelMedium
+                        : s.theme.textTheme.labelSmall) ??
+                    const TextStyle(fontSize: 12))
+                .copyWith(color: color)
+                .merge(s.visual.messageStyle)
+                .merge(
+                  selected ? o.selectedLabelStyle : o.unselectedLabelStyle,
+                ),
       ),
     );
     final horizontal =

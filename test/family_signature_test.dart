@@ -173,10 +173,18 @@ void main() {
           actions: const [],
         );
         await tester.pumpAndSettle();
-        final region = tester.widget<GalleryFamilyRegion>(
-          find.byType(GalleryFamilyRegion),
-        );
-        expect(region.framed, preset == UiGalleryDialogPreset.panelDecision);
+        if (preset == UiGalleryDialogPreset.commandPalette) {
+          expect(find.byType(GalleryFamilyRegion), findsNothing);
+          expect(
+            tester.widget<Text>(find.text('Decision')).style!.fontSize,
+            Theme.of(owner).textTheme.titleLarge!.fontSize,
+          );
+        } else {
+          final region = tester.widget<GalleryFamilyRegion>(
+            find.byType(GalleryFamilyRegion),
+          );
+          expect(region.framed, preset == UiGalleryDialogPreset.panelDecision);
+        }
         expect(tester.takeException(), isNull);
         Navigator.of(tester.element(find.text('Decision'))).pop();
         await tester.pumpAndSettle();

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only guard for the 24 approved pre-Notes baselines. Run from any folder."""
+"""Read-only guard for historical and versioned approved baselines."""
 import hashlib
 import json
 from pathlib import Path
@@ -17,3 +17,10 @@ if notes.exists():
     for name, digest in protected.items():
         assert hashlib.sha256((root / name).read_bytes()).hexdigest() == digest, name
     print(f'{len(protected)}/{len(protected)} original Notes Pass A baselines unchanged')
+
+hero = root / 'example/test/goldens/hero-calm-v1/approved_manifest.json'
+approved = json.loads(hero.read_text())
+assert len(approved) == 13, 'Hero Calm v1 must contain exactly 13 approved files'
+for name, digest in approved.items():
+    assert hashlib.sha256((root / name).read_bytes()).hexdigest() == digest, name
+print('13/13 approved Hero Calm v1 baselines unchanged')

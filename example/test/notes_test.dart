@@ -194,7 +194,7 @@ void main() {
       } else {
         await expectLater(
           boundary,
-          matchesGoldenFile('goldens/notes-pass-a/app-$env.png'),
+          matchesGoldenFile('goldens/hero-calm-v1/notes-pass-a/app-$env.png'),
         );
       }
       debugDisableShadows = true;

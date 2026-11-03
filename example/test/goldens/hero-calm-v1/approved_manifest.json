@@ -1,0 +1,15 @@
+{
+  "example/test/goldens/hero-calm-v1/notes-pass-b/app/phone-light.png": "0ee7c10fefa1b46c66e30c009a4ee0e88370e76d238e79ad70b8816972336ad3",
+  "example/test/goldens/hero-calm-v1/notes-pass-b/app/phone-dark.png": "3fda91fe7c3c4690b0d5439a55ae0e30ba18f439a67c74b492a5928f529afa4a",
+  "example/test/goldens/hero-calm-v1/notes-pass-b/app/phone-rtl.png": "3945bf4c7310ac3161fe21edb8d13f2b41bead684c6ce128a129093fbdb1ca1f",
+  "example/test/goldens/hero-calm-v1/notes-pass-b/app/phone-large-text.png": "b595c25d9f82d8d3fc19f731e255f29375bdb96ab4ec08b01d8883b7f0e19c15",
+  "example/test/goldens/hero-calm-v1/notes-pass-b/app/tablet-light.png": "36b2fd6c3522c8c948ac5295ff067e5dc401419fbacb01cb1d4780afa03e4b48",
+  "example/test/goldens/hero-calm-v1/notes-pass-b/app/tablet-dark.png": "00ed755f08a61076d44d52f8a134d6ff3adae620ac7f30f64450718acd6347d3",
+  "example/test/goldens/hero-calm-v1/notes-pass-b/app/tablet-rtl.png": "1d84b385105b2e97a1546b8570b06c341917d6b6a1db3309b853872e9ae30893",
+  "example/test/goldens/hero-calm-v1/notes-pass-b/app/tablet-large-text.png": "ed1215ea0dc8c1dff12358c2052a3bad00463d409dbef83c159cd372d4fd1918",
+  "example/test/goldens/hero-calm-v1/notes-pass-a/app-light.png": "ba27a52312f231f45177ee182dc51aea8732929437577bf599da13bd1c6faaba",
+  "example/test/goldens/hero-calm-v1/notes-pass-a/app-dark.png": "925e3a0c2d7ca73c2983de5a2b367051a67356443831b5ebe2ab7980c5983db1",
+  "example/test/goldens/hero-calm-v1/notes-pass-a/app-rtl.png": "c32d795875fe893d92b77aa62db285907ef54c0d3394cd3815d19ae6d2ea3ebe",
+  "example/test/goldens/hero-calm-v1/notes-pass-a/app-large-text.png": "5ee856c797633381bbc3101f8f7f7848df76e857ed5534e42583d7c5b16bf653",
+  "example/test/goldens/hero-calm-v1/notes-pass-a/app-wide.png": "821a85ba90eb66efabaa3b002e3abeb32cec88dc1df46f7b1a7e7221639b70b7"
+}

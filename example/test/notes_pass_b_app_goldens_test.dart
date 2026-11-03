@@ -55,7 +55,9 @@ void main() {
         } else {
           await expectLater(
             find.byKey(key),
-            matchesGoldenFile('goldens/notes-pass-b/app/$device-$env.png'),
+            matchesGoldenFile(
+              'goldens/hero-calm-v1/notes-pass-b/app/$device-$env.png',
+            ),
           );
         }
         await tester.pumpWidget(const SizedBox());
