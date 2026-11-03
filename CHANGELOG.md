@@ -1,7 +1,13 @@
-## Unreleased
+## 0.2.0
 
-The entries below describe the local checkout, not the published `0.1.0` archive.
-No version bump or publication has occurred.
+Prepared for release; not yet published. The latest published version verified
+on 2026-11-03 is `0.1.0`.
+
+- Preserve existing source APIs and Nova aliases; add optional family effects and
+  motion controls. Family geometry, typography and motion have been refined since
+  published 0.1.0 even when signatures are disabled. Review application screenshots
+  and custom shape/style assumptions when upgrading; structural redesigns remain
+  opt-in through `useSignature: true`.
 
 - Improve opt-in MorphingCapsule selected-label contrast and Command Palette
   compact/RTL text layout; align keyboard focus, active selection and Enter cues.

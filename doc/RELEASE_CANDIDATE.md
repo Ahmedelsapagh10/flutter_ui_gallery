@@ -1,4 +1,15 @@
-# Local release candidate — 2026-11-03
+# 0.2.0 release preparation — 2026-11-03
+
+Version 0.2.0 is now approved for preparation after checking the published 0.1.0
+archive. Existing source APIs and aliases remain compatible; exported family
+effects/motion controls are additive. Family appearance has evolved even with
+signatures disabled, so upgrading applications should review their screenshots.
+The user has authorized pushing design-overhaul, opening/updating its PR and
+running Flutter CI. Merge and publication remain prohibited. Exact new-SHA CI
+results are recorded separately in the release-0.2.0 evidence; the freeze report
+below describes the preceding local RC and is retained as historical evidence.
+
+# Historical local RC report — 2026-11-03
 
 **Decision: accepted for local RC review.** The implementation has no known
 unresolved local test failure. Publication is held for version preparation and

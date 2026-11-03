@@ -9,11 +9,10 @@ navigation. Use typed results and caller-owned state with coordinated surfaces
 that adapt to your application's colors and typography. No external runtime
 dependencies. This independent package is not affiliated with Flutter's Gallery demo.
 
-**Release status:** pub.dev `0.1.0` is the published release. This checkout contains
-unreleased opt-in refinements and example improvements. Its unchanged version
-number does not make those changes available in the published archive. The Quick
-Start below is verified against this checkout; remote CI and native-device
-release evidence must be assessed separately.
+**Release status:** this checkout prepares **0.2.0**, which is not yet published.
+The latest published version verified on 2026-11-03 is `0.1.0`. The Quick Start
+below is verified against the 0.2.0 candidate; remote CI and native-device evidence
+must be assessed separately. No merge or publication is implied.
 
 ## Install
 
@@ -23,7 +22,8 @@ For the published package:
 flutter pub add flutter_ui_gallery:^0.1.0
 ```
 
-To try this unreleased checkout in a neighboring Flutter app, use a local path
+After 0.2.0 is published, use `flutter pub add flutter_ui_gallery:^0.2.0`.
+Until then, to try this candidate in a neighboring Flutter app, use a local path
 instead (adjust the path to the directory containing this package's pubspec):
 
 ```yaml
@@ -239,8 +239,11 @@ to a bank, execute payments or save files.
 ## Compatibility and verification
 
 The `UiGallery*` APIs, `Nova*` compatibility aliases and canonical preset identities
-remain available. This checkout's visual refinements are opt-in. Existing users
-must compare custom layout assumptions when enabling signatures. Historical golden
+remain available. The 0.2.0 structural redesigns require `useSignature: true`.
+Compared with published 0.1.0, family geometry, typography and motion have also
+been refined with signatures disabled. Source compatibility does not imply
+pixel-identical appearance: compare application screenshots and custom shape/
+style assumptions when upgrading or enabling signatures. Historical golden
 PNGs and hash manifests are preserved; intentional changes use named versioned
 expectations with strict comparisons.
 

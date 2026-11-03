@@ -1,7 +1,21 @@
 # Product evolution progress
 
-Local development only. Remote push, workflows, merge, deployment and publication
-remain separately authorized actions. Historical PNGs and manifests are immutable.
+Release preparation 0.2.0 is authorized: push design-overhaul, create/update its PR
+and run Flutter CI. Merge, deployment and publication remain prohibited. Historical PNGs and manifests are immutable.
+
+## Release 0.2.0 preparation — 2026-11-03
+
+- Latest published version verified directly from pub.dev:0.1.0. Archive SHA-256
+  verified before comparing APIs. Existing APIs/aliases remain source compatible;
+  optional effects/motion exports are additive. Family visuals differ from0.1.0
+  even signature-off; upgrading consumers must review screenshots.
+- Version0.2.0 approved for this pre1 release. Only release metadata/documentation
+  and the example's local dependency version are updated; feature freeze remains.
+- Revalidate metadata, existing guards and runnable examples, commit once, push
+  only design-overhaul without force, create/update PR and dispatch Flutter CI.
+- Record exact branch SHA, PR merge SHA if relevant, workflow/job URLs and actual
+  outcomes externally in release-0.2.0. No merge or publication authorized.
+- Earlier local RC evidence below remains historical and is not a hosted-CI claim.
 
 ## Finalization freeze — 2026-11-03
 
