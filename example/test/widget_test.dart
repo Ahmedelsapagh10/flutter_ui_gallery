@@ -199,6 +199,9 @@ void main() {
     await tester.tap(find.text('Bottom Navigation'));
     await tester.pumpAndSettle();
     expect(find.text('Curve'), findsOneWidget);
+    await tester.ensureVisible(find.byType(Slider));
+    await tester.pumpAndSettle();
+    expect(find.byType(Slider).hitTestable(), findsOneWidget);
     await tester.drag(find.byType(Slider), const Offset(30, 0));
     await tester.pumpAndSettle();
     expect(

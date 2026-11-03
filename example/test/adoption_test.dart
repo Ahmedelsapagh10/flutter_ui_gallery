@@ -91,6 +91,7 @@ void main() {
       dark: true,
       rtl: true,
       reduced: true,
+      useSignature: true,
       accent: Color(0xff0d9488),
       width: 768,
       title: 'A & B / مرحبا 👩🏽‍💻',
@@ -109,6 +110,7 @@ void main() {
     expect(restored.dark, isTrue);
     expect(restored.rtl, isTrue);
     expect(restored.reduced, isTrue);
+    expect(restored.useSignature, isTrue);
     expect(restored.accent, original.accent);
     expect(restored.width, original.width);
     expect(restored.title, original.title);
@@ -141,6 +143,7 @@ void main() {
         expect(config.accent, const Color(0xff4f46e5));
         expect(config.family, UiGalleryDesignFamily.soft);
         expect(config.dark, isFalse);
+        expect(config.useSignature, isFalse);
       }
       final malformed = PlaygroundConfiguration.fromUri(
         Uri(fragment: '/?family=%GG'),
@@ -202,12 +205,18 @@ void main() {
             .toSet(),
         {
           'sheets.orbit',
-          'dialogs.halo',
+          'sheets.splitLayer',
+          'sheets.taskRail',
+          'dialogs.split',
+          'dialogs.sideBySideChoice',
           'dialogs.commandPalette',
+          'dialogs.timeline',
+          'toasts.action',
           'toasts.signal',
-          'toasts.progressCard',
           'header.searchSwitch',
-          'header.selectionBar',
+          'header.editorialTopbar',
+          'bottomNav.morphingCapsule',
+          'bottomNav.layeredShelf',
           'bottomNav.adaptiveMinimal',
         },
       );
@@ -245,6 +254,48 @@ void main() {
           .toPlainText(),
       contains('UiGalleryDesignFamily.minimal'),
     );
+  });
+
+  testWidgets('Calm structure opt-in matches preview, code and shared state', (
+    tester,
+  ) async {
+    await _gallery(tester);
+    final demo = find.byType(SurfaceDemo);
+    expect(
+      Theme.of(tester.element(demo)).extension<UiGalleryTheme>()!.useSignature,
+      isFalse,
+    );
+    await tester.ensureVisible(find.text('Calm structure'));
+    await tester.tap(find.text('Calm structure'));
+    await tester.pumpAndSettle();
+    expect(
+      Theme.of(tester.element(demo)).extension<UiGalleryTheme>()!.useSignature,
+      isTrue,
+    );
+    expect(
+      tester
+          .widget<SelectableText>(find.byKey(const ValueKey('dart-snippet')))
+          .textSpan!
+          .toPlainText(),
+      contains('useSignature: true'),
+    );
+    final uri = const PlaygroundConfiguration(
+      useSignature: true,
+    ).toUri(Uri.https('example.com', '/'));
+    expect(PlaygroundConfiguration.fromUri(uri).useSignature, isTrue);
+    expect(
+      PlaygroundConfiguration.fromUri(
+        Uri.https('example.com', '/'),
+      ).useSignature,
+      isFalse,
+    );
+    await tester.tap(find.text('Calm structure'));
+    await tester.pumpAndSettle();
+    expect(
+      Theme.of(tester.element(demo)).extension<UiGalleryTheme>()!.useSignature,
+      isFalse,
+    );
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets(
@@ -400,6 +451,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(_presets(tester).items!.map((item) => designs[item.value!].id), [
       'sheets.orbit',
+      'sheets.splitLayer',
+      'sheets.taskRail',
     ]);
     await tester.tap(find.byTooltip('Browse by task'));
     await tester.pumpAndSettle();

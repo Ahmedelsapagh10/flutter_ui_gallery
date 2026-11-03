@@ -13,6 +13,7 @@ String playgroundSnippet({
   UiGalleryDesignFamily? family,
   Brightness brightness = Brightness.light,
   bool reduced = false,
+  bool useSignature = false,
   double? transitionMs,
   double? curveDepth,
   double depthIntensity = 1,
@@ -46,9 +47,10 @@ String playgroundSnippet({
   const baseImports =
       "import 'package:flutter/material.dart';\nimport 'package:flutter_ui_gallery/flutter_ui_gallery.dart';\n\n";
   final imports =
-      '$baseImports${family == null ? '' : "ThemeData ${functionName}Theme({Brightness brightness = Brightness.${brightness.name}}) {\n"
+      '$baseImports${family == null ? '' : "// Apply this theme to MaterialApp(theme: ${functionName}Theme()).\n"
+                "ThemeData ${functionName}Theme({Brightness brightness = Brightness.${brightness.name}}) {\n"
                 "  final base = ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: $color, brightness: brightness));\n"
-                "  final recipe = UiGalleryTheme.family(UiGalleryDesignFamily.${family.name}, theme: base);\n"
+                "  final recipe = UiGalleryTheme.family(UiGalleryDesignFamily.${family.name}, theme: base, useSignature: $useSignature);\n"
                 "  return base.copyWith(extensions: [recipe.copyWith(surfaceStyle: recipe.surfaceStyle!.copyWith(accentColor: $color), motionIntensity: ${reduced ? 0 : 1})]);\n}\n\n"}';
   if (design.sheet != null) {
     return '${imports}Future<void> $functionName(BuildContext context) async {\n'
@@ -68,12 +70,64 @@ String playgroundSnippet({
         "      UiGalleryDialogAction(label: 'Archive', value: 'archive', enabled: false),\n"
         '    ],\n$style$motion  );\n}';
   }
+  if (design.dialog == UiGalleryDialogPreset.sideBySideChoice) {
+    return '${imports}Future<String?> $functionName(BuildContext context) {\n'
+        '  return UiGalleryDialog.show<String>(\n    context: context,\n'
+        '    useRootNavigator: false,\n'
+        '    preset: UiGalleryDialogPreset.sideBySideChoice,\n'
+        '    title: ${literal(title)}, message: ${literal(message)},\n'
+        '    actions: const [\n'
+        "      UiGalleryDialogAction(label: 'Personal', value: 'Personal',\n"
+        "        description: 'A private space for your own projects.', icon: Icon(Icons.person_outline)),\n"
+        "      UiGalleryDialogAction(label: 'Team', value: 'Team', primary: true,\n"
+        "        description: 'Share collections with collaborators.', icon: Icon(Icons.groups_outlined)),\n"
+        '    ],\n$style$motion  );\n}';
+  }
+  if (design.dialog == UiGalleryDialogPreset.timeline ||
+      design.dialog == UiGalleryDialogPreset.milestone) {
+    return "import 'package:flutter/foundation.dart';\n"
+        '${imports}Future<String?> $functionName(BuildContext context,\n'
+        '    ValueListenable<UiGalleryTimelineState> progress, VoidCallback onCompleteStep) {\n'
+        '  return UiGalleryDialog.show<String>(\n    context: context,\n'
+        '    useRootNavigator: false,\n'
+        '    preset: UiGalleryDialogPreset.${design.dialog!.name},\n'
+        '    title: ${literal(title)}, message: ${literal(message)},\n'
+        '    child: ValueListenableBuilder<UiGalleryTimelineState>(\n'
+        '      valueListenable: progress,\n'
+        '      builder: (context, value, _) => Column(\n'
+        '        mainAxisSize: MainAxisSize.min,\n'
+        '        children: [\n'
+        '          UiGalleryTimeline(state: value),\n'
+        '          const SizedBox(height: 16),\n'
+        '          FilledButton.tonal(\n'
+        '            onPressed: value.completed ? null : onCompleteStep,\n'
+        "            child: Text(value.completed ? 'Verified' : 'Complete current step'),\n"
+        '          ),\n'
+        '        ],\n'
+        '      ),\n'
+        '    ),\n'
+        "    actions: const [UiGalleryDialogAction(label: 'Close', value: 'Closed')],\n"
+        '$style$motion  );\n}';
+  }
+  if (design.dialog == UiGalleryDialogPreset.spotlight ||
+      design.dialog == UiGalleryDialogPreset.statusBeacon) {
+    return '${imports}Future<String?> $functionName(BuildContext context, UiGalleryResult result) {\n'
+        '  return UiGalleryDialog.show<String>(\n    context: context,\n'
+        '    useRootNavigator: false,\n'
+        '    preset: UiGalleryDialogPreset.${design.dialog!.name},\n'
+        '    title: ${literal(title)}, message: ${literal(message)},\n'
+        '    result: result,\n'
+        "    actions: const [UiGalleryDialogAction(label: 'Continue', value: 'Continued', primary: true)],\n"
+        '$style$motion  );\n}';
+  }
   if (design.dialog != null) {
     return '${imports}Future<bool?> $functionName(BuildContext context) {\n'
         '  return UiGalleryDialog.confirm(\n    context: context,\n'
         '    useRootNavigator: false,\n'
         '    preset: UiGalleryDialogPreset.${design.dialog!.name},\n'
-        '    title: ${literal(title)},\n    message: ${literal(message)},\n$style$motion  );\n}';
+        '    title: ${literal(title)},\n    message: ${literal(message)},\n'
+        '${design.dialog == UiGalleryDialogPreset.split ? "    destructive: true, confirmLabel: 'Discard draft',\n" : ''}'
+        '$style$motion  );\n}';
   }
   if (design.toast == UiGalleryToastPreset.progressCard) {
     return "import 'package:flutter/foundation.dart';\n"

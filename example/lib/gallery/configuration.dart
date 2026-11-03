@@ -10,6 +10,7 @@ class PlaygroundConfiguration {
     this.dark = false,
     this.rtl = false,
     this.reduced = false,
+    this.useSignature = false,
     this.accent = const Color(0xff4f46e5),
     this.width = 390,
     this.title = 'Make it your space',
@@ -20,7 +21,7 @@ class PlaygroundConfiguration {
   });
   final String preset, title, message;
   final UiGalleryDesignFamily family;
-  final bool dark, rtl, reduced;
+  final bool dark, rtl, reduced, useSignature;
   final Color accent;
   final double width, depthIntensity;
   final double? transitionMs, curveDepth;
@@ -55,6 +56,7 @@ class PlaygroundConfiguration {
       dark: values['dark'] == '1',
       rtl: values['rtl'] == '1',
       reduced: values['reduced'] == '1',
+      useSignature: values['signature'] == '1',
       accent: argb == null ? const Color(0xff4f46e5) : Color(argb),
       width: const [390.0, 768.0, 1200.0].contains(width) ? width! : 390,
       title: (values['title'] ?? 'Make it your space').characters
@@ -83,6 +85,7 @@ class PlaygroundConfiguration {
         'dark': dark ? '1' : '0',
         'rtl': rtl ? '1' : '0',
         'reduced': reduced ? '1' : '0',
+        if (useSignature) 'signature': '1',
         'width': width.round().toString(),
         'title': title,
         'message': message,

@@ -38,6 +38,7 @@ class _FlutterUiGalleryAppState extends State<FlutterUiGalleryApp> {
     _dark = configuration.dark;
     _rtl = configuration.rtl;
     _reduced = configuration.reduced;
+    _useSignature = configuration.useSignature;
     _accent = configuration.accent;
     _previewWidth = configuration.width;
     _transitionMs = configuration.transitionMs;
@@ -48,6 +49,7 @@ class _FlutterUiGalleryAppState extends State<FlutterUiGalleryApp> {
   bool _dark = false;
   bool _rtl = false;
   bool _reduced = false;
+  bool _useSignature = false;
   Color _accent = const Color(0xff4f46e5);
   double _previewWidth = 390;
   double? _transitionMs;
@@ -174,7 +176,11 @@ class _FlutterUiGalleryAppState extends State<FlutterUiGalleryApp> {
         ),
       ),
     );
-    final recipe = UiGalleryTheme.family(_family, theme: base);
+    final recipe = UiGalleryTheme.family(
+      _family,
+      theme: base,
+      useSignature: _useSignature,
+    );
     return base.copyWith(
       extensions: [
         recipe.copyWith(
@@ -214,6 +220,8 @@ class _FlutterUiGalleryAppState extends State<FlutterUiGalleryApp> {
       dark: _dark,
       rtl: _rtl,
       reduced: _reduced,
+      useSignature: _useSignature,
+      onSignature: (value) => setState(() => _useSignature = value),
       accent: _accent,
       previewWidth: _previewWidth,
       transitionMs: _transitionMs,
@@ -262,6 +270,8 @@ class _Preferences extends InheritedWidget {
     required this.dark,
     required this.rtl,
     required this.reduced,
+    required this.useSignature,
+    required this.onSignature,
     required this.accent,
     required this.previewWidth,
     required this.transitionMs,
@@ -279,7 +289,8 @@ class _Preferences extends InheritedWidget {
 
   final UiGalleryDesignFamily family;
   final ValueChanged<UiGalleryDesignFamily> onFamily;
-  final bool dark, rtl, reduced;
+  final bool dark, rtl, reduced, useSignature;
+  final ValueChanged<bool> onSignature;
   final Color accent;
   final double previewWidth, depthIntensity;
   final double? transitionMs, curveDepth;
@@ -297,6 +308,7 @@ class _Preferences extends InheritedWidget {
       dark != oldWidget.dark ||
       rtl != oldWidget.rtl ||
       reduced != oldWidget.reduced ||
+      useSignature != oldWidget.useSignature ||
       accent != oldWidget.accent ||
       previewWidth != oldWidget.previewWidth ||
       transitionMs != oldWidget.transitionMs ||
@@ -431,6 +443,7 @@ class _GalleryHomeState extends State<_GalleryHome> {
                 dark: p.dark,
                 rtl: p.rtl,
                 reduced: p.reduced,
+                useSignature: p.useSignature,
                 accent: p.accent,
                 width: p.previewWidth,
                 title: _title.text,
@@ -660,6 +673,7 @@ class _GalleryHomeState extends State<_GalleryHome> {
                           message: _message.text,
                           accent: p.accent,
                           reduced: p.reduced,
+                          useSignature: p.useSignature,
                           transitionMs: p.transitionMs,
                           curveDepth: _hasCurve(design) ? p.curveDepth : null,
                           depthIntensity: _hasDepth(design)
@@ -874,6 +888,13 @@ class _Controls extends StatelessWidget {
               icon: Icon(
                 p.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
               ),
+            ),
+            FilterChip(
+              label: const Text('Calm structure'),
+              tooltip:
+                  'Opt into the reviewed family structures; existing defaults remain available.',
+              selected: p.useSignature,
+              onSelected: p.onSignature,
             ),
             FilterChip(
               label: const Text('Animation'),

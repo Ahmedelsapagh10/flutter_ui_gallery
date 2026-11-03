@@ -29,6 +29,7 @@ allFamilySnippets() sync* {
             functionName: name,
             transitionMs: custom ? 360 : null,
             reduced: custom,
+            useSignature: custom,
             curveDepth: custom ? 20 : null,
             depthIntensity: custom ? .6 : 1,
           ),
@@ -70,6 +71,64 @@ void main() {
     },
   );
 
+  test('decision snippets preserve typed choices and destructive intent', () {
+    String source(UiGalleryDialogPreset preset) => playgroundSnippet(
+      design: designs.singleWhere((design) => design.dialog == preset),
+      title: 'Choose',
+      message: 'Review the options',
+      accent: Colors.teal,
+    );
+    final choice = source(UiGalleryDialogPreset.sideBySideChoice);
+    expect(choice, contains('Future<String?>'));
+    expect(choice, contains('UiGalleryDialog.show<String>'));
+    expect(choice, contains("value: 'Personal'"));
+    expect(choice, contains("value: 'Team'"));
+    expect(choice, contains('description:'));
+    final split = source(UiGalleryDialogPreset.split);
+    expect(split, contains('destructive: true'));
+    expect(split, contains("confirmLabel: 'Discard draft'"));
+  });
+
+  test(
+    'progress and result snippets preserve caller-owned state and typed results',
+    () {
+      String source(UiGalleryDialogPreset preset) => playgroundSnippet(
+        design: designs.singleWhere((design) => design.dialog == preset),
+        title: 'Review',
+        message: 'Current task status',
+        accent: Colors.teal,
+      );
+      for (final preset in [
+        UiGalleryDialogPreset.timeline,
+        UiGalleryDialogPreset.milestone,
+      ]) {
+        final code = source(preset);
+        expect(code, contains('Future<String?>'));
+        expect(code, contains('UiGalleryDialog.show<String>'));
+        expect(
+          code,
+          contains('ValueListenable<UiGalleryTimelineState> progress'),
+        );
+        expect(code, contains('UiGalleryTimeline(state: value)'));
+        expect(code, contains('value.completed ? null : onCompleteStep'));
+        expect(code, contains("value: 'Closed'"));
+        expect(code, isNot(contains('ValueNotifier(')));
+        expect(code, isNot(contains('UiGalleryDialog.confirm')));
+      }
+      for (final preset in [
+        UiGalleryDialogPreset.spotlight,
+        UiGalleryDialogPreset.statusBeacon,
+      ]) {
+        final code = source(preset);
+        expect(code, contains('UiGalleryResult result'));
+        expect(code, contains('UiGalleryDialog.show<String>'));
+        expect(code, contains('result: result'));
+        expect(code, contains("value: 'Continued'"));
+        expect(code, isNot(contains('UiGalleryDialog.confirm')));
+      }
+    },
+  );
+
   test('all 396 family snippets are standalone with unique theme helpers', () {
     final snippets = allFamilySnippets().toList();
     expect(snippets, hasLength(396));
@@ -85,6 +144,7 @@ void main() {
         ),
       );
       expect(source, contains('ThemeData ${snippet.name}Theme('));
+      expect(source, contains('MaterialApp(theme: ${snippet.name}Theme())'));
       expect(source, contains('UiGalleryDesignFamily.${snippet.family.name}'));
       expect(
         source,
@@ -92,6 +152,7 @@ void main() {
       );
       expect(source, contains('accentColor: Color(0xff009688)'));
       expect(source, contains('motionIntensity: ${snippet.custom ? 0 : 1}'));
+      expect(source, contains('useSignature: ${snippet.custom}'));
       expect(
         TextSpan(children: highlightedDart(source, colors)).toPlainText(),
         source,

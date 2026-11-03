@@ -79,14 +79,22 @@ class SurfaceDesign {
     return DesignPurpose.navigation;
   }
 
+  /// Evidence-backed starting points, not a claim that every proposed Hero
+  /// has passed native accessibility or device verification.
   bool get recommended => const {
     'sheets.orbit',
-    'dialogs.halo',
+    'sheets.splitLayer',
+    'sheets.taskRail',
+    'dialogs.split',
+    'dialogs.sideBySideChoice',
     'dialogs.commandPalette',
+    'dialogs.timeline',
+    'toasts.action',
     'toasts.signal',
-    'toasts.progressCard',
     'header.searchSwitch',
-    'header.selectionBar',
+    'header.editorialTopbar',
+    'bottomNav.morphingCapsule',
+    'bottomNav.layeredShelf',
     'bottomNav.adaptiveMinimal',
   }.contains(id);
 }

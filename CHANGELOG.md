@@ -1,3 +1,26 @@
+## Unreleased
+
+The entries below describe the local checkout, not the published `0.1.0` archive.
+No version bump or publication has occurred.
+
+- Improve opt-in MorphingCapsule selected-label contrast and Command Palette
+  compact/RTL text layout; align keyboard focus, active selection and Enter cues.
+- Clarify opt-in Split and SideBySideChoice decision layouts and consequences.
+- Improve opt-in Orbit/SplitLayer context, responsive forms, keyboard handling
+  and retained caller content/scroll state.
+- Improve opt-in Action Toast long/scaled messages, recovery controls and Close
+  target; refine EditorialTopbar hierarchy and isolated reading scroll.
+- Preserve scaled labels in opt-in AdaptiveMinimal and LayeredShelf navigation.
+- Add focused behavior coverage and separately versioned strict visual
+  expectations while preserving historical PNGs and hash manifests.
+- Harden release validation and SDK compatibility; preserve public APIs, legacy
+  Nova aliases, dependencies and SDK constraints.
+- Replace incomplete Quick Usage fragments with a runnable five-category example
+  and documented host-theme family/signature configuration.
+- Track compact scrolling trade-offs explicitly, including EditorialTopbar at
+  3× Arabic. Native accessibility, device performance and current remote CI
+  require separate evidence.
+
 ## 0.1.0
 
 - Add coordinated Minimal, Soft and Spatial theme families with shared and per-component styles that retain the host application's ColorScheme and typography.

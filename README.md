@@ -1,194 +1,297 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Ahmedelsapagh10/flutter_ui_gallery/master/assets/flutter_ui_gallery.png" alt="Flutter UI Gallery Icon" width="140" style="border-radius: 28px; box-shadow: 0 12px 36px rgba(0,0,0,0.25);">
+  <img src="assets/flutter_ui_gallery.png" alt="Flutter UI Gallery" width="120">
 </p>
 
-<h1 align="center">Flutter UI Gallery</h1>
+# Flutter UI Gallery
 
-<p align="center">
-  <strong>66 modern UI presets for Flutter.</strong><br>
-  Toasts · Bottom Sheets · Dialogs · AppBars · Bottom Navigation
-</p>
+66 Flutter presets for bottom sheets, dialogs, toasts, app bars and bottom
+navigation. Use typed results and caller-owned state with coordinated surfaces
+that adapt to your application's colors and typography. No external runtime
+dependencies. This independent package is not affiliated with Flutter's Gallery demo.
 
-<p align="center">
-  <a href="https://pub.dev/packages/flutter_ui_gallery"><img src="https://img.shields.io/pub/v/flutter_ui_gallery.svg" alt="Pub Version"></a>
-  <a href="https://flutter.dev"><img src="https://img.shields.io/badge/Flutter-3.41+-02569B?logo=flutter&logoColor=white" alt="Flutter"></a>
-  <a href="https://dart.dev"><img src="https://img.shields.io/badge/Dart-3.11+-0175C2?logo=dart&logoColor=white" alt="Dart"></a>
-  <a href="https://github.com/Ahmedelsapagh10/flutter_ui_gallery/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"></a>
-  <img src="https://img.shields.io/badge/Dependencies-0_external-blueviolet.svg" alt="Zero Dependencies">
-</p>
+**Release status:** pub.dev `0.1.0` is the published release. This checkout contains
+unreleased opt-in refinements and example improvements. Its unchanged version
+number does not make those changes available in the published archive. The Quick
+Start below is verified against this checkout; remote CI and native-device
+release evidence must be assessed separately.
 
-An independent Flutter UI component package, not affiliated with the Flutter team’s Gallery demo.
+## Install
 
-**Release status:** [pub.dev 0.1.0](https://pub.dev/packages/flutter_ui_gallery/versions/0.1.0) is the published release. This checkout also includes unreleased family refinements, opt-in signatures and Margin/Still examples; the documentation below describes this checkout. The unchanged `pubspec.yaml` version does not mean these changes are included in the published archive. Release validation is still pending; see the [release policy and CI plan](doc/REDESIGN_RELEASE_POLICY.md#release-validation-status).
-
-[Open the live playground](https://ahmedelsapagh10.github.io/flutter_ui_gallery/) to compare all 66 presets.
-
----
-
-## 📸 Final Results & Previews
-
-### 🍞 Toasts & Feedback
-Signal Pill, Action Capsule, Progress Card, Edge Ribbon, Stack Tag, and Mini Console in light and dark mode.
-
-![Flutter UI Gallery Toast Presets](https://raw.githubusercontent.com/Ahmedelsapagh10/flutter_ui_gallery/master/doc/assets/preview-toasts.png)
-
-### 📄 Bottom Sheets
-Orbit Dock (light mode) and Depth Frame (dark mode) with custom actions and responsive content.
-
-![Flutter UI Gallery Bottom Sheets](https://raw.githubusercontent.com/Ahmedelsapagh10/flutter_ui_gallery/master/doc/assets/preview-sheets.png)
-
-### 💬 Dialogs & Modals
-Side-by-Side Choice cards and Spotlight Result confirmation with animated states.
-
-![Flutter UI Gallery Dialogs](https://raw.githubusercontent.com/Ahmedelsapagh10/flutter_ui_gallery/master/doc/assets/preview-dialogs.png)
-
-### 🧭 AppBars & Bottom Navigation
-Focus Bar and Sculpted Wave headers paired with Floating Cove and Glass Dock navigation.
-
-![Flutter UI Gallery Navigation](https://raw.githubusercontent.com/Ahmedelsapagh10/flutter_ui_gallery/master/doc/assets/preview-navigation.png)
-
----
-
-## ⚡ Installation
+For the published package:
 
 ```sh
-flutter pub add flutter_ui_gallery
+flutter pub add flutter_ui_gallery:^0.1.0
 ```
 
-Requires Flutter **3.41+** and Dart **3.11.5+**. Zero external dependencies.
+To try this unreleased checkout in a neighboring Flutter app, use a local path
+instead (adjust the path to the directory containing this package's pubspec):
 
----
-
-## 🚀 Quick Usage
-
-### 1. Show a Toast (1 line)
-```dart
-UiGalleryToast.success(context, message: 'All changes saved.');
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_ui_gallery:
+    path: ../flutter_ui_gallery
 ```
 
-### 2. Show a Bottom Sheet
+Then run `flutter pub get`. The declared constraints are Dart `^3.11.5` and
+Flutter `>=3.41.0`. Pinned visual validation uses Flutter **3.41.9**; testing that
+renderer does not establish that every SDK in the declared range was tested.
+
+## Five-minute setup
+
+Replace your app's `lib/main.dart` with the following example. It demonstrates
+all five categories together: navigate between Notebook and Archive, open a
+contextual sheet, confirm a typed decision, and undo the change from a toast.
+The application owns the note and selected destination. Data is local to this
+session; no storage or server is implied.
+
+<!-- quick-start-app -->
 ```dart
-await UiGallerySheet.show(
-  context: context,
-  preset: UiGallerySheetPreset.orbitDock,
-  header: const Text('Workspace options'),
-  child: const YourContentWidget(),
+import 'package:flutter/material.dart';
+import 'package:flutter_ui_gallery/flutter_ui_gallery.dart';
+
+void main() => runApp(const NotesApp());
+
+class NotesApp extends StatelessWidget {
+  const NotesApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final base = ThemeData(colorSchemeSeed: Colors.teal);
+    return MaterialApp(
+      theme: base.copyWith(
+        extensions: [
+          UiGalleryTheme.family(
+            UiGalleryDesignFamily.soft,
+            theme: base,
+            useSignature: true,
+          ),
+        ],
+      ),
+      home: const NotesPage(),
+    );
+  }
+}
+
+class NotesPage extends StatefulWidget {
+  const NotesPage({super.key});
+
+  @override
+  State<NotesPage> createState() => _NotesPageState();
+}
+
+class _NotesPageState extends State<NotesPage> {
+  int _page = 0;
+  bool _archived = false;
+
+  Future<void> _manageNote() async {
+    final review = await UiGallerySheet.show<bool>(
+      context: context,
+      preset: UiGallerySheetPreset.orbit,
+      header: const Text('Field notes'),
+      child: const Text('Archive this note to keep your notebook focused.'),
+      footer: Builder(
+        builder: (sheetContext) => FilledButton(
+          onPressed: () => Navigator.of(sheetContext).pop(true),
+          child: const Text('Review archive'),
+        ),
+      ),
+    );
+    if (!mounted || review != true) return;
+    final archive = await UiGalleryDialog.show<bool>(
+      context: context,
+      preset: UiGalleryDialogPreset.split,
+      title: 'Archive Field notes?',
+      message: 'The note stays available in Archive.',
+      actions: const [
+        UiGalleryDialogAction(label: 'Keep note', value: false),
+        UiGalleryDialogAction(
+          label: 'Archive note',
+          description: 'Move it out of your current notebook.',
+          value: true,
+          primary: true,
+        ),
+      ],
+    );
+    if (!mounted || archive != true) return;
+    setState(() => _archived = true);
+    UiGalleryToast.show(
+      context,
+      preset: UiGalleryToastPreset.action,
+      position: UiGalleryToastPosition.top,
+      message: 'Field notes archived',
+      actionLabel: 'Undo',
+      onAction: () {
+        if (mounted) setState(() => _archived = false);
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final visible = _page == (_archived ? 1 : 0);
+    return Scaffold(
+      appBar: UiGalleryAppBar(
+        preset: UiGalleryAppBarPreset.focusBar,
+        title: Text(_page == 0 ? 'Notebook' : 'Archive'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          Text(visible ? 'Field notes' : 'No notes here yet.'),
+          if (visible && !_archived)
+            FilledButton(
+              onPressed: _manageNote,
+              child: const Text('Manage note'),
+            ),
+        ],
+      ),
+      bottomNavigationBar: UiGalleryBottomNav(
+        preset: UiGalleryBottomNavPreset.morphingCapsule,
+        selectedIndex: _page,
+        onDestinationSelected: (index) => setState(() => _page = index),
+        items: const [
+          UiGalleryBottomNavItem(icon: Icon(Icons.notes), label: 'Notebook'),
+          UiGalleryBottomNavItem(
+            icon: Icon(Icons.archive_outlined),
+            label: 'Archive',
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+<!-- /quick-start-app -->
+
+The example enables a coordinated recipe with the existing
+`UiGalleryTheme.family(..., useSignature: true)` configuration. It does not require
+another theme architecture or a new package API. Supply your own `ThemeData` to
+retain your `ColorScheme` and `TextTheme`; configure `theme` and `darkTheme`
+separately when your app supports both. System reduced motion still takes priority.
+
+## Choose a useful starting point
+
+- **Context and forms:** Orbit keeps item context visible; SplitLayer groups
+  context, content and actions for structured edits.
+- **Decisions:** Split pairs consequences with actions; SideBySideChoice compares
+  alternatives; Command Palette provides filtering and keyboard selection.
+- **Feedback:** Action offers Undo or Retry; Signal is compact status feedback.
+- **Headers:** SearchSwitch exposes search; FocusBar supports focused work;
+  EditorialTopbar emphasizes a page heading.
+- **Navigation:** MorphingCapsule emphasizes selection; AdaptiveMinimal responds
+  to available space; LayeredShelf separates destination bays.
+
+These are starting points, not a promise that every native accessibility or
+performance scenario is verified. All 66 presets remain available. Use the
+[local example app](example/) to inspect the current implementation:
+
+```sh
+cd example
+flutter pub get
+flutter run
+```
+
+The [hosted playground](https://ahmedelsapagh10.github.io/flutter_ui_gallery/)
+may show an older deployed revision. No deployment is part of this checkout.
+See the [complete preset matrix](doc/PRESETS.md) for category counts and options.
+
+## Family, preset, signature and overrides
+
+A **preset** selects a component's structure and use case. A **family** coordinates
+its geometry, typography and motion: Minimal is precise, Soft is comfortable and
+Spatial uses restrained layered cues. A **signature** enables the opt-in
+structural treatment while retaining distinctive preset silhouettes. Choosing a
+family alone keeps signatures off. A **recipe** here means one family/signature
+configuration shared by all five categories; existing users opt in explicitly.
+
+Per-call `style` values override the corresponding inherited values. Shared theme
+styles provide defaults; category styles refine them. Per-call `appearance`
+can refine the ambient theme, and a per-call `motion` can refine inherited motion.
+Explicit shape and typography overrides retain priority. Accessibility preferences
+such as reduced motion still apply. See [full precedence and exceptions](doc/FAMILY_SIGNATURES.md).
+
+```dart
+// Inside a widget with a BuildContext named context:
+UiGalleryToast.show(
+  context,
+  message: 'Draft saved',
+  style: const UiGallerySurfaceStyle(maxWidth: 360),
 );
 ```
 
-### 3. Show a Dialog
-```dart
-final result = await UiGalleryDialog.show<String>(
-  context: context,
-  preset: UiGalleryDialogPreset.sideBySideChoice,
-  title: 'Choose workspace type',
-  message: 'Start a personal collection or invite your team.',
-  actions: const [
-    UiGalleryDialogAction(label: 'Personal', value: 'personal', icon: Icon(Icons.person_outline)),
-    UiGalleryDialogAction(label: 'Team', value: 'team', primary: true, icon: Icon(Icons.people_outline)),
-  ],
-);
+Use `UiGalleryEffects.cheap` in the family factory to omit backdrop blur and
+cap decorative elevation. GlassDock needs `Scaffold(extendBody: true, ...)` to
+show body content through its blur. The caller still owns navigation and state.
+
+## Real application examples
+
+Under **Real app examples**, Margin Notes Pass A and Pass B demonstrate local
+create/search/archive flows, Arabic, dark mode, text scaling and reduced motion.
+Wallet · Still uses local sample accounts and transfer drafts; it does not connect
+to a bank, execute payments or save files.
+
+- [Margin Notes Pass A](doc/NOTES_PASS_A.md)
+- [Margin Notes Pass B](doc/NOTES_PASS_B.md)
+- [Wallet · Still](doc/WALLET_PASS_A.md)
+
+## Compatibility and verification
+
+The `UiGallery*` APIs, `Nova*` compatibility aliases and canonical preset identities
+remain available. This checkout's visual refinements are opt-in. Existing users
+must compare custom layout assumptions when enabling signatures. Historical golden
+PNGs and hash manifests are preserved; intentional changes use named versioned
+expectations with strict comparisons.
+
+At compact widths, scaled navigation labels may require horizontal scrolling.
+EditorialTopbar retains its fixed preferred height: at extreme **3× Arabic**, its
+heading and supporting copy require reading gestures. Native screen-reader access
+to that arrangement remains **unverified**, not fully accepted accessibility evidence.
+Widget semantics and keyboard tests do not prove TalkBack or VoiceOver quality.
+
+Run the repository's pinned checks with Flutter 3.41.9:
+
+```sh
+python3 tool/check_golden_hashes.py
+python3 tool/check_notes_pins.py
+python3 tool/check_still_pins.py
+flutter test --no-pub
+cd example
+flutter test --no-pub test
+flutter test --no-pub test/snippet_test.dart --dart-define=WRITE_SNIPPET_FIXTURE=true
+flutter analyze --no-pub ..
 ```
 
-### 4. AppBar & Bottom Navigation
-```dart
-Scaffold(
-  appBar: UiGalleryAppBar(
-    preset: UiGalleryAppBarPreset.focusBar,
-    title: const Text('Discover'),
-  ),
-  bottomNavigationBar: UiGalleryBottomNav(
-    preset: UiGalleryBottomNavPreset.floatingCove,
-    selectedIndex: currentIndex,
-    onDestinationSelected: (i) => setState(() => currentIndex = i),
-    items: const [
-      UiGalleryBottomNavItem(icon: Icon(Icons.explore_outlined), label: 'Discover'),
-      UiGalleryBottomNavItem(icon: Icon(Icons.bookmark_border_rounded), label: 'Saved'),
-      UiGalleryBottomNavItem(icon: Icon(Icons.person_outline_rounded), label: 'Profile'),
-    ],
-  ),
-  body: pages[currentIndex],
-);
-```
+Resolve package and example dependencies first. `check_notes_pins.py` reads
+`flutter` from `PATH`, so activate the pinned SDK before running it. The snippet
+command writes a temporary analyzer fixture; preserve it as evidence or remove
+only that generated fixture after analysis. Current-stable behavior runs exclude
+renderer-specific tests with `--exclude-tags golden`. Never regenerate historical
+goldens to resolve failures. Remote CI, native builds, physical-device testing and
+measured performance are separate evidence, not implied by local widget tests.
 
----
+## Documentation and historical previews
 
-## Coordinated design families
+- [Usage and advanced customization](doc/USAGE.md)
+- [Integration and caller-owned state](doc/INTEGRATION.md)
+- [Signature rules and baseline procedure](doc/FAMILY_SIGNATURES.md)
+- [Release policy and CI requirements](doc/REDESIGN_RELEASE_POLICY.md)
+- [Development and verification ledger](doc/DEVELOPMENT_PROGRESS.md)
 
-Families refine each preset’s geometry and typography: asymmetric corners stay asymmetric, tags keep their bevel, pills stay pill-shaped, and consoles keep square edges and monospace text. Explicit caller `shape` and typography overrides still take priority.
+The following repository previews document an earlier gallery revision; use the
+local Flutter example for the current unreleased appearances.
 
-- **Minimal**: tighter corners, medium-weight headings, no added elevation and short, precise ease-out motion. Editorial headings remain lighter than utility headings.
-- **Soft**: comfortable corners, semibold headings, gentle elevation and a finite critically damped spring. Surfaces settle without bouncing past their destination.
-- **Spatial**: broader corners, bold headings, stronger depth and a finite damped spring with a restrained overshoot. Decorative depth never changes control hit bounds.
+![Toast presets](doc/assets/preview-toasts.png)
+![Sheets](doc/assets/preview-sheets.png)
+![Dialogs](doc/assets/preview-dialogs.png)
+![Headers and navigation](doc/assets/preview-navigation.png)
 
-```dart
-final base = ThemeData(colorScheme: yourColorScheme);
-final family = UiGalleryTheme.family(
-  UiGalleryDesignFamily.soft,
-  theme: base,
-  effects: UiGalleryEffects.cheap, // Opaque surfaces, no backdrop blur.
-);
-final theme = base.copyWith(extensions: [...base.extensions.values, family]);
-```
+## License and author
 
-Add `useSignature: true` to the existing `UiGalleryTheme.family(...)` call to opt into Minimal structural rules, Soft connected tonal wells, or Spatial registered depth edges. Preset planes, frames, curves and type roles always win. The recipe defaults to off. See [precedence exceptions and visual baseline procedure](doc/FAMILY_SIGNATURES.md).
+MIT © 2026 [Ahmed Mohamed Elsapagh](https://github.com/Ahmedelsapagh10).
+See [LICENSE](LICENSE). Example font licenses are retained with the example assets.
 
-**Margin · Notes Pass A** is available under **Real app examples**: eight presets, real Arabic copy, light/dark, 2.0 text, reduced motion and a wide reading layout. Its Navigation style setting is explicitly a showcase control; notes remain local to the current session. [Read the eight preset briefs](doc/NOTES_PASS_A.md).
-
-`UiGalleryEffects.full` is the default. Cheap effects cap surface elevation and omit decorative shadows and backdrop blur; the opt-in Spatial recipe retains flat structural depth cues. System reduced-motion settings take priority in both modes. See the [usage guide](doc/USAGE.md) for token and per-call overrides.
-
-**Glass Dock** needs `Scaffold(extendBody: true, ...)` to reveal page content beneath its blur. Cheap effects use an opaque surface and no backdrop filter, while retaining the same destinations and caller-owned selection.
-
-## 🎨 66 Ready-to-Use Presets
-
-| Category | Presets | Highlights |
-|---|:---:|---|
-| **Bottom Sheets** | 12 | Orbit Dock, Depth Frame, Split Layer, Fold Motion, Flow Canvas, Prism Stage |
-| **Dialogs** | 11 | Halo Focus, Side-by-Side Choice, Spotlight Result, Command Palette, Milestone |
-| **Toasts** | 11 | Signal Pill, Action Capsule, Progress Card, Edge Ribbon, Stack Tag, Mini Console |
-| **AppBars** | 17 | Focus Bar, Sculpted Wave, Adaptive Horizon, Search Switch, Selection Bar |
-| **Bottom Nav** | 15 | Floating Cove, Glass Dock, Concave Notch, Adaptive Minimal, Overflow Dock |
-
-👉 [Browse the full presets matrix with parameters & guidelines →](doc/PRESETS.md)
-
----
-
-## 📚 Documentation
-
-- [Preset Variations Matrix](doc/PRESETS.md) — complete catalog of all 66 presets.
-- [Usage & Code Examples](doc/USAGE.md) — advanced styling, custom tokens, and progress toasts.
-- [Integration Guide](doc/INTEGRATION.md) — routing, architecture, and state management.
-- [Example App](example/) — runnable Flutter demo application.
-
----
-
-## 👨‍💻 Author
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Ahmedelsapagh10/waapi_flutter/main/assets/me3.webp" width="100" style="border-radius: 50%;" alt="Eng Ahmed Mohamed Elsapagh">
-</p>
-
-<p align="center">
-  <strong>Eng. Ahmed Mohamed Elsapagh</strong><br>
-  Co-founder & Mobile Lead at <a href="https://octopusteam.net">Octopus Team</a>
-</p>
-
-<p align="center">
-  <a href="https://elsapagh.octopusteam.net/">🌐 Portfolio</a> ·
-  <a href="mailto:ahmedelsapagh@gmail.com">📧 Email</a> ·
-  <a href="https://wa.me/201201709414">💬 WhatsApp</a>
-</p>
-
----
-
-## 📄 License
-
-MIT License © 2026 [Ahmed Mohamed Elsapagh](https://github.com/Ahmedelsapagh10)
-
-
-Margin **Notes Pass B** is a separate entry under Real app examples, retaining Pass A for comparison. It adds an Edge Lift note-action shelf (move/save/archive), a Split Decision guard for unsaved drafts, local-save Inline Pulse feedback, persistent Focus Bar search and Layered Shelf/Scroll Dock navigation choices. Header and navigation style settings are explicitly showcase controls. [Read the six briefs and direction choices](doc/NOTES_PASS_B.md). Data remains local to the session.
-
-The approved Spatial recipe is now edge-only, with the same flat structural cue in cheap mode and no extra content plane. [Precedence exceptions and revised budget](doc/FAMILY_SIGNATURES.md) record Minimal 3/66, Soft 3/66 and Spatial 10/66 (14 distinct presets). Existing opt-out family behavior is unchanged.
-
-
-**Wallet · Still (Pass A)** is available under Real app examples: local single-currency accounts, same-currency transfer drafts, editable ledger categories and cancellable in-memory statement previews. Sample money only; no bank API, FX total, executed payment or file-save claim. Light/dark, Arabic with the example-only Alexandria font, 2.0 text, reduced motion and tablet layouts are included. [Seven briefs and Pass B boundary](doc/WALLET_PASS_A.md). [Per-preset redesign default/migration proposal and CI evidence](doc/REDESIGN_RELEASE_POLICY.md).
+[Portfolio](https://elsapagh.octopusteam.net/) ·
+[Octopus Team](https://octopusteam.net/) ·
+[Email](mailto:ahmedelsapagh@gmail.com)
