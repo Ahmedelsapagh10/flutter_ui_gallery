@@ -1,8 +1,5 @@
 ## 0.2.0
 
-Prepared for release; not yet published. The latest published version verified
-on 2026-11-03 is `0.1.0`.
-
 - Preserve existing source APIs and Nova aliases; add optional family effects and
   motion controls. Family geometry, typography and motion have been refined since
   published 0.1.0 even when signatures are disabled. Review application screenshots

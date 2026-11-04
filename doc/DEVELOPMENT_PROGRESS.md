@@ -1,7 +1,35 @@
 # Product evolution progress
 
-Release preparation 0.2.0 is authorized: push design-overhaul, create/update its PR
-and run Flutter CI. Merge, deployment and publication remain prohibited. Historical PNGs and manifests are immutable.
+Local handover supersedes the earlier remote release authorization. The maintainer
+will handle GitHub and pub.dev manually. Do not push, dispatch, merge, publish,
+deploy or resume hosted-CI investigation. Preserve workflows and historical
+evidence. Version0.2.0, APIs, dependencies and protected baselines remain frozen.
+
+## Final local handover — 2026-11-04
+
+- Fresh pinned Flutter3.41.9:667 package /518 example tests passed, including
+  strict goldens. Five snippet checks cover396 generated helpers; analysis with
+  the generated fixture is clean. Format72 maintained files:zero changes.
+- Hash/font guards pass; historical images/manifests remain unchanged. No API,
+  implementation, dependency, SDK constraint or baseline change during handover.
+- Prior local stable3.47.9 evidence (643 package /364 example /5 snippet checks)
+  is retained. The SDK is no longer installed; source/test inputs and the README
+  Quick Start code are unchanged from the tested RC, so no fresh stable run is
+  claimed. Exact comparison and original logs are preserved externally.
+- One local iOS smoke execution passed all3 existing Dart scenarios on pinned
+  3.41.9, Xcode26.2 and a fresh iPhone17Pro/iOS26.2 simulator, with no retries.
+  Existing user simulators were untouched; the new test simulator was shut down.
+- No genuine package defect reproduced. Earlier hosted iOS VM-Service attachment
+  failures remain historical external limitations. The previously dispatched
+  41809904008 run is not inspected further; its outcome is unverified here.
+  Native screen-reader/device-performance coverage remains unperformed.
+- README now installs0.2.0 and retains the conditional source-checkout path;
+  changelog uses the0.2.0 release heading without stale preparation wording.
+  MIT license/version metadata and runnable public examples were reviewed.
+- Precommit publication dry-run produced a14MB archive and only the expected
+  dirty-documentation warning. Final clean-commit dry-run, SHA/status and full
+  evidence are recorded externally in final-local-handover/. Publication and
+  all GitHub actions are the maintainer's responsibility; no further remote work.
 
 ## Final iOS attachment blocker — 2026-11-04
 

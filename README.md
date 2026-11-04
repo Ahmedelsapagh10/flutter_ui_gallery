@@ -9,22 +9,19 @@ navigation. Use typed results and caller-owned state with coordinated surfaces
 that adapt to your application's colors and typography. No external runtime
 dependencies. This independent package is not affiliated with Flutter's Gallery demo.
 
-**Release status:** this checkout prepares **0.2.0**, which is not yet published.
-The latest published version verified on 2026-11-03 is `0.1.0`. The Quick Start
-below is verified against the 0.2.0 candidate; remote CI and native-device evidence
-must be assessed separately. No merge or publication is implied.
+**Version 0.2.0.** The Quick Start below is verified against this release's source.
+See the [changelog](CHANGELOG.md) for changes and migration considerations.
 
 ## Install
 
-For the published package:
+For version 0.2.0:
 
 ```sh
-flutter pub add flutter_ui_gallery:^0.1.0
+flutter pub add flutter_ui_gallery:^0.2.0
 ```
 
-After 0.2.0 is published, use `flutter pub add flutter_ui_gallery:^0.2.0`.
-Until then, to try this candidate in a neighboring Flutter app, use a local path
-instead (adjust the path to the directory containing this package's pubspec):
+For an unpublished source checkout, use a local path until the maintainer
+publishes that version (adjust the path to the package's pubspec directory):
 
 ```yaml
 dependencies:
