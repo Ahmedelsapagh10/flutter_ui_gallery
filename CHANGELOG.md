@@ -1,3 +1,13 @@
+## 0.2.1
+
+- Rebuild the README around real Flutter component previews, five category links,
+  concise usage examples, and a complete 66-preset visual catalog.
+- Add reproducible light/dark captures and interaction states generated from the
+  same public-API examples used by the runnable documentation showcase.
+- Move detailed setup and historical verification out of the adoption flow.
+- Preserve component implementations, public APIs, runtime dependencies, SDK
+  constraints, historical goldens, and hash manifests.
+
 ## 0.2.0
 
 - Preserve existing source APIs and Nova aliases; add optional family effects and

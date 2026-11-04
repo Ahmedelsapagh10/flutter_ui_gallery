@@ -117,8 +117,8 @@ class _NotesPageState extends State<NotesPage> {
 // END README APP
 
 void main() {
-  test('README Quick Start matches this compiled fixture', () {
-    final readme = File('../README.md').readAsStringSync();
+  test('Quick Start documentation matches this compiled fixture', () {
+    final readme = File('../doc/QUICK_START.md').readAsStringSync();
     final source = readme
         .split('<!-- quick-start-app -->')
         .last

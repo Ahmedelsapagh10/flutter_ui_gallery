@@ -1,6 +1,6 @@
 name: flutter_ui_gallery
 description: "66 accessible Flutter surface presets with coordinated themes, partial style overrides and caller-owned state."
-version: 0.2.0
+version: 0.2.1
 homepage: https://github.com/Ahmedelsapagh10/flutter_ui_gallery
 repository: https://github.com/Ahmedelsapagh10/flutter_ui_gallery
 issue_tracker: https://github.com/Ahmedelsapagh10/flutter_ui_gallery/issues
@@ -11,14 +11,18 @@ topics:
   - navigation
   - accessibility
 screenshots:
-  - description: "Six toast presets with success, undo, upload progress, and status messages."
-    path: doc/assets/preview-toasts.png
-  - description: "Orbit Dock and Depth Frame bottom sheets in light and dark mode."
-    path: doc/assets/preview-sheets.png
-  - description: "Side-by-Side Choice and Spotlight Result dialogs in light and dark mode."
-    path: doc/assets/preview-dialogs.png
-  - description: "Focus Bar and Sculpted Wave headers with Floating Cove and Glass Dock navigation."
-    path: doc/assets/preview-navigation.png
+  - description: "66 real Flutter presets across five component categories."
+    path: doc/assets/showcase-v021/hero.png
+  - description: "Search Switch, Editorial Topbar, and Sculpted Wave app bars."
+    path: doc/assets/showcase-v021/app-bars.png
+  - description: "Action Capsule, Progress Card, and Mini Console toasts."
+    path: doc/assets/showcase-v021/toasts.png
+  - description: "Orbit Dock, Split Layer, and Depth Frame bottom sheets."
+    path: doc/assets/showcase-v021/bottom-sheets.png
+  - description: "Side-by-Side Choice, Command Palette, and Spotlight Result dialogs."
+    path: doc/assets/showcase-v021/dialogs.png
+  - description: "Morphing Capsule, Layered Shelf, and Glass Dock navigation."
+    path: doc/assets/showcase-v021/bottom-navigation.png
 
 environment:
   sdk: ^3.11.5
