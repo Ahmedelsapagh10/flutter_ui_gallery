@@ -1,0 +1,178 @@
+{
+  "approval": "User P1.2 final implementation and autonomous sprint instructions, 2026-11-03",
+  "base_head": "292a28c68f47e57870442d390ce4fd732fcfe376",
+  "source_sha256": {
+    "lib/src/navigation/gallery_bottom_nav.dart": "92b1aa4ace747b94be0ece6d187a4ebbbc55f37dbcc31b4ddbad429cc6daee11",
+    "lib/src/dialogs/gallery_dialog.dart": "25db36af788e7e891fec406b76c96f56dc5aefc012f8d5c78417537e670f5e52",
+    "example/test/notes_test.dart": "df22ea2df702fa59957f7358dedf62d99868f417536251913884992e69863161",
+    "example/test/notes_pass_b_app_goldens_test.dart": "0f6796643a72cf9ef19a0539e9768ad070707fc9a0ab2465b30ecb836f8408c9"
+  },
+  "renderer": {
+    "flutter": "3.41.9",
+    "framework": "00b0c91f06",
+    "engine": "42d3d75a56",
+    "dart": "3.11.5",
+    "device_pixel_ratio": 1,
+    "real_shadows": true,
+    "reduced_motion": true,
+    "pins_sha256": "923f3536632c85d7fc996cf9de05dea60da417a763aec42d478f1e9d8f55a43c"
+  },
+  "images": [
+    {
+      "original": "example/test/goldens/notes-pass-b/app/phone-light.png",
+      "original_sha256": "b38208dcb4cd94014269f425167233d6b1fe31110d9b48de32988df4d5476c3b",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-b/app/phone-light.png",
+      "versioned_sha256": "0ee7c10fefa1b46c66e30c009a4ee0e88370e76d238e79ad70b8816972336ad3",
+      "scenario": "English LTR / light / 1x text",
+      "size": [
+        420,
+        900
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-b/app/phone-dark.png",
+      "original_sha256": "bd2af793d3fd187002d46e97d4136ca391b5d225a420ffa05b8f6095fccb28fe",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-b/app/phone-dark.png",
+      "versioned_sha256": "3fda91fe7c3c4690b0d5439a55ae0e30ba18f439a67c74b492a5928f529afa4a",
+      "scenario": "English LTR / dark / 1x text",
+      "size": [
+        420,
+        900
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-b/app/phone-rtl.png",
+      "original_sha256": "8d9f733a968b4f47b89ac366ca87b1839fcd96248ae1f3581b306bc1910f4e83",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-b/app/phone-rtl.png",
+      "versioned_sha256": "3945bf4c7310ac3161fe21edb8d13f2b41bead684c6ce128a129093fbdb1ca1f",
+      "scenario": "Arabic RTL / light / 1x text",
+      "size": [
+        420,
+        900
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-b/app/phone-large-text.png",
+      "original_sha256": "c3f5f1388cb0ea1d2c1a06cec2865b3035b8216947c0981f2cabf2fa2a3a7793",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-b/app/phone-large-text.png",
+      "versioned_sha256": "b595c25d9f82d8d3fc19f731e255f29375bdb96ab4ec08b01d8883b7f0e19c15",
+      "scenario": "English LTR / light / 2x text",
+      "size": [
+        420,
+        900
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-b/app/tablet-light.png",
+      "original_sha256": "653877a5fdb14d0b7333077370b74f6419ffd69421cf321772ddc8b72c2d8efc",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-b/app/tablet-light.png",
+      "versioned_sha256": "36b2fd6c3522c8c948ac5295ff067e5dc401419fbacb01cb1d4780afa03e4b48",
+      "scenario": "English LTR / light / 1x text",
+      "size": [
+        1024,
+        1200
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-b/app/tablet-dark.png",
+      "original_sha256": "9d9dc10833b14222ade085c117568c539550f1e00c53cbc789e939980743565e",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-b/app/tablet-dark.png",
+      "versioned_sha256": "00ed755f08a61076d44d52f8a134d6ff3adae620ac7f30f64450718acd6347d3",
+      "scenario": "English LTR / dark / 1x text",
+      "size": [
+        1024,
+        1200
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-b/app/tablet-rtl.png",
+      "original_sha256": "f24f3fa25306c2d9c7765b4eff93b6d403559e710d6f73b429f329cf506aefa1",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-b/app/tablet-rtl.png",
+      "versioned_sha256": "1d84b385105b2e97a1546b8570b06c341917d6b6a1db3309b853872e9ae30893",
+      "scenario": "Arabic RTL / light / 1x text",
+      "size": [
+        1024,
+        1200
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-b/app/tablet-large-text.png",
+      "original_sha256": "c79aec983b93d8337260ce1be8c2ba04a6bbc0f7e2e0a409f33d43cdded9cf9c",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-b/app/tablet-large-text.png",
+      "versioned_sha256": "ed1215ea0dc8c1dff12358c2052a3bad00463d409dbef83c159cd372d4fd1918",
+      "scenario": "English LTR / light / 2x text",
+      "size": [
+        1024,
+        1200
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-a/app-light.png",
+      "original_sha256": "ce32a7d480bb91883b6fab6c8535ed03d8f7332cbf27509bb16159beec1f06c0",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-a/app-light.png",
+      "versioned_sha256": "ba27a52312f231f45177ee182dc51aea8732929437577bf599da13bd1c6faaba",
+      "scenario": "English LTR / light / 1x text",
+      "size": [
+        420,
+        900
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-a/app-dark.png",
+      "original_sha256": "49e31988fa7f5141f6f82072bc56402eebc4f172aee820763221204b4b3eb554",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-a/app-dark.png",
+      "versioned_sha256": "925e3a0c2d7ca73c2983de5a2b367051a67356443831b5ebe2ab7980c5983db1",
+      "scenario": "English LTR / dark / 1x text",
+      "size": [
+        420,
+        900
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-a/app-rtl.png",
+      "original_sha256": "c05ac3e57662bd9c8e55ef6aa22aecbdb3172a479197f7079bbdea3414ffd879",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-a/app-rtl.png",
+      "versioned_sha256": "c32d795875fe893d92b77aa62db285907ef54c0d3394cd3815d19ae6d2ea3ebe",
+      "scenario": "Arabic RTL / light / 1x text",
+      "size": [
+        420,
+        900
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-a/app-large-text.png",
+      "original_sha256": "606929edbe5783a9d9858dcfd035382edfe73a246a12ca2a8f71420541a4625f",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-a/app-large-text.png",
+      "versioned_sha256": "5ee856c797633381bbc3101f8f7f7848df76e857ed5534e42583d7c5b16bf653",
+      "scenario": "English LTR / light / 2x text",
+      "size": [
+        420,
+        900
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    },
+    {
+      "original": "example/test/goldens/notes-pass-a/app-wide.png",
+      "original_sha256": "3ec2dc28e59a0af2306e9ac60e14ed9bcb76507853e06ee025675098286e033c",
+      "versioned": "example/test/goldens/hero-calm-v1/notes-pass-a/app-wide.png",
+      "versioned_sha256": "821a85ba90eb66efabaa3b002e3abeb32cec88dc1df46f7b1a7e7221639b70b7",
+      "scenario": "English LTR / light / 1x text",
+      "size": [
+        1280,
+        900
+      ],
+      "origin": "Reviewed actual pinned Flutter after render, copied byte-for-byte; current strict comparison passed"
+    }
+  ]
+}

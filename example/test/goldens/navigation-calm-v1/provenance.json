@@ -1,0 +1,32 @@
+{
+  "base_head": "1a4e69b92240583e591312c3c8c3cd2ecaeca659",
+  "flutter": "3.41.9",
+  "dart": "3.11.5",
+  "engine": "42d3d75a56",
+  "font_pins": "../notes-pass-a/pins.json",
+  "source_sha256": "7703e73bd740c67e14228b3cdf85fd60c15dd545f041418b3338527279be3a99",
+  "approval": "User controlled migration authority; exact actual before/after/diffs inspected",
+  "images": [
+    {
+      "scenario": "LayeredShelf minimal 2x420x800DPR1 selected1",
+      "original": "example/test/goldens/notes-pass-b/layeredShelf/minimal-large-text.png",
+      "original_sha256": "2da44e94b02afcf65c2505efb9ba25cbc1f15473817712f1b885e07d71c21fea",
+      "versioned": "example/test/goldens/navigation-calm-v1/minimal-large-text.png",
+      "sha256": "8373d81e2b5923ab9aa98bf8bb2b254684e32ffd9426c577fdb2e48da88b61e3"
+    },
+    {
+      "scenario": "LayeredShelf soft 2x420x800DPR1 selected1",
+      "original": "example/test/goldens/notes-pass-b/layeredShelf/soft-large-text.png",
+      "original_sha256": "88606f212c23800ee866f4295735e3ab6c613065415a3d941ad60de0e519ad12",
+      "versioned": "example/test/goldens/navigation-calm-v1/soft-large-text.png",
+      "sha256": "448004e0c550a8c8aba1716bba3de90700c73d169c6a9b29b926d46791dbeae1"
+    },
+    {
+      "scenario": "LayeredShelf spatial 2x420x800DPR1 selected1",
+      "original": "example/test/goldens/notes-pass-b/layeredShelf/spatial-large-text.png",
+      "original_sha256": "106735e549bfa0dae7efa81875b1ac1e8ac107deea53717ad73dbacc109565cd",
+      "versioned": "example/test/goldens/navigation-calm-v1/spatial-large-text.png",
+      "sha256": "5db1faa422605b33458817301f89e7eb8d541aed1b4b5200625b6f743313d13c"
+    }
+  ]
+}

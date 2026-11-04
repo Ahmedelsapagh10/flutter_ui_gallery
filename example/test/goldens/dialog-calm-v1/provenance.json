@@ -1,0 +1,262 @@
+{
+  "approval": "User controlled P1.3 versioned migration authorization, 2026-11-03",
+  "base_head": "76e86088862f20c157ff1b30ec13a2edb401ef79",
+  "source_sha256": {
+    "lib/src/dialogs/gallery_dialog.dart": "372744c23a19e6d2d6f6e0542087c24acfb532dc596331ed31c18da8ea80f8f6",
+    "example/test/dialog_heroes_test.dart": "7bca7b1f544538aed576d06cacdb2fd17aaf11283987414112132492d6a4f542",
+    "example/test/notes_pass_b_goldens_test.dart": "4c3353668f05bcdc212d60bbdae67eea1113844440db05e741a62a781a6ba9c5"
+  },
+  "renderer": {
+    "flutter": "3.41.9",
+    "framework": "00b0c91f06",
+    "engine": "42d3d75a56",
+    "dart": "3.11.5",
+    "dpr": 1,
+    "shadows": true,
+    "reduced_motion": true,
+    "notes_pins_sha256": "923f3536632c85d7fc996cf9de05dea60da417a763aec42d478f1e9d8f55a43c"
+  },
+  "images": [
+    {
+      "scenario": "split minimal light, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/minimal-light.png",
+      "original_capture": null,
+      "before_sha256": "a1112555cb3bdaeb6287cb0a52e1289b70e3e15a546bf49678da9b81fa89b2c5",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/minimal-light.png",
+      "versioned_sha256": "05e9f44f48bca1ed23a6b8f68384f9a3c4839f10b8b0699eea857db127ffac85",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice minimal light, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-minimal-light.png",
+      "before_sha256": "4a6807e20638df3298d352c615d79bc4581cf86878c3733d350cb46f40fdd71c",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/minimal-light.png",
+      "versioned_sha256": "c3ef04e0e6c04d34e9c0ca38975bfe237dba72f5c91f9016b35b18e1f8c1e975",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split minimal dark, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/minimal-dark.png",
+      "original_capture": null,
+      "before_sha256": "1282fe8cf09bb5f02a216d2a22e797d48262a50a93023a7fcc48c518b1e73265",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/minimal-dark.png",
+      "versioned_sha256": "31b07970f9ff68ef9ace708264d4b15b89a86849681419158f6c3a85a121f6e1",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice minimal dark, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-minimal-dark.png",
+      "before_sha256": "f40c82690056db509bc5cafa89cea30b03eca57054d86dc7f33c4c9044cca630",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/minimal-dark.png",
+      "versioned_sha256": "6c47b6469be10e3b2be98db837ab0686261447e353d6d7de3d54bd80f373b5e1",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split minimal rtl, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/minimal-rtl.png",
+      "original_capture": null,
+      "before_sha256": "f4f2d51abdcb0a790e4e89412ec4f80975f42c7b3791e4bcb52df0fcca1a30f4",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/minimal-rtl.png",
+      "versioned_sha256": "0afa5e10c2d2fb852a202eb1cb0c1bb76a3617dcd1e74edf29d3aa6d829c2c53",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice minimal rtl, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-minimal-rtl.png",
+      "before_sha256": "078dd440a450cb3acf7ad439b2844bfd2e1f7c165706522bfed33937ce8637c9",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/minimal-rtl.png",
+      "versioned_sha256": "30b5950b5c14f02c0e296503b8becfb8cd4bc8051213d4893a28986817b0c73a",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split minimal large-text, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/minimal-large-text.png",
+      "original_capture": null,
+      "before_sha256": "6fb608f2c5b9c9eb0cb60431295cdbe3ace6de913952838f86e8d8d3a90fe3ea",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/minimal-large-text.png",
+      "versioned_sha256": "b8dec03dd71554e1c3614b19e3975b337563e3436c5df11d7c91385a6c8cda04",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice minimal large-text, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-minimal-large-text.png",
+      "before_sha256": "94b8b9678a2e8e8b5650a0425a6368aa138d50900d6174dfe82683958e65c328",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/minimal-large-text.png",
+      "versioned_sha256": "6d732c83aad9ddffbc4801df3bda06d0dce63b11b29fca14de8d49db969a026e",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split soft light, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/soft-light.png",
+      "original_capture": null,
+      "before_sha256": "e73075da8c0f375f0c7ed394124dfcf1a42786351af794b76c47516e044ff162",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/soft-light.png",
+      "versioned_sha256": "c15634d4d30c58ec72f4e75bdf2f1e0917c9710ded370343a9f2386a2d10fb6d",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice soft light, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-soft-light.png",
+      "before_sha256": "d5a348e94596f309fb61a5e2d4de0f881eff18f50a7b6b769916404507798a55",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/soft-light.png",
+      "versioned_sha256": "22d31651b7033550ff6354fa0bf50df588175aa00c7a563450f20108677651f6",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split soft dark, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/soft-dark.png",
+      "original_capture": null,
+      "before_sha256": "24d4a307fdea01bff2095ecd1fe669c3adb5558f06c520c8112fb88718a04984",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/soft-dark.png",
+      "versioned_sha256": "e6e5028e4f43d3c594744acff8dc3ff7de42b0e36daa5b669a455ff23b728cf5",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice soft dark, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-soft-dark.png",
+      "before_sha256": "a3c4b61303d8dea01c527e29fdfbe5ab882a9295922f84739083fbefcec41122",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/soft-dark.png",
+      "versioned_sha256": "d3cfaebfb9694a2db5a2c5ed3ea034bd993469241c2e258aae14b38e55d1646a",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split soft rtl, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/soft-rtl.png",
+      "original_capture": null,
+      "before_sha256": "419533c3c0bafd7b8d88a3985d43283c28f8e9b9cdb680b7f43fdeb1e01361c8",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/soft-rtl.png",
+      "versioned_sha256": "5ac726674f1127cfd94a890f9db1f0df4c2d2434376c49dac4e9ece0a7ed21af",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice soft rtl, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-soft-rtl.png",
+      "before_sha256": "eb3c0baba4f681891b35cdfc3900e79bac00298fcc7741d5c9532cc50f31b497",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/soft-rtl.png",
+      "versioned_sha256": "50cab423e8d005497154cecb6b80363220ecc2abfd3cda42197e936cf98e2fe6",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split soft large-text, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/soft-large-text.png",
+      "original_capture": null,
+      "before_sha256": "83979103f1a7c869e433ebf08e95fb8ae58a57279d50fbc18f5bd2e70829b575",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/soft-large-text.png",
+      "versioned_sha256": "3197ac138212ddc283961c3c1b7c976a577c765f2f6812bdcc01d522844d2435",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice soft large-text, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-soft-large-text.png",
+      "before_sha256": "eefead7e1d14b86d0ef572d4d7a9a654e29ac89e29236c65e959abebd1d91a93",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/soft-large-text.png",
+      "versioned_sha256": "5db521ef872e0d261ba8ebdc111543e62232c5b2b337edbf385608d11131b53f",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split spatial light, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/spatial-light.png",
+      "original_capture": null,
+      "before_sha256": "46a04bacf8a4ba056d3f549a2420ac153c925c3b67c2da0b5dfbc5fb887d790c",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/spatial-light.png",
+      "versioned_sha256": "57a1eda87af428250e7b560e57acec2628724e77adc85f9fc5b71edd3a26666d",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice spatial light, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-spatial-light.png",
+      "before_sha256": "0f0a910243a7018d65cae0ce0e858ac8a1116c304ec49ef508386013c157bf8a",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/spatial-light.png",
+      "versioned_sha256": "0fc439b55fb217f8fa016144b65db9a4d7948b1afb857de86b4022f4e62ea26a",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split spatial dark, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/spatial-dark.png",
+      "original_capture": null,
+      "before_sha256": "97c8a351c63e56073f434ab141bbe26f2981f6bfa4990fc12ac636bf7a3fa09d",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/spatial-dark.png",
+      "versioned_sha256": "f74ee550ab9d4bb9983ad6ece6d2206dc5fc54449e1be99e264a390b9509b8ae",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice spatial dark, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-spatial-dark.png",
+      "before_sha256": "2e8b160ef6d31a4c06b33a77b804808ef195533f1f4283fd76c3682d2d59c7e3",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/spatial-dark.png",
+      "versioned_sha256": "178bb11945f1fb25fe4bd74ed902a9bf1308a7b22a76f7863f666ee8adfd663e",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split spatial rtl, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/spatial-rtl.png",
+      "original_capture": null,
+      "before_sha256": "cacec17065b04a12628e7c59505a258203ec5ac2831b55418ad2411cb0eec829",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/spatial-rtl.png",
+      "versioned_sha256": "32421b29692230b88992d02764f07c36340b0a6b82f6aabeabfa2c8e5de7d487",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice spatial rtl, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-spatial-rtl.png",
+      "before_sha256": "32cfc318732d0dd184685624a93cbb102fd12bb09379146675c71c2e428c558f",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/spatial-rtl.png",
+      "versioned_sha256": "ea8eec3110a55720276e063c61b8a4c36dd7e43ff6b6e4456ede4b31f376bd66",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "split spatial large-text, 420x800, DPR1",
+      "original_golden": "example/test/goldens/notes-pass-b/split/spatial-large-text.png",
+      "original_capture": null,
+      "before_sha256": "9b59ec0d838492ad1d0f5bc5cb1a0f2cff4746112a0d6c9ee4bd8eaf84771556",
+      "versioned": "example/test/goldens/dialog-calm-v1/split/spatial-large-text.png",
+      "versioned_sha256": "868349bf1ac802aaaaa7dbbe4908db1ea251daae1042f79b00a48f070064ddf3",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    },
+    {
+      "scenario": "sideBySideChoice spatial large-text, 420x800, DPR1",
+      "original_golden": null,
+      "original_capture": "before/sideBySideChoice-spatial-large-text.png",
+      "before_sha256": "d6731ba546897e5bbe30b751c1c5f0922aca68430444e9e9588a21f400c6c262",
+      "versioned": "example/test/goldens/dialog-calm-v1/sideBySideChoice/spatial-large-text.png",
+      "versioned_sha256": "97e224e787f3de7a12e65ccccae1b01ffddf177454d476fb9080b1b1b4026501",
+      "review": "Actual full before/after and exact RGB difference sheets inspected; changes intentional, approved under delegated P1.3 visual authority",
+      "changed_regions": "Context header typography/spacing and placement; responsive decision regions; family treatment; action label/error emphasis; outer geometry follows new content height"
+    }
+  ],
+  "capture_harness_sha256": "cc82b18e5a9897b62c2cffb2364d5285a828176cfd5d7f3c542ee2b4aeb89eb6"
+}

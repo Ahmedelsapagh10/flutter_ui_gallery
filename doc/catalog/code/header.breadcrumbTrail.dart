@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_ui_gallery/flutter_ui_gallery.dart';
+
+// Apply this theme to MaterialApp(theme: showHeaderBreadcrumbTrailTheme()).
+ThemeData showHeaderBreadcrumbTrailTheme({
+  Brightness brightness = Brightness.light,
+}) {
+  final base = ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Color(0xff007f88),
+      brightness: brightness,
+    ),
+  );
+  final recipe = UiGalleryTheme.family(
+    UiGalleryDesignFamily.soft,
+    theme: base,
+    useSignature: true,
+  );
+  return base.copyWith(
+    extensions: [
+      recipe.copyWith(
+        surfaceStyle: recipe.surfaceStyle!.copyWith(
+          accentColor: Color(0xff007f88),
+        ),
+        motionIntensity: 1,
+      ),
+    ],
+  );
+}
+
+Widget showHeaderBreadcrumbTrail(
+  VoidCallback onNotifications,
+  VoidCallback onOpenWorkspace,
+) {
+  return Scaffold(
+    appBar: UiGalleryAppBar(
+      preset: UiGalleryAppBarPreset.breadcrumbTrail,
+      title: const Text("Notebook"),
+      subtitle: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextButton(
+            onPressed: onOpenWorkspace,
+            child: const Text('Workspace'),
+          ),
+          const Icon(Icons.chevron_right_rounded, size: 16),
+          const Text("Ideas worth keeping"),
+        ],
+      ),
+      scrollAware: true,
+      actions: [
+        IconButton(
+          onPressed: onNotifications,
+          icon: const Icon(Icons.notifications_none_rounded),
+        ),
+      ],
+      style: const UiGallerySurfaceStyle(accentColor: Color(0xff007f88)),
+    ),
+    body: ListView(
+      children: List.generate(
+        16,
+        (i) => ListTile(
+          leading: const Icon(Icons.article_outlined),
+          title: Text(
+            const [
+              'Field notes',
+              'A weekend by the coast',
+              'The next good idea',
+              'Spaces worth saving',
+            ][i % 4],
+          ),
+          subtitle: const Text('Personal collection · Updated today'),
+        ),
+      ),
+    ),
+  );
+}

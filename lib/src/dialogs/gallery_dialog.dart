@@ -2,10 +2,36 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/gallery_theme.dart';
+import '../core/gallery_style.dart';
+import '../core/gallery_signature.dart';
+import '../core/gallery_signature_exceptions.dart';
+import '../core/gallery_shape.dart';
 
-enum UiGalleryDialogPreset { halo, split, timeline, spotlight }
+enum UiGalleryDialogPreset {
+  halo,
+  split,
+  timeline,
+  spotlight,
+  orbitConfirm,
+  sideBySideChoice,
+  alertCapsule,
+  milestone,
+  panelDecision,
+  statusBeacon,
+  commandPalette;
+
+  static const haloFocus = halo;
+  static const splitDecision = split;
+  static const timelineDialog = timeline;
+  static const spotlightResult = spotlight;
+  static const compactAlertCapsule = alertCapsule;
+  static const milestoneDialog = milestone;
+}
+
+enum UiGalleryActionLayout { wrap, stacked, sideBySide }
 
 enum UiGalleryResult { success, warning, failure }
 
@@ -17,11 +43,17 @@ class UiGalleryDialogAction<T> {
     required this.value,
     this.primary = false,
     this.destructive = false,
+    this.description,
+    this.icon,
+    this.enabled = true,
   });
   final String label;
   final T value;
   final bool primary;
   final bool destructive;
+  final String? description;
+  final Widget? icon;
+  final bool enabled;
 }
 
 abstract final class UiGalleryDialog {
@@ -35,19 +67,37 @@ abstract final class UiGalleryDialog {
     UiGalleryDialogPreset preset = UiGalleryDialogPreset.halo,
     UiGalleryResult result = UiGalleryResult.success,
     UiGalleryTheme? appearance,
+    UiGallerySurfaceStyle? style,
+    UiGalleryMotion? motion,
+    Widget? icon,
+    Color? barrierColor,
+    String? semanticLabel,
+    String? eyebrow,
+    AlignmentGeometry alignment = Alignment.center,
+    UiGalleryActionLayout? actionLayout,
     bool barrierDismissible = false,
     bool useRootNavigator = true,
     bool? requestFocus,
     RouteSettings? routeSettings,
   }) {
     assert(child == null || builder == null, 'Use either child or builder.');
-    final s = UiGalleryStyle.of(context, appearance);
+    final s = UiGalleryStyle.of(
+      context,
+      appearance,
+      style,
+      motion,
+      UiGallerySurface.dialog,
+    );
     final navigator = Navigator.of(context, rootNavigator: useRootNavigator);
     return navigator.push<T>(
       _GalleryDialogRoute<T>(
         context: context,
         preset: preset,
-        duration: s.duration(UiGalleryTokens.entrance),
+        duration: s.duration(s.motion.entrance),
+        reverseDuration: s.duration(s.motion.exit),
+        curve: s.curve,
+        barrierColor:
+            barrierColor ?? s.theme.colorScheme.scrim.withValues(alpha: .54),
         themes: InheritedTheme.capture(from: context, to: navigator.context),
         barrierDismissible: barrierDismissible,
         requestFocus: requestFocus,
@@ -59,6 +109,13 @@ abstract final class UiGalleryDialog {
           result: result,
           appearance: appearance,
           actions: actions,
+          style: style,
+          motion: motion,
+          icon: icon,
+          semanticLabel: semanticLabel,
+          eyebrow: eyebrow,
+          alignment: alignment,
+          actionLayout: actionLayout,
           child: builder?.call(context) ?? child,
         ),
       ),
@@ -77,6 +134,14 @@ abstract final class UiGalleryDialog {
     bool barrierDismissible = false,
     bool useRootNavigator = true,
     UiGalleryTheme? appearance,
+    UiGallerySurfaceStyle? style,
+    UiGalleryMotion? motion,
+    Widget? icon,
+    Color? barrierColor,
+    String? semanticLabel,
+    String? eyebrow,
+    AlignmentGeometry alignment = Alignment.center,
+    UiGalleryActionLayout? actionLayout,
   }) {
     final labels = MaterialLocalizations.of(context);
     return show<bool>(
@@ -85,6 +150,14 @@ abstract final class UiGalleryDialog {
       message: message,
       preset: preset,
       appearance: appearance,
+      style: style,
+      motion: motion,
+      icon: icon,
+      barrierColor: barrierColor,
+      semanticLabel: semanticLabel,
+      eyebrow: eyebrow,
+      alignment: alignment,
+      actionLayout: actionLayout,
       barrierDismissible: barrierDismissible,
       useRootNavigator: useRootNavigator,
       actions: [
@@ -107,19 +180,65 @@ abstract final class UiGalleryDialog {
     required BuildContext context,
     required String title,
     required ValueListenable<UiGalleryTimelineState> progress,
+    UiGalleryDialogPreset preset = UiGalleryDialogPreset.timeline,
     List<UiGalleryDialogAction<T>> actions = const [],
     bool barrierDismissible = false,
     bool useRootNavigator = true,
+    UiGallerySurfaceStyle? style,
+    UiGalleryMotion? motion,
+    UiGalleryTheme? appearance,
+    String? semanticLabel,
+    String? eyebrow,
   }) => show<T>(
     context: context,
     title: title,
-    preset: UiGalleryDialogPreset.timeline,
+    preset: preset,
     actions: actions,
     barrierDismissible: barrierDismissible,
     useRootNavigator: useRootNavigator,
+    style: style,
+    motion: motion,
+    appearance: appearance,
+    semanticLabel: semanticLabel,
+    eyebrow: eyebrow,
     child: ValueListenableBuilder<UiGalleryTimelineState>(
       valueListenable: progress,
-      builder: (context, value, _) => UiGalleryTimeline(state: value),
+      builder: (context, value, _) => UiGalleryTimeline(
+        state: value,
+        appearance: appearance,
+        style: style,
+        motion: motion,
+      ),
+    ),
+  );
+
+  /// Searches caller-supplied commands and returns the selected value.
+  static Future<T?> commands<T>({
+    required BuildContext context,
+    required String title,
+    required List<UiGalleryDialogAction<T>> commands,
+    required String emptyLabel,
+    String? searchHint,
+    bool useRootNavigator = true,
+    UiGallerySurfaceStyle? style,
+    UiGalleryMotion? motion,
+    UiGalleryTheme? appearance,
+  }) => show<T>(
+    context: context,
+    title: title,
+    preset: UiGalleryDialogPreset.commandPalette,
+    useRootNavigator: useRootNavigator,
+    barrierDismissible: true,
+    style: style,
+    motion: motion,
+    appearance: appearance,
+    builder: (context) => _CommandPalette<T>(
+      commands: commands,
+      emptyLabel: emptyLabel,
+      searchHint: searchHint,
+      appearance: appearance,
+      style: style,
+      motion: motion,
     ),
   );
 }
@@ -137,13 +256,21 @@ class _GalleryDialogRoute<T> extends DialogRoute<T> {
     required super.context,
     required super.builder,
     required this.preset,
+    required this.curve,
+    super.barrierColor,
     required Duration duration,
+    required this.reverseDuration,
     required super.themes,
     required super.barrierDismissible,
     super.requestFocus,
     super.settings,
   }) : super(animationStyle: AnimationStyle(duration: duration));
   final UiGalleryDialogPreset preset;
+  final Curve curve;
+  final Duration reverseDuration;
+
+  @override
+  Duration get reverseTransitionDuration => reverseDuration;
 
   @override
   Widget buildTransitions(
@@ -155,19 +282,28 @@ class _GalleryDialogRoute<T> extends DialogRoute<T> {
     animation: animation,
     child: child,
     builder: (context, child) {
-      final t = UiGalleryTokens.curve.transform(animation.value);
+      final t = curve.transform(animation.value).clamp(0.0, 1.0);
       return Opacity(
         opacity: t,
         child: Transform.translate(
           offset: Offset(
-            preset == UiGalleryDialogPreset.split ? (1 - t) * 20 : 0,
-            preset == UiGalleryDialogPreset.timeline ? (1 - t) * 12 : 0,
+            preset == UiGalleryDialogPreset.split ||
+                    preset == UiGalleryDialogPreset.sideBySideChoice
+                ? (1 - t) * UiGalleryTokens.sideDistance
+                : 0,
+            preset == UiGalleryDialogPreset.timeline ||
+                    preset == UiGalleryDialogPreset.milestone ||
+                    preset == UiGalleryDialogPreset.alertCapsule
+                ? (1 - t) * UiGalleryTokens.revealDistance
+                : 0,
           ),
           child: Transform.scale(
             scale:
                 preset == UiGalleryDialogPreset.halo ||
-                    preset == UiGalleryDialogPreset.spotlight
-                ? .96 + .04 * t
+                    preset == UiGalleryDialogPreset.spotlight ||
+                    preset == UiGalleryDialogPreset.orbitConfirm
+                ? UiGalleryTokens.dialogRevealScale +
+                      (1 - UiGalleryTokens.dialogRevealScale) * t
                 : 1,
             child: child,
           ),
@@ -186,6 +322,13 @@ class _DialogSurface<T> extends StatelessWidget {
     this.message,
     this.child,
     this.appearance,
+    this.style,
+    this.motion,
+    this.icon,
+    this.semanticLabel,
+    this.eyebrow,
+    this.alignment = Alignment.center,
+    this.actionLayout,
   });
   final String title;
   final String? message;
@@ -194,19 +337,49 @@ class _DialogSurface<T> extends StatelessWidget {
   final UiGalleryResult result;
   final List<UiGalleryDialogAction<T>> actions;
   final UiGalleryTheme? appearance;
+  final UiGallerySurfaceStyle? style;
+  final UiGalleryMotion? motion;
+  final Widget? icon;
+  final String? semanticLabel, eyebrow;
+  final AlignmentGeometry alignment;
+  final UiGalleryActionLayout? actionLayout;
 
   @override
   Widget build(BuildContext context) {
-    final s = UiGalleryStyle.of(context, appearance);
+    final s = UiGalleryStyle.of(
+      context,
+      appearance,
+      style,
+      motion,
+      UiGallerySurface.dialog,
+    );
     final spotlight = preset == UiGalleryDialogPreset.spotlight;
-    final split = preset == UiGalleryDialogPreset.split;
+    final calmCommands =
+        preset == UiGalleryDialogPreset.commandPalette && s.signatureEnabled;
+    final calmDecisions =
+        s.signatureEnabled &&
+        (preset == UiGalleryDialogPreset.split ||
+            preset == UiGalleryDialogPreset.sideBySideChoice);
+    final compactHeader = calmCommands || calmDecisions;
+    final split =
+        preset == UiGalleryDialogPreset.split ||
+        preset == UiGalleryDialogPreset.panelDecision;
     final resultColor = switch (result) {
       UiGalleryResult.success => s.accent,
       UiGalleryResult.warning => s.theme.colorScheme.tertiary,
       UiGalleryResult.failure => s.theme.colorScheme.error,
     };
-    final body = Padding(
-      padding: const EdgeInsets.all(28),
+    Widget body = Padding(
+      padding:
+          s.visual.padding ??
+          (calmDecisions
+              ? const EdgeInsets.fromLTRB(
+                  UiGalleryTokens.space5,
+                  UiGalleryTokens.space5,
+                  UiGalleryTokens.space5,
+                  UiGalleryTokens.space2,
+                )
+              : const EdgeInsets.all(UiGalleryTokens.space7)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: spotlight
@@ -215,8 +388,8 @@ class _DialogSurface<T> extends StatelessWidget {
         children: [
           if (spotlight) ...[
             SizedBox(
-              width: 112,
-              height: 112,
+              width: UiGalleryTokens.resultMarkSize,
+              height: UiGalleryTokens.resultMarkSize,
               child: CustomPaint(
                 painter: _SpotlightPainter(resultColor, s.line),
                 child: Center(
@@ -232,28 +405,32 @@ class _DialogSurface<T> extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: UiGalleryTokens.space6),
           ] else ...[
             Row(
               children: [
                 Container(
                   width: preset == UiGalleryDialogPreset.timeline ? 6 : 24,
-                  height: 6,
+                  height: compactHeader ? 3 : UiGalleryTokens.gapCompact,
                   decoration: BoxDecoration(
                     color: s.accent,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(
+                      UiGalleryTokens.radiusSmall,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: UiGallerySectionLabel(
-                    preset.name.toUpperCase(),
-                    color: s.muted,
+                const SizedBox(width: UiGalleryTokens.gapInline),
+                if (eyebrow != null)
+                  Expanded(
+                    child: UiGallerySectionLabel(eyebrow!, color: s.muted),
                   ),
-                ),
               ],
             ),
-            const SizedBox(height: 24),
+            SizedBox(
+              height: compactHeader
+                  ? UiGalleryTokens.space3
+                  : UiGalleryTokens.space6,
+            ),
           ],
           Semantics(
             namesRoute: true,
@@ -261,30 +438,53 @@ class _DialogSurface<T> extends StatelessWidget {
             child: Text(
               title,
               textAlign: spotlight ? TextAlign.center : TextAlign.start,
-              style: s.theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: s.content,
-                height: 1.15,
+              style: s.heading(
+                (compactHeader
+                        ? s.theme.textTheme.titleLarge
+                        : s.theme.textTheme.headlineSmall)
+                    ?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: s.content,
+                      height: 1.15,
+                    ),
               ),
             ),
           ),
           if (message != null) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: UiGalleryTokens.space4),
             Text(
               message!,
               textAlign: spotlight ? TextAlign.center : TextAlign.start,
-              style: s.theme.textTheme.bodyLarge?.copyWith(
-                color: s.muted,
-                height: 1.5,
+              style: s.body(
+                s.theme.textTheme.bodyLarge?.copyWith(
+                  color: s.muted,
+                  height: 1.5,
+                ),
               ),
             ),
           ],
-          if (child != null) ...[const SizedBox(height: 24), child!],
+          if (child != null) ...[
+            SizedBox(
+              height: calmCommands
+                  ? UiGalleryTokens.space3
+                  : UiGalleryTokens.space6,
+            ),
+            child!,
+          ],
         ],
       ),
     );
-    final decisions = Padding(
-      padding: const EdgeInsets.all(20),
+    if (calmDecisions) {
+      body = GalleryFamilyEdge(style: s, child: body);
+    } else if (!calmCommands) {
+      body = GalleryFamilyRegion(
+        style: s,
+        framed: GallerySignatureExceptions.dialogWells.contains(preset),
+        child: body,
+      );
+    }
+    Widget decisions = Padding(
+      padding: const EdgeInsets.all(UiGalleryTokens.space5),
       child: Wrap(
         alignment: WrapAlignment.end,
         spacing: 10,
@@ -299,85 +499,604 @@ class _DialogSurface<T> extends StatelessWidget {
         ],
       ),
     );
-    return Dialog(
-      backgroundColor: s.surface,
-      surfaceTintColor: Colors.transparent,
-      elevation: 12,
-      insetAnimationDuration: s.duration(UiGalleryTokens.change),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          spotlight
-              ? 40
-              : split
-              ? 16
-              : 28,
+    final mark =
+        icon ??
+        Icon(
+          preset == UiGalleryDialogPreset.milestone
+              ? Icons.flag_rounded
+              : preset == UiGalleryDialogPreset.statusBeacon
+              ? Icons.sensors_rounded
+              : Icons.check_rounded,
+          size: UiGalleryTokens.iconLarge,
+          color: resultColor,
+        );
+    switch (preset) {
+      case UiGalleryDialogPreset.orbitConfirm:
+        body = Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.only(
+                top: UiGalleryTokens.space6,
+                end: UiGalleryTokens.space6,
+              ),
+              child: Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: Container(
+                  width: UiGalleryTokens.space16,
+                  height: UiGalleryTokens.space16,
+                  decoration: BoxDecoration(
+                    color: s.tinted,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: s.line),
+                  ),
+                  child: Center(child: mark),
+                ),
+              ),
+            ),
+            body,
+          ],
+        );
+      case UiGalleryDialogPreset.sideBySideChoice:
+        decisions = Padding(
+          padding: calmDecisions
+              ? const EdgeInsets.fromLTRB(
+                  UiGalleryTokens.space5,
+                  UiGalleryTokens.space3,
+                  UiGalleryTokens.space5,
+                  UiGalleryTokens.space5,
+                )
+              : const EdgeInsets.all(UiGalleryTokens.space5),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final cards = [
+                for (final action in actions)
+                  _ChoiceCard<T>(
+                    action: action,
+                    style: s,
+                    comparison: calmDecisions,
+                  ),
+              ];
+              if (constraints.maxWidth >= UiGalleryTokens.choiceBreakpoint &&
+                  (!calmDecisions ||
+                      actions.isEmpty ||
+                      constraints.maxWidth / actions.length >= 220) &&
+                  s.media.textScaler.scale(1) < 1.5) {
+                final row = Row(
+                  crossAxisAlignment: calmDecisions
+                      ? CrossAxisAlignment.stretch
+                      : CrossAxisAlignment.start,
+                  children: [
+                    for (var i = 0; i < cards.length; i++) ...[
+                      if (i > 0) const SizedBox(width: UiGalleryTokens.space3),
+                      Expanded(child: cards[i]),
+                    ],
+                  ],
+                );
+                return calmDecisions ? IntrinsicHeight(child: row) : row;
+              }
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final card in cards)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: UiGalleryTokens.space2,
+                      ),
+                      child: card,
+                    ),
+                ],
+              );
+            },
+          ),
+        );
+      case UiGalleryDialogPreset.alertCapsule:
+        body = Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.only(
+                start: UiGalleryTokens.space5,
+                top: UiGalleryTokens.space7,
+              ),
+              child: mark,
+            ),
+            Expanded(child: body),
+          ],
+        );
+      case UiGalleryDialogPreset.milestone:
+        body = Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              color: s.tinted,
+              padding: const EdgeInsets.all(UiGalleryTokens.space5),
+              child: Row(
+                children: [
+                  mark,
+                  const SizedBox(width: UiGalleryTokens.space4),
+                  Expanded(child: Divider(color: s.line)),
+                ],
+              ),
+            ),
+            body,
+          ],
+        );
+      case UiGalleryDialogPreset.panelDecision:
+        body = Container(
+          decoration: BoxDecoration(
+            border: BorderDirectional(
+              start: BorderSide(color: s.accent, width: UiGalleryTokens.space1),
+            ),
+          ),
+          child: body,
+        );
+      case UiGalleryDialogPreset.statusBeacon:
+        body = Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: UiGalleryTokens.space14,
+              color: s.tinted,
+              padding: const EdgeInsets.symmetric(
+                vertical: UiGalleryTokens.space7,
+              ),
+              child: mark,
+            ),
+            Expanded(child: body),
+          ],
+        );
+      default:
+        break;
+    }
+    if (actionLayout == UiGalleryActionLayout.stacked ||
+        preset == UiGalleryDialogPreset.statusBeacon ||
+        preset == UiGalleryDialogPreset.panelDecision) {
+      decisions = Padding(
+        padding: const EdgeInsets.all(UiGalleryTokens.space5),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (final action in actions)
+              Padding(
+                padding: const EdgeInsets.only(bottom: UiGalleryTokens.space2),
+                child: _DecisionButton<T>(
+                  action: action,
+                  style: s,
+                  halo: false,
+                ),
+              ),
+          ],
         ),
-        side: BorderSide(color: s.line),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: UiGalleryTokens.dialogWidth,
+      );
+    } else if (actionLayout == UiGalleryActionLayout.sideBySide &&
+        preset != UiGalleryDialogPreset.sideBySideChoice) {
+      decisions = Padding(
+        padding: const EdgeInsets.all(UiGalleryTokens.space5),
+        child: Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            for (final action in actions)
+              _ChoiceCard<T>(action: action, style: s),
+          ],
         ),
-        child: SingleChildScrollView(
-          child: DefaultTextStyle.merge(
-            style: TextStyle(color: s.content),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final divided =
-                    split &&
-                    constraints.maxWidth >= 480 &&
-                    s.media.textScaler.scale(1) < 1.5;
-                if (divided) {
-                  return IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(flex: 3, child: body),
-                        Expanded(
-                          flex: 2,
-                          child: ColoredBox(
-                            color: s.tinted,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Icon(
-                                    Icons.call_split_rounded,
-                                    size: 40,
-                                    color: s.accent,
+      );
+    }
+    return Semantics(
+      label: semanticLabel,
+      child: Dialog(
+        alignment: alignment.resolve(Directionality.of(context)),
+        backgroundColor: s.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: s.elevation(UiGalleryTokens.elevationHigh),
+        shadowColor: s.visual.shadowColor,
+        insetAnimationDuration: s.duration(s.motion.change),
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: UiGalleryTokens.space5,
+          vertical: UiGalleryTokens.space6,
+        ),
+        shape: s.shape(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              spotlight
+                  ? UiGalleryTokens.radiusSpotlight
+                  : split
+                  ? UiGalleryTokens.radiusMedium
+                  : UiGalleryTokens.radiusPanel,
+            ),
+            side: BorderSide(color: s.line),
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth:
+                s.visual.maxWidth ??
+                (preset == UiGalleryDialogPreset.alertCapsule
+                    ? 420
+                    : UiGalleryTokens.dialogWidth),
+          ),
+          child: DecoratedBox(
+            decoration: BoxDecoration(gradient: s.visual.gradient),
+            child: Padding(
+              padding: galleryCurveInsets(s.visual.shape),
+              child: SingleChildScrollView(
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(color: s.content),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (preset == UiGalleryDialogPreset.split &&
+                          s.signatureEnabled &&
+                          actionLayout == null) {
+                        final lanes = [
+                          for (final action in actions)
+                            _ConsequenceLane<T>(action: action, style: s),
+                        ];
+                        final horizontal =
+                            constraints.maxWidth >=
+                                UiGalleryTokens.dialogSplitBreakpoint &&
+                            s.media.textScaler.scale(1) < 1.5;
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            body,
+                            Padding(
+                              padding: const EdgeInsets.all(
+                                UiGalleryTokens.space4,
+                              ),
+                              child: horizontal
+                                  ? IntrinsicHeight(
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: [
+                                          for (
+                                            var i = 0;
+                                            i < lanes.length;
+                                            i++
+                                          ) ...[
+                                            if (i > 0)
+                                              const SizedBox(
+                                                width: UiGalleryTokens.space3,
+                                              ),
+                                            Expanded(child: lanes[i]),
+                                          ],
+                                        ],
+                                      ),
+                                    )
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        for (final lane in lanes)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              bottom: UiGalleryTokens.space3,
+                                            ),
+                                            child: lane,
+                                          ),
+                                      ],
+                                    ),
+                            ),
+                          ],
+                        );
+                      }
+                      final divided =
+                          split &&
+                          constraints.maxWidth >=
+                              UiGalleryTokens.dialogSplitBreakpoint &&
+                          s.media.textScaler.scale(1) < 1.5;
+                      if (divided) {
+                        return IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(flex: 3, child: body),
+                              Expanded(
+                                flex: 2,
+                                child: ColoredBox(
+                                  color: s.tinted,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(
+                                          UiGalleryTokens.space5,
+                                        ),
+                                        child: Icon(
+                                          Icons.call_split_rounded,
+                                          size: 40,
+                                          color: s.accent,
+                                        ),
+                                      ),
+                                      decisions,
+                                    ],
                                   ),
                                 ),
-                                decisions,
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return Column(
+                        );
+                      }
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          body,
+                          if (actions.isNotEmpty)
+                            Container(
+                              decoration: BoxDecoration(
+                                color: split ? s.tinted : null,
+                                border: split
+                                    ? Border(top: BorderSide(color: s.line))
+                                    : null,
+                              ),
+                              child: decisions,
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ConsequenceLane<T> extends StatelessWidget {
+  const _ConsequenceLane({required this.action, required this.style});
+  final UiGalleryDialogAction<T> action;
+  final UiGalleryStyle style;
+  @override
+  Widget build(BuildContext context) {
+    final colors = style.theme.colorScheme;
+    final soft = style.gallery.designFamily == UiGalleryDesignFamily.soft;
+    final ink = !action.enabled
+        ? style.muted
+        : action.destructive
+        ? colors.error
+        : style.content;
+    final icon = action.icon == null
+        ? null
+        : ExcludeSemantics(
+            child: IconTheme.merge(
+              data: IconThemeData(color: ink, size: 20),
+              child: action.icon!,
+            ),
+          );
+    final description = action.description == null
+        ? null
+        : Text(
+            action.description!,
+            style: style.body(
+              style.theme.textTheme.bodyMedium?.copyWith(
+                color: action.enabled ? style.content : style.muted,
+                height: 1.4,
+              ),
+            ),
+          );
+    final lane = DecoratedBox(
+      decoration: BoxDecoration(
+        color: soft ? style.tinted : style.surface,
+        border: BorderDirectional(
+          start: BorderSide(
+            color: action.destructive ? colors.error : style.accent,
+            width: UiGalleryTokens.lineWidth * 2,
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(UiGalleryTokens.space4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (icon != null || description != null) ...[
+              if (style.media.textScaler.scale(1) < 1.5)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (icon != null) ...[
+                      icon,
+                      const SizedBox(width: UiGalleryTokens.space3),
+                    ],
+                    if (description != null) Expanded(child: description),
+                  ],
+                )
+              else
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (icon != null) ...[
+                      icon,
+                      const SizedBox(height: UiGalleryTokens.space2),
+                    ],
+                    ?description,
+                  ],
+                ),
+              const SizedBox(height: UiGalleryTokens.space3),
+            ],
+            _DecisionButton<T>(
+              action: action,
+              style: style,
+              halo: false,
+              emphasizeDestructive: true,
+            ),
+          ],
+        ),
+      ),
+    );
+    return GalleryFamilyEdge(style: style, ownsRule: true, child: lane);
+  }
+}
+
+class _ChoiceCard<T> extends StatelessWidget {
+  const _ChoiceCard({
+    required this.action,
+    required this.style,
+    this.comparison = false,
+  });
+  final UiGalleryDialogAction<T> action;
+  final UiGalleryStyle style;
+  final bool comparison;
+  @override
+  Widget build(BuildContext context) {
+    if (comparison) {
+      final family = style.gallery.designFamily;
+      final ink = !action.enabled
+          ? style.muted
+          : action.destructive
+          ? style.theme.colorScheme.error
+          : style.content;
+      final radius = BorderRadius.circular(
+        family == UiGalleryDesignFamily.minimal
+            ? UiGalleryTokens.radiusSmall
+            : UiGalleryTokens.radiusMedium,
+      );
+      final title = Text(
+        action.label,
+        style: style.heading(
+          style.theme.textTheme.titleMedium?.copyWith(
+            color: ink,
+            fontWeight: action.primary ? FontWeight.w600 : FontWeight.w500,
+          ),
+        ),
+      );
+      final icon = action.icon == null
+          ? null
+          : ExcludeSemantics(
+              child: IconTheme.merge(
+                data: IconThemeData(color: ink, size: 20),
+                child: action.icon!,
+              ),
+            );
+      return Semantics(
+        button: true,
+        enabled: action.enabled,
+        child: Material(
+          color: action.primary && family == UiGalleryDesignFamily.soft
+              ? style.tinted
+              : style.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: radius,
+            side: BorderSide(
+              color: action.primary && action.enabled
+                  ? style.accent
+                  : style.line,
+            ),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            borderRadius: radius,
+            focusColor: style.accent.withValues(alpha: .18),
+            onTap: action.enabled
+                ? () => Navigator.of(context).pop<T>(action.value)
+                : null,
+            child: GalleryFamilyEdge(
+              style: style,
+              ownsRule: true,
+              shape: RoundedRectangleBorder(borderRadius: radius),
+              child: Padding(
+                padding: const EdgeInsets.all(UiGalleryTokens.space4),
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    body,
-                    if (actions.isNotEmpty)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: split ? s.tinted : null,
-                          border: split
-                              ? Border(top: BorderSide(color: s.line))
-                              : null,
+                    if (style.media.textScaler.scale(1) < 1.5)
+                      Row(
+                        children: [
+                          if (icon != null) ...[
+                            icon,
+                            const SizedBox(width: UiGalleryTokens.space3),
+                          ],
+                          Expanded(child: title),
+                        ],
+                      )
+                    else ...[
+                      if (icon != null) ...[
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: icon,
                         ),
-                        child: decisions,
+                        const SizedBox(height: UiGalleryTokens.space2),
+                      ],
+                      title,
+                    ],
+                    if (action.description != null) ...[
+                      const SizedBox(height: UiGalleryTokens.space2),
+                      Text(
+                        action.description!,
+                        style: style.body(
+                          style.theme.textTheme.bodyMedium?.copyWith(
+                            color: style.muted,
+                            height: 1.4,
+                          ),
+                        ),
                       ),
+                    ],
                   ],
-                );
-              },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return Material(
+      color: action.primary ? style.tinted : style.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(UiGalleryTokens.radiusMedium),
+        side: BorderSide(color: style.line),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(UiGalleryTokens.radiusMedium),
+        onTap: action.enabled
+            ? () => Navigator.of(context).pop<T>(action.value)
+            : null,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minHeight: UiGalleryTokens.touchTarget,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(UiGalleryTokens.space5),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (action.icon != null) ...[
+                  action.icon!,
+                  const SizedBox(height: UiGalleryTokens.space4),
+                ],
+                Text(
+                  action.label,
+                  style: style.theme.textTheme.titleMedium?.copyWith(
+                    color: action.destructive
+                        ? style.theme.colorScheme.error
+                        : style.content,
+                  ),
+                ),
+                if (action.description != null) ...[
+                  const SizedBox(height: UiGalleryTokens.space2),
+                  Text(
+                    action.description!,
+                    style: TextStyle(color: style.muted),
+                  ),
+                ],
+              ],
             ),
           ),
         ),
@@ -391,49 +1110,396 @@ class _DecisionButton<T> extends StatelessWidget {
     required this.action,
     required this.style,
     required this.halo,
+    this.emphasizeDestructive = false,
   });
   final UiGalleryDialogAction<T> action;
   final UiGalleryStyle style;
   final bool halo;
+  final bool emphasizeDestructive;
 
   @override
   Widget build(BuildContext context) {
     final color = action.destructive
         ? style.theme.colorScheme.error
         : style.accent;
-    final onColor =
-        ThemeData.estimateBrightnessForColor(color) == Brightness.dark
-        ? Colors.white
-        : Colors.black;
+    final onColor = style.foregroundFor(color);
     final buttonStyle = ButtonStyle(
-      minimumSize: const WidgetStatePropertyAll(Size(48, 48)),
+      minimumSize: const WidgetStatePropertyAll(
+        Size(UiGalleryTokens.touchTarget, UiGalleryTokens.touchTarget),
+      ),
       padding: const WidgetStatePropertyAll(
-        EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        EdgeInsets.symmetric(
+          horizontal: UiGalleryTokens.space5,
+          vertical: UiGalleryTokens.insetHandle,
+        ),
       ),
       foregroundColor: WidgetStatePropertyAll(
-        action.primary ? onColor : style.content,
+        !action.enabled
+            ? style.content.withValues(alpha: .38)
+            : action.primary
+            ? onColor
+            : emphasizeDestructive && action.destructive
+            ? color
+            : style.content,
       ),
       backgroundColor: WidgetStatePropertyAll(
-        action.primary ? color : Colors.transparent,
+        action.primary
+            ? action.enabled
+                  ? color
+                  : style.content.withValues(alpha: .12)
+            : Colors.transparent,
       ),
       shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(UiGalleryTokens.radiusMedium),
+        ),
       ),
     );
     return Container(
-      padding: halo && action.primary
-          ? const EdgeInsets.all(4)
+      padding: halo && action.primary && action.enabled
+          ? const EdgeInsets.all(UiGalleryTokens.space1)
           : EdgeInsets.zero,
-      decoration: halo && action.primary
+      decoration: halo && action.primary && action.enabled
           ? BoxDecoration(
               border: Border.all(color: color.withValues(alpha: .3)),
-              borderRadius: BorderRadius.circular(21),
+              borderRadius: BorderRadius.circular(UiGalleryTokens.radiusHalo),
             )
           : null,
       child: TextButton(
         style: buttonStyle,
-        onPressed: () => Navigator.of(context).pop<T>(action.value),
+        onPressed: action.enabled
+            ? () => Navigator.of(context).pop<T>(action.value)
+            : null,
         child: Text(action.label, textAlign: TextAlign.center),
+      ),
+    );
+  }
+}
+
+class _CommandPalette<T> extends StatefulWidget {
+  const _CommandPalette({
+    required this.commands,
+    required this.emptyLabel,
+    this.searchHint,
+    this.appearance,
+    this.style,
+    this.motion,
+  });
+  final List<UiGalleryDialogAction<T>> commands;
+  final String emptyLabel;
+  final String? searchHint;
+  final UiGalleryTheme? appearance;
+  final UiGallerySurfaceStyle? style;
+  final UiGalleryMotion? motion;
+  @override
+  State<_CommandPalette<T>> createState() => _CommandPaletteState<T>();
+}
+
+class _CommandPaletteState<T> extends State<_CommandPalette<T>> {
+  final _focus = FocusNode();
+  final _commandFocus = <int, FocusNode>{};
+  final _keys = <int, GlobalKey>{};
+  String _query = '';
+  int _active = -1;
+  List<UiGalleryDialogAction<T>> get _filtered => widget.commands
+      .where(
+        (command) => '${command.label} ${command.description ?? ''}'
+            .toLowerCase()
+            .contains(_query),
+      )
+      .toList();
+
+  @override
+  void initState() {
+    super.initState();
+    _active = _filtered.indexWhere((command) => command.enabled);
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    for (final node in _commandFocus.values) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  FocusNode _commandNode(int index) =>
+      _commandFocus.putIfAbsent(index, FocusNode.new);
+
+  void _activate(int index) {
+    if (_active != index) setState(() => _active = index);
+    final command = _filtered[index];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          _active != index ||
+          index >= _filtered.length ||
+          !identical(_filtered[index], command)) {
+        return;
+      }
+      final activeContext = _keys[index]?.currentContext;
+      if (activeContext != null) {
+        Scrollable.ensureVisible(activeContext, alignment: .5);
+      }
+    });
+  }
+
+  void _select() {
+    final commands = _filtered;
+    if (_active >= 0 &&
+        _active < commands.length &&
+        commands[_active].enabled) {
+      Navigator.of(context).pop<T>(commands[_active].value);
+    }
+  }
+
+  KeyEventResult _key(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+      return KeyEventResult.ignored;
+    }
+    final key = event.logicalKey;
+    if (key == LogicalKeyboardKey.escape) {
+      Navigator.of(context).maybePop();
+    } else if (key == LogicalKeyboardKey.enter ||
+        key == LogicalKeyboardKey.numpadEnter) {
+      _select();
+    } else if (key == LogicalKeyboardKey.arrowDown ||
+        key == LogicalKeyboardKey.arrowUp) {
+      final commands = _filtered;
+      final enabled = [
+        for (var i = 0; i < commands.length; i++)
+          if (commands[i].enabled) i,
+      ];
+      if (enabled.isEmpty) return KeyEventResult.handled;
+      final current = enabled.indexOf(_active);
+      final next =
+          (current + (key == LogicalKeyboardKey.arrowDown ? 1 : -1)) %
+          enabled.length;
+      _activate(enabled[next]);
+      if (!_focus.hasFocus) _commandNode(_active).requestFocus();
+    } else {
+      return KeyEventResult.ignored;
+    }
+    return KeyEventResult.handled;
+  }
+
+  Widget _command(
+    UiGalleryStyle s,
+    UiGalleryDialogAction<T> command,
+    int index,
+  ) {
+    final active = index == _active;
+    final ink = !command.enabled
+        ? s.muted
+        : command.destructive
+        ? s.theme.colorScheme.error
+        : s.content;
+    final labelStyle = s.body(
+      s.theme.textTheme.titleMedium?.copyWith(
+        color: ink,
+        fontWeight: active ? FontWeight.w600 : FontWeight.w500,
+      ),
+    );
+    return Semantics(
+      button: true,
+      enabled: command.enabled,
+      selected: active,
+      child: InkWell(
+        focusNode: _commandNode(index),
+        onFocusChange: (focused) {
+          if (focused) _activate(index);
+        },
+        borderRadius: BorderRadius.circular(UiGalleryTokens.radiusToolbar),
+        onTap: command.enabled
+            ? () => Navigator.of(context).pop<T>(command.value)
+            : null,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minHeight: UiGalleryTokens.touchTarget,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(UiGalleryTokens.space3),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final painter = TextPainter(
+                  text: TextSpan(text: command.label, style: labelStyle),
+                  textDirection: Directionality.of(context),
+                  textScaler: s.media.textScaler,
+                  locale: Localizations.maybeLocaleOf(context),
+                  maxLines: 1,
+                )..layout();
+                final textWidth =
+                    constraints.maxWidth -
+                    (command.icon == null ? 0 : 36) -
+                    (active ? 36 : 0);
+                final reflow =
+                    constraints.maxWidth < 240 ||
+                    s.media.textScaler.scale(1) >= 1.5 ||
+                    painter.width > textWidth;
+                painter.dispose();
+                final copy = Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(command.label, style: labelStyle),
+                    if (command.description != null) ...[
+                      const SizedBox(height: UiGalleryTokens.space1),
+                      Text(
+                        command.description!,
+                        style: s.body(
+                          s.theme.textTheme.bodyMedium?.copyWith(
+                            color: s.muted,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                );
+                final hint = ExcludeSemantics(
+                  child: Icon(Icons.keyboard_return_rounded, color: ink),
+                );
+                final icon = command.icon == null
+                    ? null
+                    : IconTheme.merge(
+                        data: IconThemeData(color: ink),
+                        child: command.icon!,
+                      );
+                return reflow
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          copy,
+                          if (icon != null || active) ...[
+                            const SizedBox(height: UiGalleryTokens.space2),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [?icon, if (active) hint],
+                            ),
+                          ],
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          if (icon != null) ...[
+                            icon,
+                            const SizedBox(width: UiGalleryTokens.space3),
+                          ],
+                          Expanded(child: copy),
+                          if (active) ...[
+                            const SizedBox(width: UiGalleryTokens.space3),
+                            hint,
+                          ],
+                        ],
+                      );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = UiGalleryStyle.of(
+      context,
+      widget.appearance,
+      widget.style,
+      widget.motion,
+      UiGallerySurface.dialog,
+    );
+    final commands = _filtered;
+    final available =
+        (s.media.size.height -
+                s.media.viewInsets.bottom -
+                s.media.padding.vertical -
+                240)
+            .clamp(48.0, 280.0);
+    return FocusTraversalGroup(
+      policy: WidgetOrderTraversalPolicy(),
+      child: Focus(
+        canRequestFocus: false,
+        onKeyEvent: _key,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              autofocus: true,
+              focusNode: _focus,
+              style: TextStyle(color: s.content),
+              decoration: InputDecoration(
+                hintText:
+                    widget.searchHint ??
+                    MaterialLocalizations.of(context).searchFieldLabel,
+                prefixIcon: Icon(Icons.search_rounded, color: s.accent),
+                filled: true,
+                fillColor: s.tinted,
+              ),
+              onChanged: (value) => setState(() {
+                _query = value.trim().toLowerCase();
+                _active = _filtered.indexWhere((command) => command.enabled);
+              }),
+              onSubmitted: (_) => _select(),
+            ),
+            const SizedBox(height: UiGalleryTokens.space3),
+            if (commands.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(UiGalleryTokens.space4),
+                child: Text(
+                  widget.emptyLabel,
+                  style: TextStyle(color: s.muted),
+                ),
+              )
+            else
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: available),
+                child: ListView(
+                  shrinkWrap: true,
+                  primary: false,
+                  children: [
+                    for (var i = 0; i < commands.length; i++)
+                      Material(
+                        key: _keys.putIfAbsent(i, GlobalKey.new),
+                        color: i == _active ? s.tinted : Colors.transparent,
+                        borderRadius: BorderRadius.circular(
+                          UiGalleryTokens.radiusToolbar,
+                        ),
+                        child: s.signatureEnabled
+                            ? _command(s, commands[i], i)
+                            : ListTile(
+                                focusNode: _commandNode(i),
+                                onFocusChange: (focused) {
+                                  if (focused) _activate(i);
+                                },
+                                selected: i == _active,
+                                enabled: commands[i].enabled,
+                                selectedColor: commands[i].destructive
+                                    ? s.theme.colorScheme.error
+                                    : s.accent,
+                                textColor: commands[i].destructive
+                                    ? s.theme.colorScheme.error
+                                    : s.content,
+                                leading: commands[i].icon,
+                                title: Text(commands[i].label),
+                                subtitle: commands[i].description == null
+                                    ? null
+                                    : Text(commands[i].description!),
+                                trailing: i == _active
+                                    ? const Icon(Icons.keyboard_return_rounded)
+                                    : null,
+                                onTap: commands[i].enabled
+                                    ? () => Navigator.of(
+                                        context,
+                                      ).pop<T>(commands[i].value)
+                                    : null,
+                              ),
+                      ),
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -490,12 +1556,27 @@ class UiGalleryTimelineState {
 }
 
 class UiGalleryTimeline extends StatelessWidget {
-  const UiGalleryTimeline({super.key, required this.state});
+  const UiGalleryTimeline({
+    super.key,
+    required this.state,
+    this.appearance,
+    this.style,
+    this.motion,
+  });
   final UiGalleryTimelineState state;
+  final UiGalleryTheme? appearance;
+  final UiGallerySurfaceStyle? style;
+  final UiGalleryMotion? motion;
 
   @override
   Widget build(BuildContext context) {
-    final s = UiGalleryStyle.of(context);
+    final s = UiGalleryStyle.of(
+      context,
+      appearance,
+      style,
+      motion,
+      UiGallerySurface.dialog,
+    );
     assert(state.steps.isNotEmpty && state.currentStep < state.steps.length);
     return Semantics(
       liveRegion: true,
@@ -504,16 +1585,16 @@ class UiGalleryTimeline extends StatelessWidget {
         children: [
           for (var i = 0; i < state.steps.length; i++)
             Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: UiGalleryTokens.space3),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Column(
                     children: [
                       AnimatedContainer(
-                        duration: s.duration(UiGalleryTokens.change),
-                        width: 28,
-                        height: 28,
+                        duration: s.duration(s.motion.change),
+                        width: UiGalleryTokens.space7,
+                        height: UiGalleryTokens.space7,
                         decoration: BoxDecoration(
                           color: i <= state.currentStep ? s.tinted : s.surface,
                           shape: BoxShape.circle,
@@ -543,13 +1624,19 @@ class UiGalleryTimeline extends StatelessWidget {
                         ),
                       ),
                       if (i < state.steps.length - 1)
-                        Container(width: 1, height: 18, color: s.line),
+                        Container(
+                          width: UiGalleryTokens.lineWidth,
+                          height: 18,
+                          color: s.line,
+                        ),
                     ],
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: UiGalleryTokens.insetHandle),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 4),
+                      padding: const EdgeInsets.only(
+                        top: UiGalleryTokens.space1,
+                      ),
                       child: Text(
                         state.steps[i],
                         style: s.theme.textTheme.bodyMedium?.copyWith(

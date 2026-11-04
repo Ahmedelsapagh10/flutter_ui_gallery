@@ -1,0 +1,213 @@
+{
+  "approval": "Explicit complete product evolution authorization, controlled versioning after actual Flutter before/after/difference inspection",
+  "base_head": "4f4bd51f129511f722454dcdaaaff4b5e538b27a",
+  "renderer": {
+    "flutter": "3.41.9",
+    "framework": "00b0c91f06",
+    "engine": "42d3d75a56",
+    "dart": "3.11.5",
+    "dpr": 1,
+    "font_pins": "../notes-pass-a/pins.json",
+    "arabic_font": "MarginArabic mapped to pinned Alexandria by notes_fonts.dart",
+    "shadows": true,
+    "reduced_motion": true
+  },
+  "source_sha256": {
+    "lib/src/appbars/gallery_appbar.dart": "ad8fb528fa136083db64331d3acc612b33a48478b7e4e98408f1da8843f36c61",
+    "lib/src/toasts/gallery_toast.dart": "2e8c654aba170d70603fa4a4f30903392a5ee7ef9062f9cb6ff879cb7032027b",
+    "example/test/feedback_heroes_goldens_test.dart": "3e4c4c2af6826123d28cdbbe8e5293cd78ea059c4c07cf410be9441346c07be6",
+    "example/test/notes_preset_goldens_test.dart": "1e4dffc332e5efef4ea7513822e0e5f51d3a92d78fe263a758155e194c0593ad",
+    "example/test/dialog_heroes_test.dart": "61266104d03e956a5f214ac315824fbaba08333613abe421ec94c9bd9022039b"
+  },
+  "images": [
+    {
+      "scenario": "action minimal light; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "a11de5916611e666c3fa1a8502c2b9e4cf6198b5a39166899e3e43db19d516da",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/minimal-light.png",
+      "sha256": "2406e104f32e7b275297c32e2c76fc183d2a7727070179812595524a4ef7bb56"
+    },
+    {
+      "scenario": "action minimal dark; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "2170e0db14874a9b74f4eae73d51cfb3b540c32ff6201d3f6f6dc8d2d5f2d49c",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/minimal-dark.png",
+      "sha256": "d8ab524d50a9ede288cb91004d5c4b33666be8ce7364656130214e0ce20a387a"
+    },
+    {
+      "scenario": "action minimal rtl; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "e7fed5c515da4525413a945af4b97479229da95a56eec573016c7a0978ffecc6",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/minimal-rtl.png",
+      "sha256": "17fda11161b20bdda95433961ba320de89a646b99b58e2df690facb6657e2ae0"
+    },
+    {
+      "scenario": "action minimal large-text; 420x800 DPR1; text scale 2",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "72a525308ca727348b5932a63b55675d3fd64f3882339d1d6e3a26bfcac3bcb3",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/minimal-large-text.png",
+      "sha256": "30bb3a48e61956e7890e4cbf7e9b900a45b1e0b401aed18907bab8bedd6859cc"
+    },
+    {
+      "scenario": "action soft light; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "af2304aab8f28e2200f441ed992fb5dca00254469d32cfbc35c1041179b44879",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/soft-light.png",
+      "sha256": "a61069edf839182ac975cd2f6df75e73e656b18c6b7d1092fb24b09981b565b7"
+    },
+    {
+      "scenario": "action soft dark; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "339374c8b44755fad61bdc58c97cd8d7f0a477e599ee6fde461e1e3f5e96b860",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/soft-dark.png",
+      "sha256": "d15692580a9e63d0ec94f746907a69cdff882c8d1349e952ae080a7c1a6527d0"
+    },
+    {
+      "scenario": "action soft rtl; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "2e4bd4c5539951807fe20841a53fc9dd9f6aac0b8504231a7e450eeca346351b",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/soft-rtl.png",
+      "sha256": "ed644fc22f501225abcd1cf34be98d2949387d89bed09e5b3cb9ef75745bb1c1"
+    },
+    {
+      "scenario": "action soft large-text; 420x800 DPR1; text scale 2",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "275742f2cb0dcec99e39571fcfb179a69717d3980652cb223ea370bf043d2d55",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/soft-large-text.png",
+      "sha256": "3fab224ecdb711694d76c07ac1175fcabc3c12d38327e3797f49f20ece95ebae"
+    },
+    {
+      "scenario": "action spatial light; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "dd8bbbde398c1b045824fb82d2df340b6553bc96028d647d34c2526818a651f1",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/spatial-light.png",
+      "sha256": "35724a39ce5d3685f635a63dcb2bea97a4b4b1f9611ddbd58dab2332e9895ebf"
+    },
+    {
+      "scenario": "action spatial dark; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "8e47325cd54f2d17ad16d703e6c48827e15dbea16959cd11faffb13e64e443ff",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/spatial-dark.png",
+      "sha256": "021a167f5e4851c1311668e9b67f1b50b48faa7d5d076c990eb423c5458e58c9"
+    },
+    {
+      "scenario": "action spatial rtl; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "93810574c07eb90eda17fbc5eacd819e28e6ac7a2c864d775bbfb53de82bd44c",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/spatial-rtl.png",
+      "sha256": "e6388f6bfe0379cbb540bcb08e11de8386aa6ad047c5ae92717b8f2f3a9b690d"
+    },
+    {
+      "scenario": "action spatial large-text; 420x800 DPR1; text scale 2",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "37e17265d6dde6742149974e267a86fd6c1c6dfdf39a3abf58bfeee15a687d96",
+      "versioned": "example/test/goldens/feedback-calm-v1/action/spatial-large-text.png",
+      "sha256": "c836d2c5b7c0587095d99661d6213e5f1862f500a568b931e80132b8a34ff08f"
+    },
+    {
+      "scenario": "editorialTopbar minimal light; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "d7709ed345db5e09a72f9e45bebe60dedbc27154daae5aaf0ba76edb7af4bb0d",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/minimal-light.png",
+      "sha256": "d2bee90d1ba0b6dfe316b8c88fd23301789a1a2a89b528e76ee88bf0ac8d64a5"
+    },
+    {
+      "scenario": "editorialTopbar minimal dark; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "2492f8284a537f28d00ed8c53a642dd2d27e0c174cf93cd75bfab0b972d8dff1",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/minimal-dark.png",
+      "sha256": "91c86497d0a4382ac4c2edd3b183361d5eb5f04a73008c9e6ace6a3613a5b400"
+    },
+    {
+      "scenario": "editorialTopbar minimal rtl; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "b78fe05760cdb99cd9c369c314af5fd53d33a8d464b72c29a59268cbea384af5",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/minimal-rtl.png",
+      "sha256": "cfc6620ab1b9ed2a5d89ffd38201087786cfe1d6873194fde1c5d96401d56bb2"
+    },
+    {
+      "scenario": "editorialTopbar minimal large-text; 420x800 DPR1; text scale 2",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "b7211e99197ff24e7a5d3bdb1ea485484e2131008b30cf9788b8e81be81566d9",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/minimal-large-text.png",
+      "sha256": "95a8ebdf89b0b6cc3269fcced1bd0bf8e703f674b5d20b0ce4d91104c74f5c0e"
+    },
+    {
+      "scenario": "editorialTopbar soft light; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "fae55a39ea777a071fd46643ffaac3b08f59f29e512cee388221d8a4714d00bd",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/soft-light.png",
+      "sha256": "0d9d77a1f2c97e885cb632d3c83f0199c0efbfb366e09600415ab904af3eb3cc"
+    },
+    {
+      "scenario": "editorialTopbar soft dark; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "20e1127489d73aa373215d6cdd9b31c53c381b5c946d1dd331a1087b838bd7ee",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/soft-dark.png",
+      "sha256": "50e2a57dac7107a97ccbcafbecab59363fad9d2b193796a30869e951db71d199"
+    },
+    {
+      "scenario": "editorialTopbar soft rtl; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "586bdbbb916f9fedf664543d781761e38c13dc11545624259fa9390f2cfe19b7",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/soft-rtl.png",
+      "sha256": "2ef6a5d467e3a7eb02bff3698c433d232009ebabe94b6070de66a71d85216a2b"
+    },
+    {
+      "scenario": "editorialTopbar soft large-text; 420x800 DPR1; text scale 2",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "e388e7b09237093cbbb03a65c13431d3b0f56db16b9f7b0abac8e64dbbcd0e60",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/soft-large-text.png",
+      "sha256": "5a849c89de521fa486042f3bb17bc7595a9d23cc484bddeb7e73ceebe8f69255"
+    },
+    {
+      "scenario": "editorialTopbar spatial light; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "641d63271e43e837696f25324cfd35fe2d87ce76cbe898d158d46fadee35efdc",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/spatial-light.png",
+      "sha256": "4f88f021ed683f7c0ebd041ba4dde9d75332e09006e8aa9411daa9f0b003174c"
+    },
+    {
+      "scenario": "editorialTopbar spatial dark; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "8c02e3ff58c8f8ca80b0b302c3ace7c3227c8eb041d71dfe9d2af81950f3feb3",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/spatial-dark.png",
+      "sha256": "46cbf17ca12c9978cdcb69d041d4d82853ff7f531ff3b4074eb4c682296f2935"
+    },
+    {
+      "scenario": "editorialTopbar spatial rtl; 420x800 DPR1; text scale 1",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "9eedf7352feecfc46b2f8f65adb05e3672041a53869c11c7db206b82ba7e3828",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/spatial-rtl.png",
+      "sha256": "3c1cd73c5ab332bd0b3f033db6a80e123fb1f3b9e730af2d283778b7217e8c31"
+    },
+    {
+      "scenario": "editorialTopbar spatial large-text; 420x800 DPR1; text scale 2",
+      "original": "new strict specimen; original capture retained externally",
+      "before_sha256": "f900cade4f470313a0da6099d71a6ce31145621707ebcfbda76bd3f566a99910",
+      "versioned": "example/test/goldens/feedback-calm-v1/editorialTopbar/spatial-large-text.png",
+      "sha256": "8122d371ca616d3e5ee2ba2d93bbfe5f4dc49c8e44699a90fd6e27232312f1a9"
+    },
+    {
+      "scenario": "Action existing Notes minimal large-text; 420x760 DPR1; 2x",
+      "original": "example/test/goldens/notes-pass-a/action/minimal-large-text.png",
+      "original_sha256": "b0901f910a302cb59c9578056cc11f06a7d35e97d9a17ea6c699d823cad8693e",
+      "versioned": "example/test/goldens/feedback-calm-v1/action-existing/minimal-large-text.png",
+      "sha256": "ce7d0943783360751ac6c0ccac6591cd08ff43468d4c7008d362a47ec741b880"
+    },
+    {
+      "scenario": "Action existing Notes soft large-text; 420x760 DPR1; 2x",
+      "original": "example/test/goldens/notes-pass-a/action/soft-large-text.png",
+      "original_sha256": "ea1a5c8799375068b855c39e124fb2f4486bfc2a6a3bbc1db323e7758de23934",
+      "versioned": "example/test/goldens/feedback-calm-v1/action-existing/soft-large-text.png",
+      "sha256": "4e7579d83a9dbcc834b0a564fa8918e75a9474dd66f6d2fb0899ea6172a6a397"
+    },
+    {
+      "scenario": "Action existing Notes spatial large-text; 420x760 DPR1; 2x",
+      "original": "example/test/goldens/spatial-edge/action/spatial-large-text.png",
+      "original_sha256": "20df4d473ca45be30b71725fee615e181076fc218d3fcad0b8f299a20bdd5408",
+      "versioned": "example/test/goldens/feedback-calm-v1/action-existing/spatial-large-text.png",
+      "sha256": "b608c0637d5f373ac93de503dfe4dd071d2b09a6adc4f72a4104f65d8d2593b6"
+    }
+  ]
+}

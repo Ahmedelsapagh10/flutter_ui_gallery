@@ -1,0 +1,307 @@
+{
+  "approval": "Autonomous product evolution request; each actual-render difference inspected before versioning",
+  "base_head": "5c595218bedecf1ce20012c2c2c3cb3fb6ac4c14",
+  "renderer": {
+    "flutter": "3.41.9",
+    "framework": "00b0c91f06",
+    "engine": "42d3d75a56",
+    "dart": "3.11.5",
+    "dpr": 1,
+    "font_pins": "../notes-pass-a/pins.json",
+    "shadows": true,
+    "reduced_motion": true
+  },
+  "source_sha256": {
+    "lib/src/sheets/gallery_sheet.dart": "318e743ce667464d79e41cf51bebba91f9866bc15a0f21c8f74bc04e1b75cf1c",
+    "example/test/sheet_heroes_test.dart": "f8e282893a8e71ac5f87570f88ee0498bf10f5315d61d2db09aabf9fefb2c763",
+    "example/test/wallet_surfaces_goldens_test.dart": "ead41e35ffe3ca4627d696ce988d93c959556849681584ecb2662b994a412f72",
+    "example/test/notes_preset_goldens_test.dart": "99e52a1ca5228db84e8e62f444d4d994c209d66fbf38639948342136d1d07a53"
+  },
+  "images": [
+    {
+      "scenario": "orbit minimal light; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "34afde1b5af68fa2b37ab5410577992e2d329bc3666dc78f9290800018a3ff41",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/minimal-light.png",
+      "sha256": "788949cb164f20e1c7138cf42b9c3436d648fea6fb73ca24b4e58e6f6d8ad64a"
+    },
+    {
+      "scenario": "splitLayer minimal light; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "94ee48f10afcfa7bc4e97ca86e11c695861524f75ae4db077f79f293f72fbcc4",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/minimal-light.png",
+      "sha256": "591f219a3fb880a69a19388069ca33827d2857525fbed2cde5d0965916c0311d"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture minimal light;420x760 DPR1",
+      "original": "example/test/goldens/notes-pass-a/orbit/minimal-light.png",
+      "original_sha256": "0a8fa452b6d46cdeac79d2c634f3b6aad68ca67c20c499965672bcdbab7439cd",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/minimal-light.png",
+      "sha256": "e533a5f200529a9dba9758fe6b150a7b55d462052ae0942594c7d6ba5a84b0c5"
+    },
+    {
+      "scenario": "orbit minimal dark; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "ee09174943e8f862a3c939b2ccdc9ac9bb286ef1ce7564f4da707672533f8d55",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/minimal-dark.png",
+      "sha256": "3f4d48affc9a9fe21bc1d749d03aaff9464427f59bf33a66838e23d12879c003"
+    },
+    {
+      "scenario": "splitLayer minimal dark; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "049129cceac536054b382e4baae7ba1fa0eab4742a17b59b2ec12f82295150d4",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/minimal-dark.png",
+      "sha256": "960332af51ba8648e06741ea3c05ebe4ae2769f24433b5184cd5aef1a0a1bccb"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture minimal dark;420x760 DPR1",
+      "original": "example/test/goldens/notes-pass-a/orbit/minimal-dark.png",
+      "original_sha256": "98b74d383a77b56b9e839a14d4f42cb1446f3faf86e70607d86b7fec09b7ccbd",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/minimal-dark.png",
+      "sha256": "7272bb4106cb2dad2b082dbf40b000571e61abd4df4f18b86870a2666faf4927"
+    },
+    {
+      "scenario": "orbit minimal rtl; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "367f094f8213d2c6e2e319a0ab8626bc937555228b86bf02471bb8899e23a8d1",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/minimal-rtl.png",
+      "sha256": "12f9f99e437e39bab1a0e0ec11a3e2a363ef42bb517b2050054471e7d9164b99"
+    },
+    {
+      "scenario": "splitLayer minimal rtl; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "5ddca3cde8e481604b0f31f1e30b070a88c0920f9601b090f0beb4126d57643d",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/minimal-rtl.png",
+      "sha256": "b9937a32071575e9dd08daaa8c223cb7b941bde48a6de4d69ab22aaafd9324b7"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture minimal rtl;420x760 DPR1",
+      "original": "example/test/goldens/notes-pass-a/orbit/minimal-rtl.png",
+      "original_sha256": "cac1e06dc43c18134bd0621c5fee5c6703641acf96df038ca450e723c4f8b4dd",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/minimal-rtl.png",
+      "sha256": "1efbf6ade5884e97cdcccfc3a5e065ca4855306a41eccb2a479f3e5cdf23497a"
+    },
+    {
+      "scenario": "orbit minimal large-text; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "d0a014627efd9ea470d4d771f6e75bb7b6a4d29d19ee804159d9e20894885e61",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/minimal-large-text.png",
+      "sha256": "a4c4e622634878b2c84d17de38404e7cb1cae85f0e98aa701a7c980779457de0"
+    },
+    {
+      "scenario": "splitLayer minimal large-text; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "7a144d7ffd1f865ea7603ae03cf48842cb50140a51448d5d7f90b19bfde21f56",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/minimal-large-text.png",
+      "sha256": "eac75c10529b69f6943c2abb1cd40c481215c64a57979fc224d7fa3766a84547"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture minimal large-text;420x760 DPR1",
+      "original": "example/test/goldens/notes-pass-a/orbit/minimal-large-text.png",
+      "original_sha256": "16a2622d753293232c75d76fd14d9aab433257605eafb70f98ba44ed1beb4d95",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/minimal-large-text.png",
+      "sha256": "bdc9f66b7fd6d5d793666915b64a7bc673b317d2b329b402ce605a75ecd4335a"
+    },
+    {
+      "scenario": "orbit soft light; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "2431870d7318cfd4a524f266c570d9a93d2a539601e9dda98b45fc48d395f5d1",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/soft-light.png",
+      "sha256": "a8ce7fa43828b44ab35e9e1eba30e8a4da428acf24d24f5bf3c4ce9479d73587"
+    },
+    {
+      "scenario": "splitLayer soft light; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "e4277ece73949fd073d06f4a9190a3b5ab798d208befa853eca73fac47546b93",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/soft-light.png",
+      "sha256": "ecb820e529e08398f7dba4d75590e1bced4f1a506a7d3ac4d9bd2fb58a895d27"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture soft light;420x760 DPR1",
+      "original": "example/test/goldens/notes-pass-a/orbit/soft-light.png",
+      "original_sha256": "03ff05d86fdb63e78916b43d1a62b90e9b6bf102f9b158dbfd62f9a9326a568e",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/soft-light.png",
+      "sha256": "c8917c63d78350edcda7a637ef9117211273f82a153c92745a4563faf80fa633"
+    },
+    {
+      "scenario": "orbit soft dark; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "9676d240341949090309561c90ab0936ff5b708398e70478786f8d5358829202",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/soft-dark.png",
+      "sha256": "8a1b573341ab9dd36ae8bc56b60b9ea5d3bdd17ba56fb9fc589953f7bc423169"
+    },
+    {
+      "scenario": "splitLayer soft dark; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "47d93c19c3173e0250d2818031903271f0d9fb4c97de99eb4e4b0af97bd83d54",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/soft-dark.png",
+      "sha256": "5c6519f164dc573e24687ae1dd6312a5426e6ec49f50162b5d8efffdcd0f7d90"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture soft dark;420x760 DPR1",
+      "original": "example/test/goldens/notes-pass-a/orbit/soft-dark.png",
+      "original_sha256": "3c7bb01fbd6b6ea73f06b0e2d2b7dbe8bdcb7e355a0c46c73a2458a374357e14",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/soft-dark.png",
+      "sha256": "a01f8dc2e33a987b52f3285118ea79cc8fd909f1acf9a56e249bf6fadf1c6281"
+    },
+    {
+      "scenario": "orbit soft rtl; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "65a44009b1890029debd78065a404ecd198708b5130402f12ef1700ac77edde2",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/soft-rtl.png",
+      "sha256": "9eecad08f538b5bc9a18a45c9bc28788678dde67a4b3c33b8c6fc09bf773bd48"
+    },
+    {
+      "scenario": "splitLayer soft rtl; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "d4b7b66575dd4490b29d5c7f7926a16ab6da703a2925020f969c1711b6c893c5",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/soft-rtl.png",
+      "sha256": "1f618ca359684cc17126612c290382298197eba3abd56829131aec80ac48c82b"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture soft rtl;420x760 DPR1",
+      "original": "example/test/goldens/notes-pass-a/orbit/soft-rtl.png",
+      "original_sha256": "525c6cdc77f52646f5ebdf18d97a439b3cdc958f0e38c8f812694a15b1514111",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/soft-rtl.png",
+      "sha256": "e2fd12bd42d90c67391b34aebe75ded2821a605834aaf89c74590b5afe19ce98"
+    },
+    {
+      "scenario": "orbit soft large-text; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "d3b0d924b13104a47dcadad116853c00c78e6e0f319e38424a8d9d73a57ab094",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/soft-large-text.png",
+      "sha256": "9c79956e092d5720f8cdca246f223150c14dae2ef932e32b8d3f815442175506"
+    },
+    {
+      "scenario": "splitLayer soft large-text; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "9358bd58b33795978e8ccdc662c31d47dba6738663f1196a1970ad0a76c6bc6b",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/soft-large-text.png",
+      "sha256": "29d38a2974879540bb4e9b9e2cd6ff90828a1ff4e6d488460242f365b7826979"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture soft large-text;420x760 DPR1",
+      "original": "example/test/goldens/notes-pass-a/orbit/soft-large-text.png",
+      "original_sha256": "a29f7b4bce0d3cdd6d729e0d35ac9a590eb31f03c1b2512c5ce74c461c227cad",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/soft-large-text.png",
+      "sha256": "3caa62639186bcc901c4837c67215a0105a84659a2631876192f975f010b600f"
+    },
+    {
+      "scenario": "orbit spatial light; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "14ab014af4f831453b15379feba18b5f223594d6d4e63f58904b07e356ea6967",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/spatial-light.png",
+      "sha256": "944c8e2f64cf18c6a975065f0fcdb96143eaab5e5ac56dff863189807f155c54"
+    },
+    {
+      "scenario": "splitLayer spatial light; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "24b7ee718409623b9e09b0a5e7839b36254ce2eb05d12e6bca082b306bd935e8",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/spatial-light.png",
+      "sha256": "7f3d4a102fc75c06c8e1aabdcc3647c7d85811156d8034281aadc27cb72c474d"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture spatial light;420x760 DPR1",
+      "original": "example/test/goldens/spatial-edge/orbit/spatial-light.png",
+      "original_sha256": "889a176db7d289be37eeba87181f7392989f83340001a239376b77c39cc92c94",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/spatial-light.png",
+      "sha256": "856f5867f3445d9b590629d0d4188678eb82741ca66ffc0af68d4f2979578d4f"
+    },
+    {
+      "scenario": "orbit spatial dark; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "6fe10eac90b3b7722c11e8385a7922fe03ac96dc95669d2126c9db488304027e",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/spatial-dark.png",
+      "sha256": "dc123189dbf9322df56fffbbde780edbcb534e6d6301517da0f3f6d999e06fcc"
+    },
+    {
+      "scenario": "splitLayer spatial dark; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "a5d6026d9020a778144f6b607b03506bbdea4c45b0ecd1fd464eb1285d087021",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/spatial-dark.png",
+      "sha256": "3d5bb2a6f273efb7c86349bfd905302bfb763b3e2c3e7295b26544b97784c71b"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture spatial dark;420x760 DPR1",
+      "original": "example/test/goldens/spatial-edge/orbit/spatial-dark.png",
+      "original_sha256": "e6424665dd09acb6b92adcde120c90a39c6f8a885032dc1ff2bf479b83f554dc",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/spatial-dark.png",
+      "sha256": "87605c5a15aabde13b73739dc1c8ad8dafb34c16d7338b7c93fa6f151a36607e"
+    },
+    {
+      "scenario": "orbit spatial rtl; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "48c641457a0a2a0c9202c8b7c48123c07241f35ea63fd2b7af9a1fcada182465",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/spatial-rtl.png",
+      "sha256": "55037b3e1d2ccc22bfd555901008461ae48a7723f7f2402bbcf89f78378987cf"
+    },
+    {
+      "scenario": "splitLayer spatial rtl; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "875384453d6498f02c641a748071e446147112fffdb392eaaacdd6614ff274de",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/spatial-rtl.png",
+      "sha256": "c1f532373eb002ffd80e5d83d15127fedef2a012ec855d933ab4520d9a3feb1a"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture spatial rtl;420x760 DPR1",
+      "original": "example/test/goldens/spatial-edge/orbit/spatial-rtl.png",
+      "original_sha256": "6588209c178a2f7ece122526703ba9be8fd28006ba146c9003ddb9a148bb0c1f",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/spatial-rtl.png",
+      "sha256": "b642be59a4f8b40f650b60f633de8f58a913e6a52dcda34bd312e73d1083a202"
+    },
+    {
+      "scenario": "orbit spatial large-text; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "1396f1cb493488ac08b18a5138ca169651c882f13dc22d4bd7a74cf88115b6a3",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit/spatial-large-text.png",
+      "sha256": "a8912c30bd5d49dbcde21d15e8f409c9e376d1f7247eb43d64c99a53427d78a3"
+    },
+    {
+      "scenario": "splitLayer spatial large-text; 420x800 DPR1",
+      "original": "new strict specimen; before capture retained",
+      "before_sha256": "bf871e1df4783803f44311cffad0a5b97e4cbcd349f124fbd7c5a3bf5ce3b062",
+      "versioned": "example/test/goldens/sheet-calm-v1/splitLayer/spatial-large-text.png",
+      "sha256": "7a921c4d659b9d41634c61cacdc145683c1bf9ed1af22a811a373d8443d9ef7a"
+    },
+    {
+      "scenario": "Orbit existing Notes fixture spatial large-text;420x760 DPR1",
+      "original": "example/test/goldens/spatial-edge/orbit/spatial-large-text.png",
+      "original_sha256": "fd6bba387d4b6d210678f9e8eaa6895b873ffcca9fc5095b1e6df94cd10a66da",
+      "versioned": "example/test/goldens/sheet-calm-v1/orbit-existing/spatial-large-text.png",
+      "sha256": "1c6c4edc4ef888a0019805bcae3ba9023fbda7a11bb0c55885c5eaaa4b924d4a"
+    },
+    {
+      "scenario": "Wallet SplitLayer light;640x900 DPR1",
+      "original": "example/test/goldens/wallet-pass-a/surfaces/splitLayer-light.png",
+      "original_sha256": "7f788cc0bd1ccf3f77dc479362eb4f0c544606261289ca6725110a3830db5395",
+      "versioned": "example/test/goldens/sheet-calm-v1/wallet-splitLayer/light.png",
+      "sha256": "5e88396e29b124b41918ca2d9c1529c5dae368b7cf7db1e3d3f7c8f7c72750b5",
+      "review": "Inspected full images/RGB masks; intended context order, spacing and surface treatment only"
+    },
+    {
+      "scenario": "Wallet SplitLayer dark;640x900 DPR1",
+      "original": "example/test/goldens/wallet-pass-a/surfaces/splitLayer-dark.png",
+      "original_sha256": "cbc53d27809cfa623a27eaca240db087da2d2978868f09e4206a897db020bf8a",
+      "versioned": "example/test/goldens/sheet-calm-v1/wallet-splitLayer/dark.png",
+      "sha256": "1ed3cc2b7f88afd535fea882eb83af51ec7eb599d2de97ce2a2c44f0c22e2fa1",
+      "review": "Inspected full images/RGB masks; intended context order, spacing and surface treatment only"
+    },
+    {
+      "scenario": "Wallet SplitLayer rtl;640x900 DPR1",
+      "original": "example/test/goldens/wallet-pass-a/surfaces/splitLayer-rtl.png",
+      "original_sha256": "8691bf3a4d133dc9b11ebc8bcf9e2b925d95de4bf1db4cd2ae229e3b6d4d6eb7",
+      "versioned": "example/test/goldens/sheet-calm-v1/wallet-splitLayer/rtl.png",
+      "sha256": "b15fb5b13211c82ec5e085bd8d28ceb2727e5ad4635e24494fe51935745d8381",
+      "review": "Inspected full images/RGB masks; intended context order, spacing and surface treatment only"
+    },
+    {
+      "scenario": "Wallet SplitLayer large-text;640x900 DPR1",
+      "original": "example/test/goldens/wallet-pass-a/surfaces/splitLayer-large-text.png",
+      "original_sha256": "a1c1f9cf88da237f81e1fac8c8157b7aaa0e3a803bc6800b8a9388b435f620ef",
+      "versioned": "example/test/goldens/sheet-calm-v1/wallet-splitLayer/large-text.png",
+      "sha256": "9181ec34e96d0bf62cf915e001d9acd25d2de19b9aff2e470dfe9f163bb75011",
+      "review": "Inspected full images/RGB masks; intended context order, spacing and surface treatment only"
+    }
+  ],
+  "final_capture_sha256": "6edb40a2757a0c0faacbd9f837359b655594c5bf3009ae62c0524d9b4a45757e"
+}

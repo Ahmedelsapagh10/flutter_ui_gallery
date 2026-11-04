@@ -1,7 +1,28 @@
 name: flutter_ui_gallery
-description: "Twelve expressive, accessible Flutter sheets, dialogs, toasts and adaptive headers."
-version: 0.0.1
+description: "66 accessible Flutter surface presets with coordinated themes, partial style overrides and caller-owned state."
+version: 0.2.1
 homepage: https://github.com/Ahmedelsapagh10/flutter_ui_gallery
+repository: https://github.com/Ahmedelsapagh10/flutter_ui_gallery
+issue_tracker: https://github.com/Ahmedelsapagh10/flutter_ui_gallery/issues
+topics:
+  - widgets
+  - material-design
+  - bottom-sheet
+  - navigation
+  - accessibility
+screenshots:
+  - description: "66 real Flutter presets across five component categories."
+    path: doc/assets/showcase-v021/hero.png
+  - description: "Search Switch, Editorial Topbar, and Sculpted Wave app bars."
+    path: doc/assets/showcase-v021/app-bars.png
+  - description: "Action Capsule, Progress Card, and Mini Console toasts."
+    path: doc/assets/showcase-v021/toasts.png
+  - description: "Orbit Dock, Split Layer, and Depth Frame bottom sheets."
+    path: doc/assets/showcase-v021/bottom-sheets.png
+  - description: "Side-by-Side Choice, Command Palette, and Spotlight Result dialogs."
+    path: doc/assets/showcase-v021/dialogs.png
+  - description: "Morphing Capsule, Layered Shelf, and Glass Dock navigation."
+    path: doc/assets/showcase-v021/bottom-navigation.png
 
 environment:
   sdk: ^3.11.5
@@ -16,3 +37,6 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
 
+flutter:
+  assets:
+    - assets/flutter_ui_gallery.png
