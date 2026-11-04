@@ -3,6 +3,29 @@
 Release preparation 0.2.0 is authorized: push design-overhaul, create/update its PR
 and run Flutter CI. Merge, deployment and publication remain prohibited. Historical PNGs and manifests are immutable.
 
+## Final iOS attachment blocker — 2026-11-04
+
+- Both failed attempts used Flutter3.41.9/framework00b0c91f06209d9e4a41f71b7a512d6eb3b9c694,
+  macOS15.8.2 arm64, Xcode16.4 and iPhone16Pro/iOS18.5. Installation and launch
+  returned successfully; zero Dart tests executed before the12minute timeout.
+- Both logs show simctl launch before simctl log stream. The3.41.9 tool has no
+  log-reader readiness barrier. Official fix#193142/c3ed85ef987759ee54a6bce275490cde2a238dc1
+  waits for the stream's first line before launch. Stable3.47.9 and current beta
+  source also lack this fix. The old runners retained no native crash/process
+  artifacts, so a missed VM URL is the leading hypothesis, not proven history.
+- Only iOS CI uses the exact unmodified upstream fix commit. Pinned3.41.9 golden
+  rendering, current-stable validation, Android, package SDK constraints and all
+  package/component code remain unchanged.
+- Require three consecutive real smoke executions, each with all three named
+  scenarios passing and successful runner completion. Nonzero exits, Dart errors,
+  skipped/missing tests and600second attempt timeouts fail; no failure retries.
+  Upload raw machine/verbose logs, results, native log history, process state and
+  available Runner crash reports for each attempted execution.
+- Unit checks exercise zero-test, skipped/failed/error, missing completion,
+  duplicate, actual process-kill and timeout failure paths. Exact hosted results
+  and the final release decision are recorded externally and on PR#2 so reporting
+  does not change the commit being validated. No merge/publication authorized.
+
 ## Release 0.2.0 preparation — 2026-11-03
 
 - Latest published version verified directly from pub.dev:0.1.0. Archive SHA-256
